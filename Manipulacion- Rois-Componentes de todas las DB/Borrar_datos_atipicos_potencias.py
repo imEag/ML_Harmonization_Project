@@ -37,6 +37,9 @@ data_roi_copy.to_feather('{path}\Datosparaorganizardataframes\BasesdeDatosFiltra
 print('\nFinalización de eliminación de datos atipicos de ROIs')
 
 
+data_roi_copy['group'].replace({'CTR':'Control','G4':'Control','G3':'DTA'}, inplace=True)
+data_Comp_copy['group'].replace({'CTR':'Control','G4':'Control','G3':'DTA'}, inplace=True)
+
 #Dataframes are saved by ROI and components for graphics.
 dataframe_long_roi(data_roi_copy,'Power',columns=columns_powers_rois,name="data_long_power_roi_without_oitliers",path=path)
 dataframe_long_components(data_Comp_copy,'Power',columns=columns_powers_ic,name="data_long_power_components_without_oitliers",path=path)

@@ -119,16 +119,18 @@ def stats_pair(data,metric,space,path,name_band,id,id_cross=None):
         path_complete='{path}\Graficos_{type}\{id}\{name_band}_{type}_{id}_table.png'.format(path=path,name_band=name_band,id=id,type=metric)  
     else:
         path_complete='{path}\Graficos_{type}\{id}\{name_band}_{id_cross}_{type}_{id}_table.png'.format(path=path,name_band=name_band,id=id,type=metric,id_cross=id_cross)
-        save_table = table.copy()
+    save_table = table.copy()
     table=table.style.applymap(text_format,value=0.7,subset=['effect size']).applymap(text_format,value=0.0,subset=['cv'])
-    dfi.export(table, path_complete)
+    #dfi.export(table, path_complete)
     return path_complete,save_table
 
 def create_check(table,space,name_band,metric,state,mband=None):
     if state == 'different':
-        check = table[(np.abs(table['effect size']) > 0.7) & (np.abs(table['cv']) < 0.1)] 
+        #check = table[(np.abs(table['effect size']) > 0.7) & (np.abs(table['cv']) < 0.1)] 
+        check = table[(np.abs(table['effect size']) > 0.7)] 
     else:
-        check = table[(np.abs(table['effect size']) < 0.2) & (np.abs(table['cv']) < 0.1)]
+        #check = table[(np.abs(table['effect size']) <= 0.5) & (np.abs(table['cv']) < 0.1)]
+        check = table[(np.abs(table['effect size']) <= 0.5)]
     check['space'] = space
     check['state'] = state
     check['band'] = name_band
@@ -189,7 +191,7 @@ def table_groups_DB(data,metric,space,path,name_band,id,id_cross=None):
         path_complete='{path}\Graficos_{type}\{id}\{name_band}_{id_cross}_{type}_{id}_table_DB.png'.format(path=path,name_band=name_band,id=id,type=metric,id_cross=id_cross)
     save_table = table.copy()
     table=table.style.applymap(text_format,value=0.7,subset=['effect size']).applymap(text_format,value=0.0,subset=['cv'])
-    dfi.export(table, path_complete)
+    #dfi.export(table, path_complete)
     return path_complete,save_table
 
 def joinimages(paths):
@@ -249,10 +251,10 @@ for metric in datos_roi.keys():
             check_tg_roi=create_check(save_tg_roi,'ROI',band,metric,'equal',None)
             tg_com,save_tg_com=table_groups_DB(d_banda_com,metric,'Component',path,band,'IC',id_cross=None)
             check_tg_com=create_check(save_tg_com,'Component',band,metric,'equal',None)
-            joinimages([path_roi,table_roi,tg_roi])
-            joinimages([path_com,table_com,tg_com])
-            os.remove(tg_roi)
-            os.remove(tg_com)
+            # joinimages([path_roi,table_roi,tg_roi])
+            # joinimages([path_com,table_com,tg_com])
+            # os.remove(tg_roi)
+            # os.remove(tg_com)
             matrix_roi = matrix_roi.append(check_roi, ignore_index = True)
             matrix_com = matrix_com.append(check_com, ignore_index = True)
             matrix_roi = matrix_roi.append(check_tg_roi, ignore_index = True)
@@ -267,8 +269,8 @@ for metric in datos_roi.keys():
                     path_roi=graphics(d_banda_roi[d_banda_roi['M_Band']==bandm],'Cross Frequency',path,band,'ROI',id_cross=bandm,num_columns=2,save=True,plot=False)
                     tg_roi,save_tg_roi=table_groups_DB(d_banda_roi[d_banda_roi['M_Band']==bandm],metric,'ROI',path,band,'ROI',id_cross=bandm)
                     check_tg_roi=create_check(save_tg_roi,'ROI',band,metric,'equal',bandm)
-                    joinimages([path_roi,table_roi,tg_roi])    
-                    os.remove(tg_roi)
+                    # joinimages([path_roi,table_roi,tg_roi])    
+                    # os.remove(tg_roi)
                     matrix_roi = matrix_roi.append(check_roi, ignore_index = True)
                     matrix_roi = matrix_roi.append(check_tg_roi, ignore_index = True)
                    
@@ -278,13 +280,15 @@ for metric in datos_roi.keys():
                     path_com=graphics(d_banda_com[d_banda_com['M_Band']==bandm],'Cross Frequency',path,band,'IC',id_cross=bandm,num_columns=4,save=True,plot=False)
                     tg_com,save_tg_com=table_groups_DB(d_banda_com[d_banda_com['M_Band']==bandm],metric,'Component',path,band,'IC',id_cross=bandm)
                     check_tg_com=create_check(save_tg_com,'Component',band,metric,'equal',bandm)
-                    joinimages([path_com,table_com,tg_com])
-                    os.remove(tg_com) 
+                    # joinimages([path_com,table_com,tg_com])
+                    # os.remove(tg_com) 
                     matrix_com = matrix_com.append(check_com, ignore_index = True)
                     matrix_com = matrix_com.append(check_tg_com, ignore_index = True)   
 
-
-filename = r"{path}\check.xlsx".format(path=path)
+print('table lista')
+matrix_com['Compared groups']=matrix_com['A']+'-'+matrix_com['B']
+matrix_roi['Compared groups']=matrix_roi['A']+'-'+matrix_roi['B']
+filename = r"{path}\check_sin_cv.xlsx".format(path=path)
 writer = pd.ExcelWriter(filename)
 matrix_com.to_excel(writer ,sheet_name='Component')
 matrix_roi.to_excel(writer ,sheet_name='ROI')
