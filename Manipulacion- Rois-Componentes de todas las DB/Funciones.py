@@ -10,7 +10,8 @@ def dataframe_long_roi(data,type,columns,name,path):
     '''Function used to convert a dataframe to be used for graphing by ROIs'''
     #demographic data and neuropsychological test columns
     #data_dem=['participant_id', 'visit', 'group', 'condition', 'database','age', 'sex', 'education', 'MM_total', 'FAS_F', 'FAS_A', 'FAS_S']
-    data_dem=['participant_id', 'visit', 'group', 'condition', 'database']
+    #data_dem=['participant_id', 'visit', 'group', 'condition', 'database','age']
+    data_dem=['group', 'database']
     columns_df=data_dem+[type, 'Band', 'ROI']
     data_new=pd.DataFrame(columns=columns_df)
     #Frequency bands
@@ -40,7 +41,7 @@ def dataframe_long_components(data,type,columns,name,path):
     '''Function used to convert a wide dataframe into a long one to be used for graphing by IC'''
     #demographic data and neuropsychological test columns
     #data_dem=['participant_id', 'visit', 'group', 'condition', 'database','age', 'sex', 'education', 'MM_total', 'FAS_F', 'FAS_A', 'FAS_S']
-    data_dem=['participant_id', 'visit', 'group', 'condition', 'database']
+    data_dem=['participant_id', 'visit', 'group', 'condition', 'database','age']
     columns_df=data_dem+[type, 'Band', 'Component']
     data_new=pd.DataFrame(columns=columns_df)
     #Frequency bands

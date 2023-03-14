@@ -35,9 +35,7 @@ def graphics(data,type,path,name_band,id,id_cross=None,num_columns=4,save=True,p
         axs.fig.suptitle(type+' in '+r'$\bf{'+name_band+r'}$'+ ' in the ICs of normalized data given by the databases')
     else:
         axs.fig.suptitle(type+' in '+id_cross+' of ' +r'$\bf{'+name_band+r'}$'+ ' in the ICs of normalized data given by the databases')
-
     if id=='IC':
-        
         axs.add_legend(loc='upper right',bbox_to_anchor=(.59,.95),ncol=4,title="Database")
         axs.fig.subplots_adjust(top=0.85,bottom=0.121, right=0.986,left=0.05, hspace=0.138, wspace=0.062) 
         axs.fig.text(0.5, 0.04, 'Group', ha='center', va='center')

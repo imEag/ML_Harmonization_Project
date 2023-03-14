@@ -65,50 +65,99 @@ datos=add_ROIS_filter_data(datos,groups,rois,roi_labels)
 bandas=datos['Bands'].unique()
 Stage=datos['Stage'].unique()
 
+# icc_value = pd.DataFrame(columns=['Description','ICC','F','df1','df2','pval','CI95%'])
+# G=['CTR','G2']
+# for st in Stage:
+#     d_stage=datos[datos['Stage']==st] 
+#     for g in G:
+#         d_group=d_stage[d_stage['Group']==g]
+#         dic={}
+#         icc_roi=[]
+#         for roi in roi_labels:
+#             d_roi=d_group[d_group['Roi']==roi]
+#             visits=list(d_roi['Session'].unique())
+#             matrix_c=pd.DataFrame(columns=['index','Session', 'Power','Bands','Group','Stage','Subject']) #Se le asigna a un dataframe los datos d elas columnas
+#             subjects=d_roi['Subject'].unique() 
+#             for vis in visits:
+#                 matrix_s=pd.DataFrame(columns=['index','Session', 'Power','Bands','Group','Stage','Subject'])
+#                 power=d_roi[d_roi['Session']==vis]['Powers'].tolist() #All powers for one roi and one visit 
+#                 n_vis=[vis]*len(power)# list of the corresponding visit name for powers
+#                 matrix_s['Session']=n_vis
+#                 matrix_s['Power']=power  
+#                 matrix_s['Group']=d_roi[d_roi['Session']==vis]['Group'].tolist()
+#                 matrix_s['Bands']=d_roi[d_roi['Session']==vis]['Bands'].tolist()
+#                 matrix_s['Stage']=d_roi[d_roi['Session']==vis]['Stage'].tolist()
+#                 matrix_s['Subject']=d_roi[d_roi['Session']==vis]['Subject'].tolist()
+#                 matrix_c=matrix_c.append(matrix_s, ignore_index = True)       
+
+#             index=list(np.arange(0,len(n_vis),1))*len(visits)
+#             matrix_c['index']=index
+
+#             #print('\n Matriz Roi '+g+' '+st+' ',roi)
+#             for i,ban in enumerate(bandas):
+#                 fil_bands=matrix_c['Bands']==ban
+#                 filter=matrix_c[fil_bands]
+#                 icc=pg.intraclass_corr(data=filter, targets='index', raters='Session', ratings='Power').round(6)
+#                 icc3 = icc[icc['Type']=='ICC3k']
+#                 icc3 = icc3.set_index('Type')
+
+#                 icc3['Stage']=st
+#                 icc3['Group']=g
+#                 icc3['Bands']=ban
+#                 icc3['Roi']=roi
+#                 icc_value=icc_value.append(icc3,ignore_index=True)
+
+#         icc_value.append(icc_value)
+#     icc_value.append(icc_value)
+# #print(icc_value)
+# icc_value.to_csv(r'Reliability\ICC_values_csv\icc_values_ROIS_G2-CTR.csv',sep=';')
+
 icc_value = pd.DataFrame(columns=['Description','ICC','F','df1','df2','pval','CI95%'])
-G=['CTR','G2']
-for st in Stage:
-    d_stage=datos[datos['Stage']==st] 
-    for g in G:
-        d_group=d_stage[d_stage['Group']==g]
-        dic={}
-        icc_roi=[]
-        for roi in roi_labels:
-            d_roi=d_group[d_group['Roi']==roi]
-            visits=list(d_roi['Session'].unique())
-            matrix_c=pd.DataFrame(columns=['index','Session', 'Power','Bands','Group','Stage','Subject']) #Se le asigna a un dataframe los datos d elas columnas
-            subjects=d_roi['Subject'].unique() 
-            for vis in visits:
-                matrix_s=pd.DataFrame(columns=['index','Session', 'Power','Bands','Group','Stage','Subject'])
-                power=d_roi[d_roi['Session']==vis]['Powers'].tolist() #All powers for one roi and one visit 
-                n_vis=[vis]*len(power)# list of the corresponding visit name for powers
-                matrix_s['Session']=n_vis
-                matrix_s['Power']=power  
-                matrix_s['Group']=d_roi[d_roi['Session']==vis]['Group'].tolist()
-                matrix_s['Bands']=d_roi[d_roi['Session']==vis]['Bands'].tolist()
-                matrix_s['Stage']=d_roi[d_roi['Session']==vis]['Stage'].tolist()
-                matrix_s['Subject']=d_roi[d_roi['Session']==vis]['Subject'].tolist()
-                matrix_c=matrix_c.append(matrix_s, ignore_index = True)       
 
-            index=list(np.arange(0,len(n_vis),1))*len(visits)
-            matrix_c['index']=index
+d_stage=datos[datos['Stage']=='Preprocessed data'] 
+d_group=d_stage.copy()
+dic={}
+icc_comp=[]
+st='Preprocessed data'
+icc_roi=[]
+for roi in roi_labels:
+    d_roi=d_group[d_group['Roi']==roi]
+    visits=list(d_roi['Session'].unique())
+    matrix_c=pd.DataFrame(columns=['index','Session', 'Power','Bands','Group','Stage','Subject']) #Se le asigna a un dataframe los datos d elas columnas
+    subjects=d_roi['Subject'].unique() 
+    for vis in visits:
+        matrix_s=pd.DataFrame(columns=['index','Session', 'Power','Bands','Group','Stage','Subject'])
+        power=d_roi[d_roi['Session']==vis]['Powers'].tolist() #All powers for one roi and one visit 
+        n_vis=[vis]*len(power)# list of the corresponding visit name for powers
+        matrix_s['Session']=n_vis
+        matrix_s['Power']=power  
+        matrix_s['Bands']=d_roi[d_roi['Session']==vis]['Bands'].tolist()
+        matrix_s['Stage']=d_roi[d_roi['Session']==vis]['Stage'].tolist()
+        matrix_s['Subject']=d_roi[d_roi['Session']==vis]['Subject'].tolist()
+        matrix_c=matrix_c.append(matrix_s, ignore_index = True)       
+    index=list(np.arange(0,len(n_vis),1))*len(visits)
+    matrix_c['index']=index
 
-            #print('\n Matriz Roi '+g+' '+st+' ',roi)
-            for i,ban in enumerate(bandas):
-                fil_bands=matrix_c['Bands']==ban
-                filter=matrix_c[fil_bands]
-                icc=pg.intraclass_corr(data=filter, targets='index', raters='Session', ratings='Power').round(6)
-                icc3 = icc[icc['Type']=='ICC3k']
-                icc3 = icc3.set_index('Type')
+    #print('\n Matriz Roi '+g+' '+st+' ',roi)
+    for i,ban in enumerate(bandas):
+        fil_bands=matrix_c['Bands']==ban
+        filter=matrix_c[fil_bands]
+        icc=pg.intraclass_corr(data=filter, targets='index', raters='Session', ratings='Power').round(6)
+        icc3 = icc[icc['Type']=='ICC3k']
+        icc3 = icc3.set_index('Type')
 
-                icc3['Stage']=st
-                icc3['Group']=g
-                icc3['Bands']=ban
-                icc3['Roi']=roi
-                icc_value=icc_value.append(icc3,ignore_index=True)
+        icc3['Stage']=st
+        icc3['Bands']=ban
+        icc3['Group']='Healthy'
+        icc3['ROI']=roi
+        icc_value=icc_value.append(icc3,ignore_index=True)
 
-        icc_value.append(icc_value)
-    icc_value.append(icc_value)
+icc_value.append(icc_value)
+
+table=pd.pivot_table(icc_value, values='ICC', index=['ROI'],columns=['Bands'])
 #print(icc_value)
-icc_value.to_csv(r'Reliability\ICC_values_csv\icc_values_ROIS_G2-CTR.csv',sep=';')
-
+writer = pd.ExcelWriter('Reliability\ICC_values_csv\ICC_rois_sin_separar.xlsx')
+icc_value.to_excel(writer ,sheet_name='ROI_graphic')
+table.to_excel(writer ,sheet_name='ROI')
+writer.save()
+writer.close()  
