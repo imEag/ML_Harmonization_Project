@@ -15,7 +15,7 @@ from Funciones import columns_SL_roi,columns_coherence_roi,columns_entropy_rois,
 from Funciones import columns_SL_ic,columns_coherence_ic,columns_entropy_ic,columns_powers_ic
 from Funciones import ver_datos_vacios
 
-path=r'C:\Users\valec\OneDrive - Universidad de Antioquia\Resultados_Armonizacion_BD' #Cambia dependieron de quien lo corra
+path=r'C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_BD' #Cambia dependieron de quien lo corra
 
 "Load data"
 

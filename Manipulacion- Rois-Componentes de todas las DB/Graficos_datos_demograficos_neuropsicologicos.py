@@ -3,7 +3,7 @@ import seaborn as sns
 import numpy as np
 import matplotlib.pyplot as plt
 
-path=r'C:\Users\valec\OneDrive - Universidad de Antioquia\Resultados_Armonizacion_BD'
+path=r'C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_BD'
 
 def graphic_dem(data,x_data,y_data,col,kind,bbox_x,left,path,title,id,save=True,plot=True):
     
@@ -29,7 +29,8 @@ def graphic_dem(data,x_data,y_data,col,kind,bbox_x,left,path,title,id,save=True,
     
     return 
 
-data_Comp=pd.read_feather(r"{path}\Datosparaorganizardataframes\Data_complete_ic.feather".format(path=path))#Datos con sujetos sin datos vaciosbands= data_Comp['Band'].unique()graphic_dem(data_Comp,'group','age',None,'swarm',0.5,None,'Distribucion de edades por cada grupo en cada base de datos','swarm',save=True,plot=False)
+data_Comp=pd.read_feather(r"{path}\Datosparaorganizardataframes\Data_complete_roi.feather".format(path=path))#Datos con sujetos sin datos vaciosbands= data_Comp['Band'].unique()graphic_dem(data_Comp,'group','age',None,'swarm',0.5,None,'Distribucion de edades por cada grupo en cada base de datos','swarm',save=True,plot=False)
+data_Comp = data_Comp[(data_Comp['visit'] == 'V0') | (data_Comp['visit'] == 't1')]
 graphic_dem(data_Comp,'group','age',None,'box',0.5,None,path,'Distribucion de edades por cada grupo en cada base de datos','box',save=True,plot=False)
 graphic_dem(data_Comp,'sex','age','group','swarm',0.5,None,path,'Distribucion de edades por genero en cada grupo de cada base de datos','swarm',save=True,plot=False)
 graphic_dem(data_Comp,'sex','age','group','box',0.5,None,path,'Distribucion de edades por genero en cada grupo de cada base de datos','box',save=True,plot=False)
