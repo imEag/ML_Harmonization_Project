@@ -64,23 +64,18 @@ def graphics(data,type,path,name_band,id,id2,id_cross=None,num_columns=4,save=Tr
     axs.set(ylabel=None)
     if id_cross==None:
         axs.fig.suptitle(type+' in '+r'$\bf{'+name_band+r'}$'+ ' in the ICs of normalized data given by the databases')
-
-        
     else:
         axs.fig.suptitle(type+' in '+id_cross+' of ' +r'$\bf{'+name_band+r'}$'+ ' in the ICs of normalized data given by the databases')
     if id=='IC':
         #axs.add_legend(loc='upper right',bbox_to_anchor=(.59,.95),ncol=4,title="Database")
         axs.fig.subplots_adjust(top=0.85,bottom=0.121, right=0.986,left=0.05, hspace=0.138, wspace=0.062) 
         axs.fig.text(0.5, 0.04, 'Group', ha='center', va='center')
-        axs.fig.text(0.01, 0.5,  type, ha='center', va='center',rotation='vertical')
-        
+        axs.fig.text(0.01, 0.5,  type, ha='center', va='center',rotation='vertical') 
     else:
         #axs.add_legend(loc='upper right',bbox_to_anchor=(.7,.95),ncol=4,title="Database")
         axs.fig.subplots_adjust(top=0.85,bottom=0.121, right=0.986,left=0.06, hspace=0.138, wspace=0.062) # adjust the Figure in rp
         axs.fig.text(0.5, 0.04, 'Group', ha='center', va='center')
         axs.fig.text(0.015, 0.5,  type, ha='center', va='center',rotation='vertical')
-        
-    
     if plot:
         plt.show()
     if save==True:
@@ -92,18 +87,84 @@ def graphics(data,type,path,name_band,id,id2,id_cross=None,num_columns=4,save=Tr
     plt.close()
     return path_complete
 
+def text_format(val,value):
+    if value==0.2: #Cambie el 0.05 por 0.2 y el lightgreen por lightblue
+        color = 'lightblue' if val <0.2 else 'white'
+    if value==0.7:
+        color = 'lightgreen' if np.abs(val)>=0.7 else 'white'
+    if value==0.0:
+        color = 'lightblue' if np.abs(val)<=0.05 else 'white'
+#    elif value==0.8:
+#        if val >=0.7 and val<0.8:
+#            color = 'salmon'
+#        elif val >=0.8:
+#            color = 'lightblue' 
+#        else:
+#            color='white'
+
+    return 'background-color: %s' % color
+
+def stats_pair(data,metric,space):
+    
+    data_DB=data.copy()
+    if metric!='Cross Frequency':
+        #combinaciones=[('Control', 'G1')]
+        ez=data_DB.groupby([space,'Band']).apply(lambda data_DB:pg.compute_effsize(data_DB[data_DB['group']=='Control'][metric],data_DB[data_DB['group']=='G1'][metric])).to_frame()
+        ez=ez.rename(columns={0:'effect size'})
+        ez['A']='Control'
+        ez['B']='G1'
+        ez['Prueba']='effect size'
+        #cv
+        std=data_DB.groupby([space,'Band']).apply(lambda data_DB:np.std(np.concatenate((data_DB[data_DB['group']=='Control'][metric],data_DB[data_DB['group']=='G1'][metric]),axis=0))).to_frame()
+        std=std.rename(columns={0:'cv'})
+        std['A']='Control'
+        std['B']='G1'
+        std['Prueba']='cv'
+
+        table_concat=pd.concat([ez,std],axis=0)
+        table=pd.pivot_table(table_concat,values=['effect size','cv'],columns=['Prueba'],index=[space,'Band','A', 'B'])
+    else:
+        ez=data_DB.groupby([space,'Band','M_Band']).apply(lambda data_DB:pg.compute_effsize(data_DB[data_DB['group']=='Control'][metric],data_DB[data_DB['group']=='G1'][metric])).to_frame()
+        ez=ez.rename(columns={0:'effect size'})
+        ez['A']='Control'
+        ez['B']='G1'
+        ez['Prueba']='effect size'
+        #cv
+        std=data_DB.groupby([space,'Band','M_Band']).apply(lambda data_DB:np.std(np.concatenate((data_DB[data_DB['group']=='Control'][metric],data_DB[data_DB['group']=='G1'][metric]),axis=0))).to_frame()
+        std=std.rename(columns={0:'cv'})
+        std['A']='Control'
+        std['B']='G1'
+        std['Prueba']='cv'
+
+        table_concat=pd.concat([ez,std],axis=0)
+        table=pd.pivot_table(table_concat,values=['effect size','cv'],columns=['Prueba'],index=[space,'Band','M_Band','A', 'B'])
+    table=table.reset_index()
+    table=table.style.applymap(text_format,value=0.7,subset=['effect size']).applymap(text_format,value=0.0,subset=['cv'])
+    
+    #dfi.export(table, path_complete)
+    return table
+
+
 labels=['_sova','_harmonized']
 for label in labels:
     data_p_roi=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_long_power_roi_without_oitliers{label}.feather'.format(label=label,path=path))
     data_sl_roi=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_long_sl_roi{label}.feather'.format(label=label,path=path))
     data_c_roi=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_long_coherence_roi{label}.feather'.format(label=label,path=path))
     data_e_roi=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_long_entropy_roi{label}.feather'.format(label=label,path=path))
-    data_cr_roi=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_long_crossfreq_roi{label}.feather'.format(label=label,path=path))
-    
+    data_cr_roi=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_long_crossfreq_roi{label}.feather'.format(label=label,path=path)) 
     datos_roi={'Power':data_p_roi,'SL':data_sl_roi,'Coherence':data_c_roi,'Entropy':data_e_roi,'Cross Frequency':data_cr_roi}
-
     bands= data_sl_roi['Band'].unique()
-    bandsm= data_cr_roi['M_Band'].unique()
+    bandsm= data_cr_roi['M_Band'].unique()  
+
+    filename = r"{path}\Graficos_armonizacion_sova_harmo\tabla_effectsize{label}.xlsx".format(path=path,label=label)
+    writer = pd.ExcelWriter(filename)
+  
+    for metric in datos_roi.keys():
+        d_roi=datos_roi[metric]
+        table=stats_pair(d_roi,metric,'ROI')
+        table.to_excel(writer ,sheet_name=metric)
+    writer.save()
+    writer.close() 
 
     for metric in datos_roi.keys():
         for band in bands:
@@ -117,9 +178,9 @@ for label in labels:
                 for bandm in bandsm:  
                     print(str(band)+' '+str(metric)+' '+str(bandm)) 
                     if d_banda_roi[d_banda_roi['M_Band']==bandm]['Cross Frequency'].iloc[0]!=0:
-                        
                         path_roi=graphics(d_banda_roi[d_banda_roi['M_Band']==bandm],'Cross Frequency',path,band,'ROI',label,id_cross=bandm,num_columns=2,save=True,plot=False)
-                        
+
+     
                         
 
 print('valelinda')
