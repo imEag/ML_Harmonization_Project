@@ -186,10 +186,9 @@ ver_datos_vacios(d_B)
 d_B = d_B.sort_values('group')#Organized database
 #Powers are saved in a feather file
 d_B.reset_index().to_feather('{path}\Datosparaorganizardataframes\BasesdeDatosFiltradas_componenteporcolumnas.feather'.format(path=path))
-
 print('Dataframe de potencias de componentes por columnas  y con datos demograficos guardado')
 
-
+dataframe_long_components(d_B,'Power',columns=columns_powers_ic,name='longitudinal_data_powers_long_CE_components_age',path=path)
 
 '''The dataframe is organized with all the powers in a single column to make the graphs in an easier way'''
 dataframe_long_components(d_B,'Power',columns=columns_powers_ic,name='Datos_componentes_formatolargo_filtrados',path=path)

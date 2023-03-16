@@ -184,7 +184,7 @@ d_B = d_B.sort_values('group')#Organized database
 d_B.reset_index().to_feather('{path}\Datosparaorganizardataframes\BasesdeDatosFiltradas_ROIporcolumnas.feather'.format(path=path))
 
 print('Dataframe de potencias de ROIs por columnas  y con datos demograficos guardado')
-
+dataframe_long_roi(d_B,'Power',columns=columns_powers_rois,name='longitudinal_data_powers_long_CE_channels_age',path=path)
 '''The dataframe is organized with all the powers in a single column to make the graphs in an easier way'''
 dataframe_long_roi(d_B,'Power',columns=columns_powers_rois,name='Datos_ROI_formatolargo_filtrados',path=path)
 print('Dataframe para hacer graficos de potencias por ROIs guardado ')
