@@ -23,17 +23,17 @@ warnings.filterwarnings("ignore")
 path=r'C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_BD'
 
 #Data loading ic
-data_roi_sova=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_ic_sovaharmony_G2G1.feather'.format(path=path))
-data_roi_harmo=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_ic_neuroHarmonize_G2G1.feather'.format(path=path))
-#data_roi_sova=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_ic_sovaharmony.feather'.format(path=path))
-#data_roi_harmo=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_ic_neuroHarmonize.feather'.format(path=path))
-space = 'ic'
+#data_roi_sova=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_ic_sovaharmony_G2G1.feather'.format(path=path))
+#data_roi_harmo=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_ic_neuroHarmonize_G2G1.feather'.format(path=path))
+##data_roi_sova=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_ic_sovaharmony.feather'.format(path=path))
+##data_roi_harmo=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_ic_neuroHarmonize.feather'.format(path=path))
+#space = 'ic'
 
 #Data loading roi
-#data_roi_sova=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_roi_sovaharmony_G2G1.feather'.format(path=path))
+data_roi_sova=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_roi_sovaharmony_G2G1.feather'.format(path=path))
 ##data_roi_harmo=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_roi_neuroHarmonize.feather'.format(path=path))
-#data_roi_harmo=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_roi_neuroHarmonize_G2G1.feather'.format(path=path))
-#space = 'roi'
+data_roi_harmo=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_roi_neuroHarmonize_G2G1.feather'.format(path=path))
+space = 'roi'
 
 #Other
 #data_roi_harmo=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_roi_neuroHarmonize_All(SRM_CHBMP_G1_G2).feather'.format(path=path))
@@ -227,9 +227,9 @@ for label in labels:
                 
             else:
                 #pass
-                for bandm in bandsm:  
+                for bandm in list(d_banda_roi['M_Band'].unique()):  
                     print(str(band)+' '+str(metric)+' '+str(bandm)) 
-                    if d_banda_roi[d_banda_roi['M_Band']==bandm]['Cross Frequency'].iloc[0]!=0:
+                    if d_banda_roi[d_banda_roi['M_Band']==bandm]['Cross Frequency'].iloc[0]!=None:
                         if space == 'roi':
                             path_roi=graphics(d_banda_roi[d_banda_roi['M_Band']==bandm],'Cross Frequency',path,band,'ROI',label,id_cross=bandm,num_columns=2,save=True,plot=False)
                         else:
