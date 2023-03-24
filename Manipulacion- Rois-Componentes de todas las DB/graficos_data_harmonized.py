@@ -15,20 +15,53 @@ import dataframe_image as dfi
 import warnings
 from Funciones import dataframe_long_roi,dataframe_long_components,dataframe_componentes_deseadas,dataframe_long_cross_ic,dataframe_long_cross_roi
 from Funciones import columns_SL_roi,columns_coherence_roi,columns_entropy_rois,columns_powers_rois
+from Funciones import columns_SL_ic,columns_coherence_ic,columns_entropy_ic,columns_powers_ic
 #from Graficos_power_sl_coherencia_entropia_cross import graphics
 warnings.filterwarnings("ignore")
 
-path=r'C:\Users\valec\OneDrive - Universidad de Antioquia\Resultados_Armonizacion_BD' #Cambia dependieron de quien lo corra
+#path=r'C:\Users\valec\OneDrive - Universidad de Antioquia\Resultados_Armonizacion_BD' #Cambia dependieron de quien lo corra
+path=r'C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_BD'
 
-#data loading
-data_roi_sova=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_roi_sovaharmony_All(SRM_CHBMP_G1_G2).feather'.format(path=path))
-data_roi_harmo=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_roi_neuroHarmonize_All(SRM_CHBMP_G1_G2).feather'.format(path=path))
+#Data loading ic
+data_roi_sova=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_ic_sovaharmony_G2G1.feather'.format(path=path))
+data_roi_harmo=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_ic_neuroHarmonize_G2G1.feather'.format(path=path))
+#data_roi_sova=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_ic_sovaharmony.feather'.format(path=path))
+#data_roi_harmo=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_ic_neuroHarmonize.feather'.format(path=path))
+space = 'ic'
 
-#Colimbas de cross frequency
-DUQUE_cr=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_resting_crossfreq_columns_ROI_DUQUE.feather'.format(path=path))
-columns_cross_roi=DUQUE_cr.columns.tolist()
-for i in ['participant_id', 'group', 'visit', 'condition','database']:
-    columns_cross_roi.remove(i)
+#Data loading roi
+#data_roi_sova=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_roi_sovaharmony_G2G1.feather'.format(path=path))
+##data_roi_harmo=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_roi_neuroHarmonize.feather'.format(path=path))
+#data_roi_harmo=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_roi_neuroHarmonize_G2G1.feather'.format(path=path))
+#space = 'roi'
+
+#Other
+#data_roi_harmo=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_roi_neuroHarmonize_All(SRM_CHBMP_G1_G2).feather'.format(path=path))
+#data_roi_harmo=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_roi_neuroHarmonize_All(G1_G2).feather'.format(path=path))
+
+columns_All=data_roi_harmo.copy().columns.tolist()
+for i in ['participant_id', 'group', 'visit', 'condition','database','sex','MM_total','FAS_F','FAS_S','FAS_A','education','age']:
+   columns_All.remove(i)
+if space == 'ic':
+    columns = [columns_All[:64],columns_All[64:128],columns_All[128:192],columns_All[192:256],columns_All[256:]]
+elif space == 'roi':
+    columns = [columns_All[:32],columns_All[32:64],columns_All[64:96],columns_All[96:128],columns_All[128:]]
+
+#Columnas de cross frequency
+#if space == 'roi':
+#    DUQUE_cr=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_resting_crossfreq_columns_ROI_DUQUE.feather'.format(path=path))
+#    columns_cross_roi=DUQUE_cr.columns.tolist()
+#    columns = [columns_powers_rois,columns_SL_roi,columns_coherence_roi,columns_entropy_rois]
+#elif space == 'ic':
+#    DUQUE_cr=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_resting_crossfreq_columns_components_DUQUE.feather'.format(path=path))
+#    columns_cross_roi=DUQUE_cr.columns.tolist()
+#    columns = [columns_powers_ic,columns_SL_ic,columns_coherence_ic,columns_entropy_ic]
+#for i in ['participant_id', 'group', 'visit', 'condition','database']:
+    #columns_cross_roi.remove(i)
+
+A = 'G2'
+B = 'G1'
+
 
 for i,value in enumerate([data_roi_sova,data_roi_harmo]):
     d_B_roi=value
@@ -38,16 +71,28 @@ for i,value in enumerate([data_roi_sova,data_roi_harmo]):
         label="_harmonized"
     #New dataframes from ROIs
     #Dataframes are saved by ROI and components for graphics.
-    #Power
-    dataframe_long_roi(d_B_roi,'Power',columns=columns_powers_rois,name="data_long_power_roi_without_oitliers{label}".format(label=label),path=path)
-    #SL
-    dataframe_long_roi(d_B_roi,type='SL',columns=columns_SL_roi,name="data_long_sl_roi{label}".format(label=label),path=path)
-    #Coherencia
-    dataframe_long_roi(d_B_roi,type='Coherence',columns=columns_coherence_roi,name="data_long_coherence_roi{label}".format(label=label),path=path)
-    #Entropia
-    dataframe_long_roi(d_B_roi,type='Entropy',columns=columns_entropy_rois,name="data_long_entropy_roi{label}".format(label=label),path=path)
-    #Cross frequency
-    dataframe_long_cross_roi(d_B_roi,type='Cross Frequency',columns=columns_cross_roi,name="data_long_crossfreq_roi{label}".format(label=label),path=path)
+    if space == 'roi':
+        #Power
+        dataframe_long_roi(d_B_roi,'Power',columns=columns[0],name="data_long_power_{space}_without_oitliers{label}_{g}".format(label=label,g=str(A+B),space=space),path=path)
+        #SL
+        dataframe_long_roi(d_B_roi,type='SL',columns=columns[1],name="data_long_sl_{space}{label}_{g}".format(label=label,g=str(A+B),space=space),path=path)
+        #Coherencia
+        dataframe_long_roi(d_B_roi,type='Coherence',columns=columns[2],name="data_long_coherence_{space}{label}_{g}".format(label=label,g=str(A+B),space=space),path=path)
+        #Entropia
+        dataframe_long_roi(d_B_roi,type='Entropy',columns=columns[3],name="data_long_entropy_{space}{label}_{g}".format(label=label,g=str(A+B),space=space),path=path)
+        #Cross frequency
+        dataframe_long_cross_roi(d_B_roi,type='Cross Frequency',columns=columns[4],name="data_long_crossfreq_{space}{label}_{g}".format(label=label,g=str(A+B),space=space),path=path)
+    else:
+        #Power
+        dataframe_long_components(d_B_roi,'Power',columns=columns[0],name="data_long_power_{space}_without_oitliers{label}_{g}".format(label=label,g=str(A+B),space=space),path=path)
+        #SL
+        dataframe_long_components(d_B_roi,type='SL',columns=columns[1],name="data_long_sl_{space}{label}_{g}".format(label=label,g=str(A+B),space=space),path=path)
+        #Coherencia
+        dataframe_long_components(d_B_roi,type='Coherence',columns=columns[2],name="data_long_coherence_{space}{label}_{g}".format(label=label,g=str(A+B),space=space),path=path)
+        #Entropia
+        dataframe_long_components(d_B_roi,type='Entropy',columns=columns[3],name="data_long_entropy_{space}{label}_{g}".format(label=label,g=str(A+B),space=space),path=path)
+        #Cross frequency
+        dataframe_long_cross_ic(d_B_roi,type='Cross Frequency',columns=columns[4],name="data_long_crossfreq_{space}{label}_{g}".format(label=label,g=str(A+B),space=space),path=path)
 
 def graphics(data,type,path,name_band,id,id2,id_cross=None,num_columns=4,save=True,plot=True):
     '''Function to make graphs of the given data '''
@@ -80,9 +125,9 @@ def graphics(data,type,path,name_band,id,id2,id_cross=None,num_columns=4,save=Tr
         plt.show()
     if save==True:
         if id_cross==None:
-            path_complete='{path}\Graficos_armonizacion_sova_harmo\Graficos_{type}\{id}\{name_band}_{type}_{id}_{id2}.png'.format(path=path,name_band=name_band,id=id,id2=id2,type=type)  
+            path_complete='{path}\Graficos_armonizacion_sova_harmo\Graficos_{type}\{id}\{name_band}_{type}_{id}_{id2}_{space}_{group}.png'.format(path=path,name_band=name_band,id=id,id2=id2,type=type,group=str(A+B),space=space)  
         else:
-            path_complete='{path}\Graficos_armonizacion_sova_harmo\Graficos_{type}\{id}\{name_band}_{id_cross}_{type}_{id}_{id2}.png'.format(path=path,name_band=name_band,id=id,id2=id2,type=type,id_cross=id_cross)
+            path_complete='{path}\Graficos_armonizacion_sova_harmo\Graficos_{type}\{id}\{name_band}_{id_cross}_{type}_{id}_{id2}_{space}_{group}.png'.format(path=path,name_band=name_band,id=id,id2=id2,type=type,id_cross=id_cross,group=str(A+B),space=space)
         plt.savefig(path_complete)
     plt.close()
     return path_complete
@@ -108,32 +153,31 @@ def stats_pair(data,metric,space):
     
     data_DB=data.copy()
     if metric!='Cross Frequency':
-        #combinaciones=[('Control', 'G1')]
-        ez=data_DB.groupby([space,'Band']).apply(lambda data_DB:pg.compute_effsize(data_DB[data_DB['group']=='Control'][metric],data_DB[data_DB['group']=='G1'][metric])).to_frame()
+        ez=data_DB.groupby([space,'Band']).apply(lambda data_DB:pg.compute_effsize(data_DB[data_DB['group']==A][metric],data_DB[data_DB['group']==B][metric])).to_frame()
         ez=ez.rename(columns={0:'effect size'})
-        ez['A']='Control'
-        ez['B']='G1'
+        ez['A']=A
+        ez['B']=B
         ez['Prueba']='effect size'
         #cv
-        std=data_DB.groupby([space,'Band']).apply(lambda data_DB:np.std(np.concatenate((data_DB[data_DB['group']=='Control'][metric],data_DB[data_DB['group']=='G1'][metric]),axis=0))).to_frame()
+        std=data_DB.groupby([space,'Band']).apply(lambda data_DB:np.std(np.concatenate((data_DB[data_DB['group']==A][metric],data_DB[data_DB['group']==B][metric]),axis=0))).to_frame()
         std=std.rename(columns={0:'cv'})
-        std['A']='Control'
-        std['B']='G1'
+        std['A']=A
+        std['B']=B
         std['Prueba']='cv'
 
         table_concat=pd.concat([ez,std],axis=0)
         table=pd.pivot_table(table_concat,values=['effect size','cv'],columns=['Prueba'],index=[space,'Band','A', 'B'])
     else:
-        ez=data_DB.groupby([space,'Band','M_Band']).apply(lambda data_DB:pg.compute_effsize(data_DB[data_DB['group']=='Control'][metric],data_DB[data_DB['group']=='G1'][metric])).to_frame()
+        ez=data_DB.groupby([space,'Band','M_Band']).apply(lambda data_DB:pg.compute_effsize(data_DB[data_DB['group']==A][metric],data_DB[data_DB['group']==B][metric])).to_frame()
         ez=ez.rename(columns={0:'effect size'})
-        ez['A']='Control'
-        ez['B']='G1'
+        ez['A']=A
+        ez['B']=B
         ez['Prueba']='effect size'
         #cv
-        std=data_DB.groupby([space,'Band','M_Band']).apply(lambda data_DB:np.std(np.concatenate((data_DB[data_DB['group']=='Control'][metric],data_DB[data_DB['group']=='G1'][metric]),axis=0))).to_frame()
+        std=data_DB.groupby([space,'Band','M_Band']).apply(lambda data_DB:np.std(np.concatenate((data_DB[data_DB['group']==A][metric],data_DB[data_DB['group']==B][metric]),axis=0))).to_frame()
         std=std.rename(columns={0:'cv'})
-        std['A']='Control'
-        std['B']='G1'
+        std['A']=A
+        std['B']=B
         std['Prueba']='cv'
 
         table_concat=pd.concat([ez,std],axis=0)
@@ -144,25 +188,29 @@ def stats_pair(data,metric,space):
     #dfi.export(table, path_complete)
     return table
 
-
+#labels=['_harmonized']
 labels=['_sova','_harmonized']
 for label in labels:
-    data_p_roi=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_long_power_roi_without_oitliers{label}.feather'.format(label=label,path=path))
-    data_sl_roi=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_long_sl_roi{label}.feather'.format(label=label,path=path))
-    data_c_roi=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_long_coherence_roi{label}.feather'.format(label=label,path=path))
-    data_e_roi=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_long_entropy_roi{label}.feather'.format(label=label,path=path))
-    data_cr_roi=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_long_crossfreq_roi{label}.feather'.format(label=label,path=path)) 
+    data_p_roi=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_long_power_{space}_without_oitliers{label}_{g}.feather'.format(label=label,path=path,g=str(A+B),space=space))
+    data_sl_roi=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_long_sl_{space}{label}_{g}.feather'.format(label=label,path=path,g=str(A+B),space=space))
+    data_c_roi=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_long_coherence_{space}{label}_{g}.feather'.format(label=label,path=path,g=str(A+B),space=space))
+    data_e_roi=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_long_entropy_{space}{label}_{g}.feather'.format(label=label,path=path,g=str(A+B),space=space))
+    data_cr_roi=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_long_crossfreq_{space}{label}_{g}.feather'.format(label=label,path=path,g=str(A+B),space=space)) 
     datos_roi={'Power':data_p_roi,'SL':data_sl_roi,'Coherence':data_c_roi,'Entropy':data_e_roi,'Cross Frequency':data_cr_roi}
     bands= data_sl_roi['Band'].unique()
     bandsm= data_cr_roi['M_Band'].unique()  
 
-    filename = r"{path}\Graficos_armonizacion_sova_harmo\tabla_effectsize{label}.xlsx".format(path=path,label=label)
+    #filename = r"{path}\Graficos_armonizacion_sova_harmo\tabla_effectsize{label}.xlsx".format(path=path,label=label)
+    filename = r"{path}\Graficos_armonizacion_sova_harmo\tabla_effectsize_{space}_{group}{label}.xlsx".format(path=path,label=label,group=str(A+B),space=space)
     writer = pd.ExcelWriter(filename)
   
     for metric in datos_roi.keys():
-        d_roi=datos_roi[metric]
-        table=stats_pair(d_roi,metric,'ROI')
-        table.to_excel(writer ,sheet_name=metric)
+       d_roi=datos_roi[metric]
+       if space == 'roi':
+           table=stats_pair(d_roi,metric,'ROI')
+       else:
+           table=stats_pair(d_roi,metric,'Component')
+       table.to_excel(writer ,sheet_name=metric)
     writer.save()
     writer.close() 
 
@@ -172,15 +220,17 @@ for label in labels:
             d_banda_roi=d_roi[d_roi['Band']==band]
             if metric!='Cross Frequency':  
                 print(str(band)+' '+str(metric)) 
-                path_roi=graphics(d_banda_roi,metric,path,band,'ROI',label,num_columns=2,save=True,plot=False)
+                if space == 'roi':
+                    path_roi=graphics(d_banda_roi,metric,path,band,'ROI',label,num_columns=2,save=True,plot=False)
+                else:
+                    path_roi=graphics(d_banda_roi,metric,path,band,'IC',label,num_columns=2,save=True,plot=False)
                 
             else:
+                #pass
                 for bandm in bandsm:  
                     print(str(band)+' '+str(metric)+' '+str(bandm)) 
                     if d_banda_roi[d_banda_roi['M_Band']==bandm]['Cross Frequency'].iloc[0]!=0:
-                        path_roi=graphics(d_banda_roi[d_banda_roi['M_Band']==bandm],'Cross Frequency',path,band,'ROI',label,id_cross=bandm,num_columns=2,save=True,plot=False)
-
-     
-                        
-
-print('valelinda')
+                        if space == 'roi':
+                            path_roi=graphics(d_banda_roi[d_banda_roi['M_Band']==bandm],'Cross Frequency',path,band,'ROI',label,id_cross=bandm,num_columns=2,save=True,plot=False)
+                        else:
+                            path_roi=graphics(d_banda_roi[d_banda_roi['M_Band']==bandm],'Cross Frequency',path,band,'IC',label,id_cross=bandm,num_columns=2,save=True,plot=False)
