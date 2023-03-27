@@ -1,102 +1,13 @@
-import collections
 import pandas as pd 
 import seaborn as sns
 import numpy as np
 import pingouin as pg
-from numpy import ceil 
-import errno
-from matplotlib import pyplot as plt
-import os
-import io
-from itertools import combinations
-from PIL import Image
 import matplotlib.pyplot as plt
-import dataframe_image as dfi
 import warnings
-from Funciones import dataframe_long_roi,dataframe_long_components,dataframe_componentes_deseadas,dataframe_long_cross_ic,dataframe_long_cross_roi
-from Funciones import columns_SL_roi,columns_coherence_roi,columns_entropy_rois,columns_powers_rois
-from Funciones import columns_SL_ic,columns_coherence_ic,columns_entropy_ic,columns_powers_ic
-#from Graficos_power_sl_coherencia_entropia_cross import graphics
+from Funciones import dataframe_long_roi,dataframe_long_components,dataframe_long_cross_ic,dataframe_long_cross_roi
 warnings.filterwarnings("ignore")
 
-#path=r'C:\Users\valec\OneDrive - Universidad de Antioquia\Resultados_Armonizacion_BD' #Cambia dependieron de quien lo corra
-path=r'C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_BD'
-
-#Data loading ic
-#data_roi_sova=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_ic_sovaharmony_G2G1.feather'.format(path=path))
-#data_roi_harmo=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_ic_neuroHarmonize_G2G1.feather'.format(path=path))
-#data_roi_sova=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_ic_sovaharmony.feather'.format(path=path))
-#data_roi_harmo=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_ic_neuroHarmonize.feather'.format(path=path))
-#space = 'ic'
-
-#Data loading roi
-#data_roi_sova=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_roi_sovaharmony_G2G1.feather'.format(path=path))
-#data_roi_harmo=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_roi_neuroHarmonize_G2G1.feather'.format(path=path))
-data_roi_sova=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_roi_sovaharmony.feather'.format(path=path))
-data_roi_harmo=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_roi_neuroHarmonize.feather'.format(path=path))
-space = 'roi'
-
-#Other
-#data_roi_harmo=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_roi_neuroHarmonize_All(SRM_CHBMP_G1_G2).feather'.format(path=path))
-#data_roi_harmo=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_roi_neuroHarmonize_All(G1_G2).feather'.format(path=path))
-
-columns_All=data_roi_harmo.copy().columns.tolist()
-for i in ['participant_id', 'group', 'visit', 'condition','database','sex','MM_total','FAS_F','FAS_S','FAS_A','education','age']:
-   columns_All.remove(i)
-if space == 'ic':
-    columns = [columns_All[:64],columns_All[64:128],columns_All[128:192],columns_All[192:256],columns_All[256:]]
-elif space == 'roi':
-    columns = [columns_All[:32],columns_All[32:64],columns_All[64:96],columns_All[96:128],columns_All[128:]]
-
-#Columnas de cross frequency
-#if space == 'roi':
-#    DUQUE_cr=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_resting_crossfreq_columns_ROI_DUQUE.feather'.format(path=path))
-#    columns_cross_roi=DUQUE_cr.columns.tolist()
-#    columns = [columns_powers_rois,columns_SL_roi,columns_coherence_roi,columns_entropy_rois]
-#elif space == 'ic':
-#    DUQUE_cr=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_resting_crossfreq_columns_components_DUQUE.feather'.format(path=path))
-#    columns_cross_roi=DUQUE_cr.columns.tolist()
-#    columns = [columns_powers_ic,columns_SL_ic,columns_coherence_ic,columns_entropy_ic]
-#for i in ['participant_id', 'group', 'visit', 'condition','database']:
-    #columns_cross_roi.remove(i)
-
-A = 'Control'
-#A = 'G2'
-B = 'G1'
-
-
-for i,value in enumerate([data_roi_sova,data_roi_harmo]):
-    d_B_roi=value
-    if i==0:
-        label="_sova"
-    else:
-        label="_harmonized"
-    #New dataframes from ROIs
-    #Dataframes are saved by ROI and components for graphics.
-    if space == 'roi':
-        #Power
-        dataframe_long_roi(d_B_roi,'Power',columns=columns[0],name="data_long_power_{space}_without_oitliers{label}_{g}".format(label=label,g=str(A+B),space=space),path=path)
-        #SL
-        dataframe_long_roi(d_B_roi,type='SL',columns=columns[1],name="data_long_sl_{space}{label}_{g}".format(label=label,g=str(A+B),space=space),path=path)
-        #Coherencia
-        dataframe_long_roi(d_B_roi,type='Coherence',columns=columns[2],name="data_long_coherence_{space}{label}_{g}".format(label=label,g=str(A+B),space=space),path=path)
-        #Entropia
-        dataframe_long_roi(d_B_roi,type='Entropy',columns=columns[3],name="data_long_entropy_{space}{label}_{g}".format(label=label,g=str(A+B),space=space),path=path)
-        #Cross frequency
-        dataframe_long_cross_roi(d_B_roi,type='Cross Frequency',columns=columns[4],name="data_long_crossfreq_{space}{label}_{g}".format(label=label,g=str(A+B),space=space),path=path)
-    else:
-        #Power
-        dataframe_long_components(d_B_roi,'Power',columns=columns[0],name="data_long_power_{space}_without_oitliers{label}_{g}".format(label=label,g=str(A+B),space=space),path=path)
-        #SL
-        dataframe_long_components(d_B_roi,type='SL',columns=columns[1],name="data_long_sl_{space}{label}_{g}".format(label=label,g=str(A+B),space=space),path=path)
-        #Coherencia
-        dataframe_long_components(d_B_roi,type='Coherence',columns=columns[2],name="data_long_coherence_{space}{label}_{g}".format(label=label,g=str(A+B),space=space),path=path)
-        #Entropia
-        dataframe_long_components(d_B_roi,type='Entropy',columns=columns[3],name="data_long_entropy_{space}{label}_{g}".format(label=label,g=str(A+B),space=space),path=path)
-        #Cross frequency
-        dataframe_long_cross_ic(d_B_roi,type='Cross Frequency',columns=columns[4],name="data_long_crossfreq_{space}{label}_{g}".format(label=label,g=str(A+B),space=space),path=path)
-
-def graphics(data,type,path,name_band,id,id2,id_cross=None,num_columns=4,save=True,plot=True):
+def graphics(data,type,path,name_band,id,id2,A,B,space,id_cross=None,num_columns=4,save=True,plot=True):
     '''Function to make graphs of the given data '''
     max=data[type].max()
     sns.set(rc={'figure.figsize':(15,12)})
@@ -151,7 +62,7 @@ def text_format(val,value):
 
     return 'background-color: %s' % color
 
-def stats_pair(data,metric,space):
+def stats_pair(data,metric,space,A,B):
     
     data_DB=data.copy()
     if metric!='Cross Frequency':
@@ -190,49 +101,131 @@ def stats_pair(data,metric,space):
     #dfi.export(table, path_complete)
     return table
 
-#labels=['_harmonized']
-labels=['_sova','_harmonized']
-for label in labels:
-    data_p_roi=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_long_power_{space}_without_oitliers{label}_{g}.feather'.format(label=label,path=path,g=str(A+B),space=space))
-    data_sl_roi=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_long_sl_{space}{label}_{g}.feather'.format(label=label,path=path,g=str(A+B),space=space))
-    data_c_roi=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_long_coherence_{space}{label}_{g}.feather'.format(label=label,path=path,g=str(A+B),space=space))
-    data_e_roi=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_long_entropy_{space}{label}_{g}.feather'.format(label=label,path=path,g=str(A+B),space=space))
-    data_cr_roi=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_long_crossfreq_{space}{label}_{g}.feather'.format(label=label,path=path,g=str(A+B),space=space)) 
-    datos_roi={'Power':data_p_roi,'SL':data_sl_roi,'Coherence':data_c_roi,'Entropy':data_e_roi,'Cross Frequency':data_cr_roi}
-    bands= data_sl_roi['Band'].unique()
-    bandsm= data_cr_roi['M_Band'].unique()  
 
-    #filename = r"{path}\Graficos_armonizacion_sova_harmo\tabla_effectsize{label}.xlsx".format(path=path,label=label)
-    filename = r"{path}\Graficos_armonizacion_sova_harmo\tabla_effectsize_{space}_{group}{label}.xlsx".format(path=path,label=label,group=str(A+B),space=space)
-    writer = pd.ExcelWriter(filename)
-  
-    for metric in datos_roi.keys():
-       d_roi=datos_roi[metric]
-       if space == 'roi':
-           table=stats_pair(d_roi,metric,'ROI')
-       else:
-           table=stats_pair(d_roi,metric,'Component')
-       table.to_excel(writer ,sheet_name=metric)
-    writer.save()
-    writer.close() 
+def graph_harmonize(path,data_roi_sova,data_roi_harmo,space,A,B):
+    
+    columns_All=data_roi_harmo.copy().columns.tolist()
+    for i in ['participant_id', 'group', 'visit', 'condition','database','sex','MM_total','FAS_F','FAS_S','FAS_A','education','age']:
+        columns_All.remove(i)
+        if space == 'ic':
+            columns = [columns_All[:64],columns_All[64:128],columns_All[128:192],columns_All[192:256],columns_All[256:]]
+        elif space == 'roi':
+            columns = [columns_All[:32],columns_All[32:64],columns_All[64:96],columns_All[96:128],columns_All[128:]]
 
-    for metric in datos_roi.keys():
-        for band in bands:
+    for i,value in enumerate([data_roi_sova,data_roi_harmo]):
+        d_B_roi=value
+        if i==0:
+            label="_sova"
+        else:
+            label="_harmonized"
+        #New dataframes from ROIs
+        #Dataframes are saved by ROI and components for graphics.
+        if space == 'roi':
+            #Power
+            dataframe_long_roi(d_B_roi,'Power',columns=columns[0],name="data_long_power_{space}_without_oitliers{label}_{g}".format(label=label,g=str(A+B),space=space),path=path)
+            #SL
+            dataframe_long_roi(d_B_roi,type='SL',columns=columns[1],name="data_long_sl_{space}{label}_{g}".format(label=label,g=str(A+B),space=space),path=path)
+            #Coherencia
+            dataframe_long_roi(d_B_roi,type='Coherence',columns=columns[2],name="data_long_coherence_{space}{label}_{g}".format(label=label,g=str(A+B),space=space),path=path)
+            #Entropia
+            dataframe_long_roi(d_B_roi,type='Entropy',columns=columns[3],name="data_long_entropy_{space}{label}_{g}".format(label=label,g=str(A+B),space=space),path=path)
+            #Cross frequency
+            dataframe_long_cross_roi(d_B_roi,type='Cross Frequency',columns=columns[4],name="data_long_crossfreq_{space}{label}_{g}".format(label=label,g=str(A+B),space=space),path=path)
+        else:
+            #Power
+            dataframe_long_components(d_B_roi,'Power',columns=columns[0],name="data_long_power_{space}_without_oitliers{label}_{g}".format(label=label,g=str(A+B),space=space),path=path)
+            #SL
+            dataframe_long_components(d_B_roi,type='SL',columns=columns[1],name="data_long_sl_{space}{label}_{g}".format(label=label,g=str(A+B),space=space),path=path)
+            #Coherencia
+            dataframe_long_components(d_B_roi,type='Coherence',columns=columns[2],name="data_long_coherence_{space}{label}_{g}".format(label=label,g=str(A+B),space=space),path=path)
+            #Entropia
+            dataframe_long_components(d_B_roi,type='Entropy',columns=columns[3],name="data_long_entropy_{space}{label}_{g}".format(label=label,g=str(A+B),space=space),path=path)
+            #Cross frequency
+            dataframe_long_cross_ic(d_B_roi,type='Cross Frequency',columns=columns[4],name="data_long_crossfreq_{space}{label}_{g}".format(label=label,g=str(A+B),space=space),path=path)
+
+    #labels=['_harmonized']
+    labels=['_sova','_harmonized']
+    for label in labels:
+        data_p_roi=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_long_power_{space}_without_oitliers{label}_{g}.feather'.format(label=label,path=path,g=str(A+B),space=space))
+        data_sl_roi=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_long_sl_{space}{label}_{g}.feather'.format(label=label,path=path,g=str(A+B),space=space))
+        data_c_roi=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_long_coherence_{space}{label}_{g}.feather'.format(label=label,path=path,g=str(A+B),space=space))
+        data_e_roi=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_long_entropy_{space}{label}_{g}.feather'.format(label=label,path=path,g=str(A+B),space=space))
+        data_cr_roi=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_long_crossfreq_{space}{label}_{g}.feather'.format(label=label,path=path,g=str(A+B),space=space)) 
+        datos_roi={'Power':data_p_roi,'SL':data_sl_roi,'Coherence':data_c_roi,'Entropy':data_e_roi,'Cross Frequency':data_cr_roi}
+        bands= data_sl_roi['Band'].unique()
+        bandsm= data_cr_roi['M_Band'].unique()  
+
+        #filename = r"{path}\Graficos_armonizacion_sova_harmo\tabla_effectsize{label}.xlsx".format(path=path,label=label)
+        filename = r"{path}\Graficos_armonizacion_sova_harmo\tabla_effectsize_{space}_{group}{label}.xlsx".format(path=path,label=label,group=str(A+B),space=space)
+        writer = pd.ExcelWriter(filename)
+    
+        for metric in datos_roi.keys():
             d_roi=datos_roi[metric]
-            d_banda_roi=d_roi[d_roi['Band']==band]
-            if metric!='Cross Frequency':  
-                print(str(band)+' '+str(metric)) 
-                if space == 'roi':
-                    path_roi=graphics(d_banda_roi,metric,path,band,'ROI',label,num_columns=2,save=True,plot=False)
-                else:
-                    path_roi=graphics(d_banda_roi,metric,path,band,'IC',label,num_columns=2,save=True,plot=False)
-                
+            if space == 'roi':
+                table=stats_pair(d_roi,metric,'ROI',A,B)
             else:
-                #pass
-                for bandm in list(d_banda_roi['M_Band'].unique()):  
-                    print(str(band)+' '+str(metric)+' '+str(bandm)) 
-                    if d_banda_roi[d_banda_roi['M_Band']==bandm]['Cross Frequency'].iloc[0]!=None:
-                        if space == 'roi':
-                            path_roi=graphics(d_banda_roi[d_banda_roi['M_Band']==bandm],'Cross Frequency',path,band,'ROI',label,id_cross=bandm,num_columns=2,save=True,plot=False)
-                        else:
-                            path_roi=graphics(d_banda_roi[d_banda_roi['M_Band']==bandm],'Cross Frequency',path,band,'IC',label,id_cross=bandm,num_columns=2,save=True,plot=False)
+                table=stats_pair(d_roi,metric,'Component',A,B)
+            table.to_excel(writer ,sheet_name=metric)
+            writer.save()
+            writer.close() 
+
+        for metric in datos_roi.keys():
+            for band in bands:
+                d_roi=datos_roi[metric]
+                d_banda_roi=d_roi[d_roi['Band']==band]
+                if metric!='Cross Frequency':  
+                    print(str(band)+' '+str(metric)) 
+                    if space == 'roi':
+                        path_roi=graphics(d_banda_roi,metric,path,band,'ROI',label,A=A,B=B,space=space,num_columns=2,save=True,plot=False)
+                    else:
+                        path_roi=graphics(d_banda_roi,metric,path,band,'IC',label,A=A,B=B,space=space,num_columns=2,save=True,plot=False)
+                    
+                else:
+                    #pass
+                    for bandm in list(d_banda_roi['M_Band'].unique()):  
+                        print(str(band)+' '+str(metric)+' '+str(bandm)) 
+                        if d_banda_roi[d_banda_roi['M_Band']==bandm]['Cross Frequency'].iloc[0]!=None:
+                            if space == 'roi':
+                                path_roi=graphics(d_banda_roi[d_banda_roi['M_Band']==bandm],'Cross Frequency',path,band,'ROI',label,A=A,B=B,space=space,id_cross=bandm,num_columns=2,save=True,plot=False)
+                            else:
+                                path_roi=graphics(d_banda_roi[d_banda_roi['M_Band']==bandm],'Cross Frequency',path,band,'IC',label,A=A,B=B,space=space,id_cross=bandm,num_columns=2,save=True,plot=False)
+
+def run_graph(path,list_path_ic,list_path_roi,s,A,B):
+    for space in s:
+        if space == 'ic':
+            graph_harmonize(path,list_path_ic[0],list_path_ic[1],space,A,B)
+            graph_harmonize(path,list_path_ic[2],list_path_ic[3],space,A,B)
+        if space == 'roi':
+            graph_harmonize(path,list_path_roi[0],list_path_roi[1],space,A,B)
+            graph_harmonize(path,list_path_roi[2],list_path_roi[3],space,A,B)
+
+
+
+def main():
+    #path=r'C:\Users\valec\OneDrive - Universidad de Antioquia\Resultados_Armonizacion_BD' #Cambia dependieron de quien lo corra
+    path=r'C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_BD'
+    
+    
+    data_ic_sova_G1G2=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_ic_sovaharmony_G2G1.feather'.format(path=path))
+    data_iC_harmo_G1G2=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_ic_neuroHarmonize_G2G1.feather'.format(path=path))
+    data_iC_sova=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_ic_sovaharmony.feather'.format(path=path))
+    data_iC_harmo=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_ic_neuroHarmonize.feather'.format(path=path))
+
+    data_roi_sova_G1G2=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_roi_sovaharmony_G2G1.feather'.format(path=path))
+    data_roi_harmo_G1G2=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_roi_neuroHarmonize_G2G1.feather'.format(path=path))
+    data_roi_sova=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_roi_sovaharmony.feather'.format(path=path))
+    data_roi_harmo=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_roi_neuroHarmonize.feather'.format(path=path))
+
+
+    list_path_ic = [data_ic_sova_G1G2,data_iC_harmo_G1G2,data_iC_sova,data_iC_harmo]
+    list_path_roi = [data_roi_sova_G1G2,data_roi_harmo_G1G2,data_roi_sova,data_roi_harmo]
+    s = ['ic','roi']
+    A = 'Control'
+    B = 'G1'
+    C = 'G2'
+    run_graph(path,list_path_ic,list_path_roi,s,A,B)
+    run_graph(path,list_path_ic,list_path_roi,s,C,B)
+
+
+if __name__ == "__main__":
+    main()
