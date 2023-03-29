@@ -19,8 +19,8 @@ from Funciones import columns_SL_roi,columns_coherence_roi,columns_entropy_rois,
 warnings.filterwarnings("ignore")
 
 path = r'C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_BD\Datosparaorganizardataframes/' 
-A = 'G2'
-B = 'G1'
+A = ''
+B = 'DCL'
 m = ['power','sl','cohfreq','entropy']
 s = ['roi','ic']
 h = ['neuroHarmonize','sovaharmony']
