@@ -224,6 +224,7 @@ def main():
     B = 'G1'
     C = 'G2'
     run_graph(path,list_path_ic,list_path_roi,s,A,B)
+
     run_graph(path,list_path_ic,list_path_roi,s,C,B)
 
 
