@@ -235,14 +235,15 @@ def graph_harmonize(path,data_roi_sova,data_roi_harmo,space,A,B):
             if space == 'roi':
                 try:
                     table2=effect_size_inside_DB(d_roi,metric,'ROI',A,B)
+                    table2.to_excel(writer2 ,sheet_name=metric)
                 except:
                     pass
             else:
                 try:
                     table2=effect_size_inside_DB(d_roi,metric,'Component',A,B)
+                    table2.to_excel(writer2 ,sheet_name=metric)
                 except:
                     pass
-            table2.to_excel(writer2 ,sheet_name=metric)
         writer2.save()
         writer2.close() 
 
@@ -267,43 +268,45 @@ def graph_harmonize(path,data_roi_sova,data_roi_harmo,space,A,B):
                             else:
                                 path_roi=graphics(d_banda_roi[d_banda_roi['M_Band']==bandm],'Cross Frequency',path,band,'IC',label,A=A,B=B,space=space,id_cross=bandm,num_columns=2,save=True,plot=False)
 
-def run_graph(path,list_path_ic,list_path_roi,s,A,B):
-    for space in s:
-        if space == 'ic':
-            graph_harmonize(path,list_path_ic[0],list_path_ic[1],space,A,B)
-            #graph_harmonize(path,list_path_ic[2],list_path_ic[3],space,A,B)
-        if space == 'roi':
-            graph_harmonize(path,list_path_roi[0],list_path_roi[1],space,A,B)
-            #graph_harmonize(path,list_path_roi[2],list_path_roi[3],space,A,B)
-
-
 
 def main():
     #path=r'C:\Users\valec\OneDrive - Universidad de Antioquia\Resultados_Armonizacion_BD' #Cambia dependieron de quien lo corra
     path=r'C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_BD'
     
-    
+    # IC
     data_ic_sova_G1G2=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_ic_sovaharmony_G2G1.feather'.format(path=path))
     data_ic_harmo_G1G2=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_ic_neuroHarmonize_G2G1.feather'.format(path=path))
-    data_ic_sova_CTR=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_ic_sovaharmony.feather'.format(path=path))
-    data_ic_harmo_CTR=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_ic_neuroHarmonize.feather'.format(path=path))
+    graph_harmonize(path,data_ic_sova_G1G2,data_ic_harmo_G1G2,'ic','G1','G2')
+
+    data_ic_sova_CTR=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_ic_sovaharmony_G1.feather'.format(path=path))
+    data_ic_harmo_CTR=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_ic_neuroHarmonize_G1.feather'.format(path=path))
+    graph_harmonize(path,data_ic_sova_CTR,data_ic_harmo_CTR,'ic','G1','Control')
+
     data_ic_sova_DTA=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_ic_sovaharmony_DTA.feather'.format(path=path))
     data_ic_harmo_DTA=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_ic_neuroHarmonize_DTA.feather'.format(path=path))
+    graph_harmonize(path,data_ic_sova_DTA,data_ic_harmo_DTA,'ic','DTA','Control')
 
+    #data_ic_sova_DCL=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_ic_sovaharmony_DCL.feather'.format(path=path))
+    #data_ic_harmo_DCL=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_ic_neuroHarmonize_DCL.feather'.format(path=path))
+    #graph_harmonize(path,data_ic_sova_DCL,data_ic_harmo_DCL,'ic','DCL','Control')
+
+    # ROI
     data_roi_sova_G1G2=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_roi_sovaharmony_G2G1.feather'.format(path=path))
     data_roi_harmo_G1G2=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_roi_neuroHarmonize_G2G1.feather'.format(path=path))
-    data_roi_sova_CTR=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_roi_sovaharmony.feather'.format(path=path))
-    data_roi_harmo_CTR=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_roi_neuroHarmonize.feather'.format(path=path))
+    graph_harmonize(path,data_roi_sova_G1G2,data_roi_harmo_G1G2,'roi','G1','G2')
+
+    data_roi_sova_CTR=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_roi_sovaharmony_G1.feather'.format(path=path))
+    data_roi_harmo_CTR=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_roi_neuroHarmonize_G1.feather'.format(path=path))
+    graph_harmonize(path,data_roi_sova_CTR,data_roi_harmo_CTR,'roi','G1','Control')
+
     data_roi_sova_DTA=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_roi_sovaharmony_DTA.feather'.format(path=path))
     data_roi_harmo_DTA=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_roi_neuroHarmonize_DTA.feather'.format(path=path))
+    graph_harmonize(path,data_roi_sova_DTA,data_roi_harmo_DTA,'roi','DTA','Control')
 
+    #data_roi_sova_DCL=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_roi_sovaharmony_DCL.feather'.format(path=path))
+    #data_roi_harmo_DCL=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_roi_neuroHarmonize_DCL.feather'.format(path=path))
+    #graph_harmonize(path,data_roi_sova_DCL,data_roi_harmo_DCL,'roi','DCL','Control')
 
-    list_path_ic = [data_ic_sova_CTR,data_ic_harmo_CTR]
-    list_path_roi = [data_roi_sova_CTR,data_roi_harmo_CTR]
-    s = ['ic','roi']
-    A = 'Control'
-    B = 'G1'
-    run_graph(path,list_path_ic,list_path_roi,s,A,B)
 
 if __name__ == "__main__":
     main()
