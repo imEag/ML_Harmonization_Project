@@ -233,33 +233,39 @@ def graph_harmonize(path,data_roi_sova,data_roi_harmo,space,A,B):
         for metric in datos_roi.keys():
             d_roi=datos_roi[metric]
             if space == 'roi':
-                table2=effect_size_inside_DB(d_roi,metric,'ROI',A,B)
+                try:
+                    table2=effect_size_inside_DB(d_roi,metric,'ROI',A,B)
+                except:
+                    pass
             else:
-                table2=effect_size_inside_DB(d_roi,metric,'Component',A,B)
+                try:
+                    table2=effect_size_inside_DB(d_roi,metric,'Component',A,B)
+                except:
+                    pass
             table2.to_excel(writer2 ,sheet_name=metric)
         writer2.save()
         writer2.close() 
 
-        # for metric in datos_roi.keys():
-        #     for band in bands:
-        #         d_roi=datos_roi[metric]
-        #         d_banda_roi=d_roi[d_roi['Band']==band]
-        #         if metric!='Cross Frequency':  
-        #             print(str(band)+' '+str(metric)) 
-        #             if space == 'roi':
-        #                 path_roi=graphics(d_banda_roi,metric,path,band,'ROI',label,A=A,B=B,space=space,num_columns=2,save=True,plot=False)
-        #             else:
-        #                 path_roi=graphics(d_banda_roi,metric,path,band,'IC',label,A=A,B=B,space=space,num_columns=2,save=True,plot=False)
-                    
-        #         else:
-        #             #pass
-        #             for bandm in list(d_banda_roi['M_Band'].unique()):  
-        #                 print(str(band)+' '+str(metric)+' '+str(bandm)) 
-        #                 if d_banda_roi[d_banda_roi['M_Band']==bandm]['Cross Frequency'].iloc[0]!=None:
-        #                     if space == 'roi':
-        #                         path_roi=graphics(d_banda_roi[d_banda_roi['M_Band']==bandm],'Cross Frequency',path,band,'ROI',label,A=A,B=B,space=space,id_cross=bandm,num_columns=2,save=True,plot=False)
-        #                     else:
-        #                         path_roi=graphics(d_banda_roi[d_banda_roi['M_Band']==bandm],'Cross Frequency',path,band,'IC',label,A=A,B=B,space=space,id_cross=bandm,num_columns=2,save=True,plot=False)
+        for metric in datos_roi.keys():
+            for band in bands:
+                d_roi=datos_roi[metric]
+                d_banda_roi=d_roi[d_roi['Band']==band]
+                if metric!='Cross Frequency':  
+                    print(str(band)+' '+str(metric)) 
+                    if space == 'roi':
+                        path_roi=graphics(d_banda_roi,metric,path,band,'ROI',label,A=A,B=B,space=space,num_columns=2,save=True,plot=False)
+                    else:
+                        path_roi=graphics(d_banda_roi,metric,path,band,'IC',label,A=A,B=B,space=space,num_columns=2,save=True,plot=False)
+              
+                else:
+                    #pass
+                    for bandm in list(d_banda_roi['M_Band'].unique()):  
+                        print(str(band)+' '+str(metric)+' '+str(bandm)) 
+                        if d_banda_roi[d_banda_roi['M_Band']==bandm]['Cross Frequency'].iloc[0]!=None:
+                            if space == 'roi':
+                                path_roi=graphics(d_banda_roi[d_banda_roi['M_Band']==bandm],'Cross Frequency',path,band,'ROI',label,A=A,B=B,space=space,id_cross=bandm,num_columns=2,save=True,plot=False)
+                            else:
+                                path_roi=graphics(d_banda_roi[d_banda_roi['M_Band']==bandm],'Cross Frequency',path,band,'IC',label,A=A,B=B,space=space,id_cross=bandm,num_columns=2,save=True,plot=False)
 
 def run_graph(path,list_path_ic,list_path_roi,s,A,B):
     for space in s:
@@ -273,31 +279,31 @@ def run_graph(path,list_path_ic,list_path_roi,s,A,B):
 
 
 def main():
-    path=r'C:\Users\valec\OneDrive - Universidad de Antioquia\Resultados_Armonizacion_BD' #Cambia dependieron de quien lo corra
-    #path=r'C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_BD'
+    #path=r'C:\Users\valec\OneDrive - Universidad de Antioquia\Resultados_Armonizacion_BD' #Cambia dependieron de quien lo corra
+    path=r'C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_BD'
     
     
     data_ic_sova_G1G2=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_ic_sovaharmony_G2G1.feather'.format(path=path))
-    data_iC_harmo_G1G2=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_ic_neuroHarmonize_G2G1.feather'.format(path=path))
-    data_iC_sova=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_ic_sovaharmony.feather'.format(path=path))
-    data_iC_harmo=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_ic_neuroHarmonize.feather'.format(path=path))
+    data_ic_harmo_G1G2=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_ic_neuroHarmonize_G2G1.feather'.format(path=path))
+    data_ic_sova_CTR=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_ic_sovaharmony.feather'.format(path=path))
+    data_ic_harmo_CTR=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_ic_neuroHarmonize.feather'.format(path=path))
+    data_ic_sova_DTA=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_ic_sovaharmony_DTA.feather'.format(path=path))
+    data_ic_harmo_DTA=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_ic_neuroHarmonize_DTA.feather'.format(path=path))
 
     data_roi_sova_G1G2=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_roi_sovaharmony_G2G1.feather'.format(path=path))
     data_roi_harmo_G1G2=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_roi_neuroHarmonize_G2G1.feather'.format(path=path))
-    data_roi_sova=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_roi_sovaharmony.feather'.format(path=path))
-    data_roi_harmo=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_roi_neuroHarmonize.feather'.format(path=path))
+    data_roi_sova_CTR=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_roi_sovaharmony.feather'.format(path=path))
+    data_roi_harmo_CTR=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_roi_neuroHarmonize.feather'.format(path=path))
+    data_roi_sova_DTA=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_roi_sovaharmony_DTA.feather'.format(path=path))
+    data_roi_harmo_DTA=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_roi_neuroHarmonize_DTA.feather'.format(path=path))
 
 
-    list_path_ic = [data_ic_sova_G1G2,data_iC_harmo_G1G2,data_iC_sova,data_iC_harmo]
-    list_path_roi = [data_roi_sova_G1G2,data_roi_harmo_G1G2,data_roi_sova,data_roi_harmo]
+    list_path_ic = [data_ic_sova_CTR,data_ic_harmo_CTR]
+    list_path_roi = [data_roi_sova_CTR,data_roi_harmo_CTR]
     s = ['ic','roi']
     A = 'Control'
     B = 'G1'
-    C = 'G2'
-    run_graph(path,list_path_ic,list_path_roi,s,B,C)
-
-    #run_graph(path,list_path_ic,list_path_roi,s,B,C)
-
+    run_graph(path,list_path_ic,list_path_roi,s,A,B)
 
 if __name__ == "__main__":
     main()
