@@ -103,8 +103,8 @@ def stats_pair(data,metric,space,A,B):
     #dfi.export(table, path_complete)
     return table
 
-def effect_size_inside_DB(data,metric,space,A,B):
-    databases=data['database'].unique().tolist()
+def effect_size_inside_DB(data_i,metric,space,A,B):
+    data=data_i.copy()
     if metric!='Cross Frequency':
         groupby=[space,'Band','database']
         l_index=['database',space,'Band','A', 'B']
@@ -112,20 +112,25 @@ def effect_size_inside_DB(data,metric,space,A,B):
         groupby=[space,'Band','M_Band','database']
         l_index=['database',space,'Band','M_Band','A', 'B']
 
-    for DB in databases:
-        data_DB=data[data['database']==DB]
-        groups=data_DB['group'].unique()
+    databases=data['database'].unique().tolist()
+    databases.sort()
+    db_copy=databases.copy()
+    for i,db in enumerate(databases):
+        groups=data[data['database']==databases[i]]['group'].unique()
         if len(groups)==1:
-            databases.remove(DB)
+             db_copy.remove(db)
+    print(db_copy)
     tablas={}
-    for DB in databases:
+    for DB in db_copy:
         data_DB=data[data['database']==DB]
         combinaciones=[(A, B)]
         test_ez={}
         test_std={}
         for i in combinaciones:
             #Effect size
-            ez=data_DB.groupby(groupby).apply(lambda data_DB:pg.compute_effsize(data_DB[data_DB['group']==i[0]][metric],data_DB[data_DB['group']==i[1]][metric])).to_frame()
+            ez=data_DB.groupby(groupby).apply(lambda data_DB:pg.compute_effsize(data_DB[data_DB['group']==i[0]][metric],data_DB[data_DB['group']==i[1]][metric]))
+            ez=ez.astype(float, errors = 'raise')
+            ez=ez.to_frame()
             ez=ez.rename(columns={0:'effect size'})
             ez['A']=i[0]
             ez['B']=i[1]
@@ -145,7 +150,6 @@ def effect_size_inside_DB(data,metric,space,A,B):
         table_std.reset_index( level = [0,1],inplace=True )
         table_concat=pd.concat([table_ez,table_std],axis=0)
         table_x=pd.pivot_table(table_concat,values=['effect size','cv'],columns=['Prueba'],index=l_index)
-        tablas[DB]=table_x
         table_x.columns=['effect size','cv']
         tablas[DB]=table_x
     table=pd.concat(list(tablas.values()),axis=0)
@@ -214,74 +218,81 @@ def graph_harmonize(path,data_roi_sova,data_roi_harmo,space,A,B):
         bandsm= data_cr_roi['M_Band'].unique()  
 
         #filename = r"{path}\Graficos_armonizacion_sova_harmo\tabla_effectsize{label}.xlsx".format(path=path,label=label)
-        filename = r"{path}\Graficos_armonizacion_sova_harmo\tabla_effectsize_{space}_{group}{label}.xlsx".format(path=path,label=label,group=str(A+B),space=space)
-        writer = pd.ExcelWriter(filename)
+        # filename = r"{path}\Graficos_armonizacion_sova_harmo\tabla_effectsize_{space}_{group}{label}.xlsx".format(path=path,label=label,group=str(A+B),space=space)
+        # writer = pd.ExcelWriter(filename)
         
-        for metric in datos_roi.keys():
-            d_roi=datos_roi[metric]
-            if space == 'roi':
-                table=stats_pair(d_roi,metric,'ROI',A,B)
-            else:
-                table=stats_pair(d_roi,metric,'Component',A,B)
-            table.to_excel(writer ,sheet_name=metric)
+        # for metric in datos_roi.keys():
+        #     d_roi=datos_roi[metric]
+        #     if space == 'roi':
+        #         table=stats_pair(d_roi,metric,'ROI',A,B)
+        #     else:
+        #         table=stats_pair(d_roi,metric,'Component',A,B)
+        #     table.to_excel(writer ,sheet_name=metric)
             
-        writer.save()
-        writer.close()
+        # writer.save()
+        # writer.close()
 
-        filename2 = r"{path}\Graficos_armonizacion_sova_harmo\tabla_effectsize_inside_DB_{space}_{group}{label}.xlsx".format(path=path,label=label,group=str(A+B),space=space)
+        filename2 = r"{path}\Graficos_armonizacion_sova_harmo\tabla_effectsize_inside_DB_{space}_{group}{label}_03_04_2022.xlsx".format(path=path,label=label,group=str(A+B),space=space)
         writer2 = pd.ExcelWriter(filename2)
         for metric in datos_roi.keys():
             d_roi=datos_roi[metric]
             if space == 'roi':
-                try:
-                    table2=effect_size_inside_DB(d_roi,metric,'ROI',A,B)
-                    table2.to_excel(writer2 ,sheet_name=metric)
-                except:
-                    pass
+                table2=effect_size_inside_DB(d_roi,metric,'ROI',A,B)
+                table2.to_excel(writer2 ,sheet_name=metric)
+                # try:
+                #     table2=effect_size_inside_DB(d_roi,metric,'ROI',A,B)
+                #     table2.to_excel(writer2 ,sheet_name=metric)
+                # except:
+                #     pass
             else:
-                try:
-                    table2=effect_size_inside_DB(d_roi,metric,'Component',A,B)
-                    table2.to_excel(writer2 ,sheet_name=metric)
-                except:
-                    pass
-        writer2.save()
+                table2=effect_size_inside_DB(d_roi,metric,'Component',A,B)
+                table2.to_excel(writer2 ,sheet_name=metric)
+                # try:
+                #     table2=effect_size_inside_DB(d_roi,metric,'Component',A,B)
+                #     table2.to_excel(writer2 ,sheet_name=metric)
+                # except:
+                #     pass
+            writer2.save()
         writer2.close() 
+        print(filename2)
 
-        for metric in datos_roi.keys():
-            for band in bands:
-                d_roi=datos_roi[metric]
-                d_banda_roi=d_roi[d_roi['Band']==band]
-                if metric!='Cross Frequency':  
-                    print(str(band)+' '+str(metric)) 
-                    if space == 'roi':
-                        path_roi=graphics(d_banda_roi,metric,path,band,'ROI',label,A=A,B=B,space=space,num_columns=2,save=True,plot=False)
-                    else:
-                        path_roi=graphics(d_banda_roi,metric,path,band,'IC',label,A=A,B=B,space=space,num_columns=2,save=True,plot=False)
+        # for metric in datos_roi.keys():
+        #     for band in bands:
+        #         d_roi=datos_roi[metric]
+        #         d_banda_roi=d_roi[d_roi['Band']==band]
+        #         if metric!='Cross Frequency':  
+        #             print(str(band)+' '+str(metric)) 
+        #             if space == 'roi':
+        #                 path_roi=graphics(d_banda_roi,metric,path,band,'ROI',label,A=A,B=B,space=space,num_columns=2,save=True,plot=False)
+        #             else:
+        #                 path_roi=graphics(d_banda_roi,metric,path,band,'IC',label,A=A,B=B,space=space,num_columns=2,save=True,plot=False)
               
-                else:
-                    #pass
-                    for bandm in list(d_banda_roi['M_Band'].unique()):  
-                        print(str(band)+' '+str(metric)+' '+str(bandm)) 
-                        if d_banda_roi[d_banda_roi['M_Band']==bandm]['Cross Frequency'].iloc[0]!=None:
-                            if space == 'roi':
-                                path_roi=graphics(d_banda_roi[d_banda_roi['M_Band']==bandm],'Cross Frequency',path,band,'ROI',label,A=A,B=B,space=space,id_cross=bandm,num_columns=2,save=True,plot=False)
-                            else:
-                                path_roi=graphics(d_banda_roi[d_banda_roi['M_Band']==bandm],'Cross Frequency',path,band,'IC',label,A=A,B=B,space=space,id_cross=bandm,num_columns=2,save=True,plot=False)
+        #         else:
+        #             #pass
+        #             for bandm in list(d_banda_roi['M_Band'].unique()):  
+        #                 print(str(band)+' '+str(metric)+' '+str(bandm)) 
+        #                 if d_banda_roi[d_banda_roi['M_Band']==bandm]['Cross Frequency'].iloc[0]!=None:
+        #                     if space == 'roi':
+        #                         path_roi=graphics(d_banda_roi[d_banda_roi['M_Band']==bandm],'Cross Frequency',path,band,'ROI',label,A=A,B=B,space=space,id_cross=bandm,num_columns=2,save=True,plot=False)
+        #                     else:
+        #                         path_roi=graphics(d_banda_roi[d_banda_roi['M_Band']==bandm],'Cross Frequency',path,band,'IC',label,A=A,B=B,space=space,id_cross=bandm,num_columns=2,save=True,plot=False)
 
 
 def main():
-    #path=r'C:\Users\valec\OneDrive - Universidad de Antioquia\Resultados_Armonizacion_BD' #Cambia dependieron de quien lo corra
-    path=r'C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_BD'
+    path=r'C:\Users\valec\OneDrive - Universidad de Antioquia\Resultados_Armonizacion_BD' #Cambia dependieron de quien lo corra
+    #path=r'C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_BD'
     
     # IC
     data_ic_sova_G1G2=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_ic_sovaharmony_G2G1.feather'.format(path=path))
     data_ic_harmo_G1G2=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_ic_neuroHarmonize_G2G1.feather'.format(path=path))
     graph_harmonize(path,data_ic_sova_G1G2,data_ic_harmo_G1G2,'ic','G1','G2')
-
+    
+    print('Data_complete_ic_sovaharmony_G1\n','Data_complete_ic_neuroHarmonize_G1')
     data_ic_sova_CTR=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_ic_sovaharmony_G1.feather'.format(path=path))
     data_ic_harmo_CTR=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_ic_neuroHarmonize_G1.feather'.format(path=path))
     graph_harmonize(path,data_ic_sova_CTR,data_ic_harmo_CTR,'ic','G1','Control')
-
+    
+    print('Data_complete_ic_sovaharmony_DTA\n','Data_complete_ic_neuroHarmonize_DTA')
     data_ic_sova_DTA=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_ic_sovaharmony_DTA.feather'.format(path=path))
     data_ic_harmo_DTA=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_ic_neuroHarmonize_DTA.feather'.format(path=path))
     graph_harmonize(path,data_ic_sova_DTA,data_ic_harmo_DTA,'ic','DTA','Control')
@@ -291,14 +302,17 @@ def main():
     #graph_harmonize(path,data_ic_sova_DCL,data_ic_harmo_DCL,'ic','DCL','Control')
 
     # ROI
+    print('Data_complete_roi_sovaharmony_G2G1\n','Data_complete_roi_neuroHarmonize_G2G1')
     data_roi_sova_G1G2=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_roi_sovaharmony_G2G1.feather'.format(path=path))
     data_roi_harmo_G1G2=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_roi_neuroHarmonize_G2G1.feather'.format(path=path))
     graph_harmonize(path,data_roi_sova_G1G2,data_roi_harmo_G1G2,'roi','G1','G2')
-
+    
+    print('Data_complete_roi_sovaharmony_G1\n','Data_complete_roi_neuroHarmonize_G1')
     data_roi_sova_CTR=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_roi_sovaharmony_G1.feather'.format(path=path))
     data_roi_harmo_CTR=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_roi_neuroHarmonize_G1.feather'.format(path=path))
     graph_harmonize(path,data_roi_sova_CTR,data_roi_harmo_CTR,'roi','G1','Control')
-
+    
+    print('Data_complete_roi_sovaharmony_DTA\n','Data_complete_roi_neuroHarmonize_DTA')
     data_roi_sova_DTA=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_roi_sovaharmony_DTA.feather'.format(path=path))
     data_roi_harmo_DTA=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_roi_neuroHarmonize_DTA.feather'.format(path=path))
     graph_harmonize(path,data_roi_sova_DTA,data_roi_harmo_DTA,'roi','DTA','Control')

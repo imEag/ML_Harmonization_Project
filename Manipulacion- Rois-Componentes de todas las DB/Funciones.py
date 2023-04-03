@@ -35,7 +35,7 @@ def dataframe_long_roi(data,type,columns,name,path):
         data_new=data_new.append(d_sep,ignore_index = True) #Uno el dataframe 
     data_new['ROI']=data_new['ROI'].replace({'T_':'T'}, regex=True)#Quito el _ y lo reemplazo con '' 
     data_new.reset_index(drop=True).to_feather('{path}\Datosparaorganizardataframes\{name}.feather'.format(path=path,name=name))
-    print('Dataframe para graficos de {type} guardado: {name}'.format(type=type,name=name))
+    #print('Dataframe para graficos de {type} guardado: {name}'.format(type=type,name=name))
 
 def dataframe_long_components(data,type,columns,name,path):
     '''Function used to convert a wide dataframe into a long one to be used for graphing by IC'''
@@ -64,7 +64,7 @@ def dataframe_long_components(data,type,columns,name,path):
         d_sep= d_sep.rename(columns={i:type})
         data_new=data_new.append(d_sep,ignore_index = True) #Uno el dataframe 
     data_new.reset_index(drop=True).to_feather('{path}\Datosparaorganizardataframes\{name}.feather'.format(path=path,name=name))
-    print('Dataframe para graficos de {type} guardado: {name}'.format(type=type,name=name))
+    #print('Dataframe para graficos de {type} guardado: {name}'.format(type=type,name=name))
 
 def dataframe_long_cross_roi(data,type,columns,name,path):
     '''Function used to convert a dataframe to be used for graphing by ROIs'''
@@ -101,7 +101,7 @@ def dataframe_long_cross_roi(data,type,columns,name,path):
     data_new['ROI']=data_new['ROI'].replace({'T_':'T'}, regex=True)#Quito el _ y lo reemplazo con '' 
     data_new['Band']=data_new['Band'].replace({'_':''}, regex=True)#Quito el _ y lo reemplazo con ''
     data_new.reset_index(drop=True).to_feather('{path}\Datosparaorganizardataframes\{name}.feather'.format(path=path,name=name))
-    print('Dataframe para graficos de {type} guardado: {name}'.format(type=type,name=name))
+    #print('Dataframe para graficos de {type} guardado: {name}'.format(type=type,name=name))
 
 def dataframe_long_cross_ic(data,type='Cross Frequency',columns=None,name=None,path=None):
     '''Function used to convert a dataframe to be used for graphing.'''
@@ -135,7 +135,7 @@ def dataframe_long_cross_ic(data,type='Cross Frequency',columns=None,name=None,p
         data_new=data_new.append(d_sep,ignore_index = True) #Uno el dataframe 
     data_new['Band']=data_new['Band'].replace({'_':''}, regex=True)#Quito el _ y lo reemplazo con ''
     data_new.reset_index(drop=True).to_feather('{path}\Datosparaorganizardataframes\{name}.feather'.format(path=path,name=name))
-    print('Dataframe para graficos de {type} guardado: {name}'.format(type=type,name=name))
+    #print('Dataframe para graficos de {type} guardado: {name}'.format(type=type,name=name))
 
 def dataframe_componentes_deseadas(data,columnas):
     """Function that returns a dataframe with the desired columns, only having data with the independent components of interest
