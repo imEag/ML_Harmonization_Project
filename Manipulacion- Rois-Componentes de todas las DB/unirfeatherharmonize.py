@@ -5,7 +5,7 @@ import warnings
 warnings.filterwarnings("ignore")
 
 path = r'C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_BD\Datosparaorganizardataframes/' 
-A = ''
+A = 'G2'
 B = 'G1'
 m = ['power','sl','cohfreq','entropy']
 s = ['roi','ic']
