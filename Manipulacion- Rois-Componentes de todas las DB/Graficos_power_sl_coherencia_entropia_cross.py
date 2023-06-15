@@ -21,7 +21,7 @@ import tkinter as tk
 from tkinter.filedialog import askdirectory
 
 
-def graphics(data,type,path,name_band,id,id_cross=None,num_columns=4,save=True,plot=True,palette='winter_r'):
+def graphics(data,type,path,name_band,id,id_cross=None,num_columns=2,save=True,plot=True,palette='winter_r'):
     '''Function to make graphs of the given data '''
     data['database'].replace({'BIOMARCADORES':'UdeA 1','DUQUE':'UdeA 2'}, inplace=True)
     max=data[type].max()
@@ -40,8 +40,8 @@ def graphics(data,type,path,name_band,id,id_cross=None,num_columns=4,save=True,p
     else:
         axs.fig.suptitle(type+' in '+id_cross.replace('-','')+' of ' +r'$\bf{'+name_band.replace('-','')+r'}$'+ ' in the ICs of normalized data given by the databases')
     if id=='IC':
-        axs.add_legend(loc='upper right',bbox_to_anchor=(.59,.95),ncol=4,title="Database")
-        axs.fig.subplots_adjust(top=0.85,bottom=0.121, right=0.986,left=0.05, hspace=0.138, wspace=0.062) 
+        axs.add_legend(loc='upper right',bbox_to_anchor=(.7,.95),ncol=4,title="Database")
+        axs.fig.subplots_adjust(top=0.85,bottom=0.121, right=0.986,left=0.06, hspace=0.138, wspace=0.062) 
         axs.fig.text(0.5, 0.04, 'Group', ha='center', va='center')
         axs.fig.text(0.01, 0.5,  type, ha='center', va='center',rotation='vertical')
     else:
@@ -253,7 +253,7 @@ for metric in datos_roi.keys():
             table_com,save_com=stats_pair(d_banda_com,metric,'Component',path,band,'IC') 
             check_com=create_check(save_com,'Component',band,metric,'different',None)
             path_roi=graphics(d_banda_roi,metric,path,band,'ROI',num_columns=2,save=True,plot=False,palette=palette)
-            path_com=graphics(d_banda_com,metric,path,band,'IC',num_columns=4,save=True,plot=False,palette=palette)
+            path_com=graphics(d_banda_com,metric,path,band,'IC',num_columns=2,save=True,plot=False,palette=palette)
             tg_roi,save_tg_roi=table_groups_DB(d_banda_roi,metric,'ROI',path,band,'ROI',id_cross=None)
             check_tg_roi=create_check(save_tg_roi,'ROI',band,metric,'equal',None)
             tg_com,save_tg_com=table_groups_DB(d_banda_com,metric,'Component',path,band,'IC',id_cross=None)
@@ -284,7 +284,7 @@ for metric in datos_roi.keys():
                 if d_banda_com[d_banda_com['M_Band']==bandm]['Cross Frequency'].iloc[0]!=0:
                     table_com,save_com=stats_pair(d_banda_com[d_banda_com['M_Band']==bandm],metric,'Component',path,band,'IC',id_cross=bandm) 
                     check_com=create_check(save_com,'Component',band,metric,'different',bandm)
-                    path_com=graphics(d_banda_com[d_banda_com['M_Band']==bandm],'Cross Frequency',path,band,'IC',id_cross=bandm,num_columns=4,save=True,plot=False,palette=palette)
+                    path_com=graphics(d_banda_com[d_banda_com['M_Band']==bandm],'Cross Frequency',path,band,'IC',id_cross=bandm,num_columns=2,save=True,plot=False,palette=palette)
                     tg_com,save_tg_com=table_groups_DB(d_banda_com[d_banda_com['M_Band']==bandm],metric,'Component',path,band,'IC',id_cross=bandm)
                     check_tg_com=create_check(save_tg_com,'Component',band,metric,'equal',bandm)
                     # joinimages([path_com,table_com,tg_com])
