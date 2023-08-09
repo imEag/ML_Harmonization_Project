@@ -238,7 +238,7 @@ def estadisticos_demograficos(data,name,path):
     # datos_estadisticos=data.groupby(['database','group']).describe(include='all')
     # table=datos_estadisticos.loc[:,[('age','count'),('age','mean'),('age','std'),('education','count'),('education','mean'),('education','std'),('sex','count'),('sex','top'),('sex','freq')]]
     # dfi.export(table, '{path}\Tablas_datos\Tabla_edad_escolaridad_sexo_separadoBD_{name}.png'.format(path=path,name=name))
-    writer = pd.ExcelWriter('{path}\Tablas_datos\Tabla_edad_escolaridad_sexo_{name}.xlsx'.format(path=path,name=name))
+    writer = pd.ExcelWriter('{path}\Tablas_datos\Tabla_edad_escolaridad_sexo_new_{name}.xlsx'.format(path=path,name=name))
     datos_estadisticos=data.groupby(['group']).describe(include='all')
     table=datos_estadisticos.loc[:,[('age','count'),('age','mean'),('age','std'),('education','count'),('education','mean'),('education','std'),('sex','count'),('sex','top'),('sex','freq')]]
     table.to_excel(writer,startrow=0)

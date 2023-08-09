@@ -314,18 +314,18 @@ def main():
     path = askdirectory() 
 
     # IC
-    data_ic_sova_G1G2=pd.read_feather(fr'{path}\sovaHarmony\integration\ic\G1G2\Data_complete_ic_sovaharmony_G1G2.feather')
-    data_ic_harmo_G1G2=pd.read_feather(fr'{path}\neuroHarmonize\integration\ic\G1G2\Data_complete_ic_neuroHarmonize_G1G2.feather')
+    ##data_ic_sova_G1G2=pd.read_feather(fr'{path}\sovaHarmony\integration\ic\G1G2\Data_complete_ic_sovaharmony_G1G2.feather')
+    ##data_ic_harmo_G1G2=pd.read_feather(fr'{path}\neuroHarmonize\integration\ic\G1G2\Data_complete_ic_neuroHarmonize_G1G2.feather')
     #graph_harmonize(path,data_ic_sova_G1G2,data_ic_harmo_G1G2,'ic','G1','G2')
     #print(2)
     #print('Data_complete_ic_sovaharmony_G1\n','Data_complete_ic_neuroHarmonize_G1')
     data_ic_sova_CTR=pd.read_feather(fr'{path}\sovaHarmony\integration\ic\G1\Data_complete_ic_sovaharmony_G1.feather')
-    data_ic_harmo_CTR=pd.read_feather(fr'{path}\neuroHarmonize\integration\ic\G1\Data_complete_ic_neuroHarmonize_G1.feather')
+    #data_ic_harmo_CTR=pd.read_feather(fr'{path}\neuroHarmonize\integration\ic\G1\Data_complete_ic_neuroHarmonize_G1.feather')
     #graph_harmonize(path,data_ic_sova_CTR,data_ic_harmo_CTR,'ic','G1','Control')
     #print(4)
     #print('Data_complete_ic_sovaharmony_DTA\n','Data_complete_ic_neuroHarmonize_DTA')
-    data_ic_sova_DTA=pd.read_feather(fr'{path}\sovaHarmony\integration\ic\DTA\Data_complete_ic_sovaharmony_DTA.feather')
-    data_ic_harmo_DTA=pd.read_feather(fr'{path}\neuroHarmonize\integration\ic\DTA\Data_complete_ic_neuroHarmonize_DTA.feather')
+    ##data_ic_sova_DTA=pd.read_feather(fr'{path}\sovaHarmony\integration\ic\DTA\Data_complete_ic_sovaharmony_DTA.feather')
+    ##data_ic_harmo_DTA=pd.read_feather(fr'{path}\neuroHarmonize\integration\ic\DTA\Data_complete_ic_neuroHarmonize_DTA.feather')
     #graph_harmonize(path,data_ic_sova_DTA,data_ic_harmo_DTA,'ic','DTA','Control')
     #print(6)
     ##data_ic_sova_DCL=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_ic_sovaharmony_DCL.feather'.format(path=path))
@@ -333,21 +333,21 @@ def main():
     ##graph_harmonize(path,data_ic_sova_DCL,data_ic_harmo_DCL,'ic','DCL','Control')
 
     # ROI
-    print('Data_complete_roi_sovaharmony_G2G1\n','Data_complete_roi_neuroHarmonize_G2G1')
-    data_roi_sova_G1G2=pd.read_feather(fr'{path}\sovaHarmony\integration\roi\G1G2\Data_complete_roi_sovaharmony_G1G2.feather')
-    data_roi_harmo_G1G2=pd.read_feather(fr'{path}\neuroHarmonize\integration\roi\G1G2\Data_complete_roi_neuroHarmonize_G1G2.feather')
+    ##print('Data_complete_roi_sovaharmony_G2G1\n','Data_complete_roi_neuroHarmonize_G2G1')
+    ##data_roi_sova_G1G2=pd.read_feather(fr'{path}\sovaHarmony\integration\roi\G1G2\Data_complete_roi_sovaharmony_G1G2.feather')
+    ##data_roi_harmo_G1G2=pd.read_feather(fr'{path}\neuroHarmonize\integration\roi\G1G2\Data_complete_roi_neuroHarmonize_G1G2.feather')
     #graph_harmonize(path,data_roi_sova_G1G2,data_roi_harmo_G1G2,'roi','G1','G2')
-    print(8)
-    print('Data_complete_roi_sovaharmony_G1\n','Data_complete_roi_neuroHarmonize_G1')
+    #print(8)
+    ##print('Data_complete_roi_sovaharmony_G1\n','Data_complete_roi_neuroHarmonize_G1')
     data_roi_sova_CTR=pd.read_feather(fr'{path}\sovaHarmony\integration\roi\G1\Data_complete_roi_sovaharmony_G1.feather')
-    data_roi_harmo_CTR=pd.read_feather(fr'{path}\neuroHarmonize\integration\roi\G1\Data_complete_roi_neuroHarmonize_G1.feather')
+    ##data_roi_harmo_CTR=pd.read_feather(fr'{path}\neuroHarmonize\integration\roi\G1\Data_complete_roi_neuroHarmonize_G1.feather')
     #graph_harmonize(path,data_roi_sova_CTR,data_roi_harmo_CTR,'roi','G1','Control')
-    print(10)
-    print('Data_complete_roi_sovaharmony_DTA\n','Data_complete_roi_neuroHarmonize_DTA')
-    data_roi_sova_DTA=pd.read_feather(fr'{path}\sovaHarmony\integration\roi\DTA\Data_complete_roi_sovaharmony_DTA.feather')
-    data_roi_harmo_DTA=pd.read_feather(fr'{path}\neuroHarmonize\integration\roi\DTA\Data_complete_roi_neuroHarmonize_DTA.feather')
+    #print(10)
+    #print('Data_complete_roi_sovaharmony_DTA\n','Data_complete_roi_neuroHarmonize_DTA')
+    #data_roi_sova_DTA=pd.read_feather(fr'{path}\sovaHarmony\integration\roi\DTA\Data_complete_roi_sovaharmony_DTA.feather')
+    #data_roi_harmo_DTA=pd.read_feather(fr'{path}\neuroHarmonize\integration\roi\DTA\Data_complete_roi_neuroHarmonize_DTA.feather')
     #graph_harmonize(path,data_roi_sova_DTA,data_roi_harmo_DTA,'roi','DTA','Control')
-    print(12)
+    #print(12)
     #data_roi_sova_DCL=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_roi_sovaharmony_DCL.feather'.format(path=path))
     #data_roi_harmo_DCL=pd.read_feather(r'{path}\Datosparaorganizardataframes\Data_complete_roi_neuroHarmonize_DCL.feather'.format(path=path))
     #graph_harmonize(path,data_roi_sova_DCL,data_roi_harmo_DCL,'roi','DCL','Control')
@@ -355,3 +355,9 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+#new_name = 'Data_yady_'+space+'_'+neuro
+#path_integration = fr'{path}\{neuro}\integration\{space}'
+#os.makedirs(path_integration,exist_ok=True)
+#data.reset_index(drop=True).to_feather('{path}\{name}.feather'.format(path=path_integration,name=new_name))
