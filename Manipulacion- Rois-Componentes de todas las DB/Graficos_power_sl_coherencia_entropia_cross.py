@@ -35,17 +35,24 @@ def graphics(data,type,path,name_band,id,id_cross=None,num_columns=2,save=True,p
     #plt.yticks(np.arange(0,round(max),0.1))
     axs.set(xlabel=None)
     axs.set(ylabel=None)
-    if id_cross==None:
-        axs.fig.suptitle(type+' in '+r'$\bf{'+name_band.replace('-','')+r'}$'+ ' in the ICs of normalized data given by the databases')
-    else:
-        axs.fig.suptitle(type+' in '+id_cross.replace('-','')+' of ' +r'$\bf{'+name_band.replace('-','')+r'}$'+ ' in the ICs of normalized data given by the databases')
     if id=='IC':
+        if band == 'Gamma' and metric == 'Cross Frequency' and bandm == 'Mgamma':
+            # Set y-axis limit to 10 for each subplot
+            for ax in axs.axes.flat:
+                ax.set_ylim(0, 10)
+        if id_cross==None:
+            axs.fig.suptitle(type+' in '+r'$\bf{'+name_band.replace('-','')+r'}$'+ ' in the ICs of normalized data given by the databases')
+        else:
+            axs.fig.suptitle(type+' in '+id_cross.replace('-','')+' of ' +r'$\bf{'+name_band.replace('-','')+r'}$'+ ' in the ICs of normalized data given by the databases')
         axs.add_legend(loc='upper right',bbox_to_anchor=(.7,.95),ncol=4,title="Database")
         axs.fig.subplots_adjust(top=0.85,bottom=0.121, right=0.986,left=0.06, hspace=0.138, wspace=0.062) 
         axs.fig.text(0.5, 0.04, 'Group', ha='center', va='center')
         axs.fig.text(0.01, 0.5,  type, ha='center', va='center',rotation='vertical')
     else:
-        
+        if id_cross==None:
+            axs.fig.suptitle(type+' in '+r'$\bf{'+name_band.replace('-','')+r'}$'+ ' in the ROIs of normalized data given by the databases')
+        else:
+            axs.fig.suptitle(type+' in '+id_cross.replace('-','')+' of ' +r'$\bf{'+name_band.replace('-','')+r'}$'+ ' in the ROIs of normalized data given by the databases')
         axs.add_legend(loc='upper right',bbox_to_anchor=(.7,.95),ncol=4,title="Database")
         axs.fig.subplots_adjust(top=0.85,bottom=0.121, right=0.986,left=0.06, hspace=0.138, wspace=0.062) # adjust the Figure in rp
         axs.fig.text(0.5, 0.04, 'Group', ha='center', va='center')
@@ -60,8 +67,12 @@ def graphics(data,type,path,name_band,id,id_cross=None,num_columns=2,save=True,p
             #path_complete='{path}\Graficos_{type}\{id}\{name_band}_{id_cross}_{type}_{id}.png'.format(path=path,name_band=name_band,id=id,type=type,id_cross=id_cross)
             path_complete= fr'C:\Users\veroh\OneDrive - Universidad de Antioquia\Verónica Henao Isaza\Resultados\graphics\unmatched\{name_band}_{id_cross}_{type}_{id}.png'
         plt.savefig(path_complete)
-    plt.close()
-    return path_complete
+        plt.close()
+        return path_complete
+    else:
+        return None
+    
+
 
 def text_format(val,value):
     if value==0.2: #Cambie el 0.05 por 0.2 y el lightgreen por lightblue
@@ -218,19 +229,22 @@ path=r'C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis lon
 
 
 #data loading
-data_p_roi=pd.read_feather(fr'{path}\Datosparaorganizardataframes\revisar\data_long_power_roi_without_oitliers.feather')
-data_p_com=pd.read_feather(fr'{path}\Datosparaorganizardataframes\revisar\data_long_power_components_without_oitliers.feather')
-data_sl_roi=pd.read_feather(fr'{path}\Datosparaorganizardataframes\revisar\data_long_sl_roi.feather')
+#data_p_roi=pd.read_feather(fr'{path}\Datosparaorganizardataframes\revisar\data_long_power_roi_without_oitliers.feather')
+#data_p_com=pd.read_feather(fr'{path}\Datosparaorganizardataframes\revisar\data_long_power_components_without_oitliers.feather')
+#data_sl_roi=pd.read_feather(fr'{path}\Datosparaorganizardataframes\revisar\data_long_sl_roi.feather')
 data_sl_com=pd.read_feather(fr'{path}\Datosparaorganizardataframes\revisar\data_long_sl_components.feather')
-data_c_roi=pd.read_feather(fr'{path}\Datosparaorganizardataframes\revisar\data_long_coherence_roi.feather')
-data_c_com=pd.read_feather(fr'{path}\Datosparaorganizardataframes\revisar\data_long_coherence_components.feather')
-data_e_roi=pd.read_feather(fr'{path}\Datosparaorganizardataframes\revisar\data_long_entropy_roi.feather')
-data_e_com=pd.read_feather(fr'{path}\Datosparaorganizardataframes\revisar\data_long_entropy_components.feather')
+#data_c_roi=pd.read_feather(fr'{path}\Datosparaorganizardataframes\revisar\data_long_coherence_roi.feather')
+#data_c_com=pd.read_feather(fr'{path}\Datosparaorganizardataframes\revisar\data_long_coherence_components.feather')
+#data_e_roi=pd.read_feather(fr'{path}\Datosparaorganizardataframes\revisar\data_long_entropy_roi.feather')
+#data_e_com=pd.read_feather(fr'{path}\Datosparaorganizardataframes\revisar\data_long_entropy_components.feather')
 data_cr_roi=pd.read_feather(fr'{path}\Datosparaorganizardataframes\revisar\data_long_crossfreq_roi.feather')
 data_cr_com=pd.read_feather(fr'{path}\Datosparaorganizardataframes\revisar\data_long_crossfreq_components.feather')
 
-datos_roi={'Power':data_p_roi,'SL':data_sl_roi,'Coherence':data_c_roi,'Entropy':data_e_roi,'Cross Frequency':data_cr_roi}
-datos_com={'Power':data_p_com,'SL':data_sl_com,'Coherence':data_c_com,'Entropy':data_e_com,'Cross Frequency':data_cr_com}
+#datos_roi={'Power':data_p_roi,'SL':data_sl_roi,'Coherence':data_c_roi,'Entropy':data_e_roi,'Cross Frequency':data_cr_roi}
+#datos_com={'Power':data_p_com,'SL':data_sl_com,'Coherence':data_c_com,'Entropy':data_e_com,'Cross Frequency':data_cr_com}
+
+datos_roi={'Cross Frequency':data_cr_roi}
+datos_com={'Cross Frequency':data_cr_com}
 
 bands= data_sl_com['Band'].unique()
 bandsm= data_cr_com['M_Band'].unique()
@@ -252,8 +266,8 @@ for metric in datos_roi.keys():
             check_roi=create_check(save_roi,'ROI',band,metric,'different',None)
             table_com,save_com=stats_pair(d_banda_com,metric,'Component',path,band,'IC') 
             check_com=create_check(save_com,'Component',band,metric,'different',None)
-            path_roi=graphics(d_banda_roi,metric,path,band,'ROI',num_columns=2,save=True,plot=False,palette=palette)
-            path_com=graphics(d_banda_com,metric,path,band,'IC',num_columns=2,save=True,plot=False,palette=palette)
+            path_roi=graphics(d_banda_roi,metric,path,band,'ROI',num_columns=2,save=False,plot=False,palette=palette)
+            path_com=graphics(d_banda_com,metric,path,band,'IC',num_columns=2,save=False,plot=False,palette=palette)
             tg_roi,save_tg_roi=table_groups_DB(d_banda_roi,metric,'ROI',path,band,'ROI',id_cross=None)
             check_tg_roi=create_check(save_tg_roi,'ROI',band,metric,'equal',None)
             tg_com,save_tg_com=table_groups_DB(d_banda_com,metric,'Component',path,band,'IC',id_cross=None)
@@ -280,7 +294,7 @@ for metric in datos_roi.keys():
                     # os.remove(tg_roi)
                     matrix_roi = matrix_roi.append(check_roi, ignore_index = True)
                     matrix_roi = matrix_roi.append(check_tg_roi, ignore_index = True)
-                   
+                
                 if d_banda_com[d_banda_com['M_Band']==bandm]['Cross Frequency'].iloc[0]!=0:
                     table_com,save_com=stats_pair(d_banda_com[d_banda_com['M_Band']==bandm],metric,'Component',path,band,'IC',id_cross=bandm) 
                     check_com=create_check(save_com,'Component',band,metric,'different',bandm)
@@ -296,9 +310,9 @@ print('table lista')
 matrix_com['Compared groups']=matrix_com['A']+'-'+matrix_com['B']
 matrix_roi['Compared groups']=matrix_roi['A']+'-'+matrix_roi['B']
 filename = r"{path}\check_sin_cv.xlsx".format(path=path)
-writer = pd.ExcelWriter(filename)
-matrix_com.to_excel(writer ,sheet_name='Component')
-matrix_roi.to_excel(writer ,sheet_name='ROI')
-writer.save()
-writer.close()              
+#writer = pd.ExcelWriter(filename)
+#matrix_com.to_excel(writer ,sheet_name='Component')
+#matrix_roi.to_excel(writer ,sheet_name='ROI')
+#writer.save()
+#writer.close()              
 print('Graficos SL,coherencia,entropia y cross frequency guardados')

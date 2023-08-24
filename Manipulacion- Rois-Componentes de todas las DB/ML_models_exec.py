@@ -6,18 +6,18 @@ import numpy as np
 import joblib
 import os
 
-path_eli = r'C:\Users\elian\OneDrive - Universidad de Antioquia\Documentos\INVESTIGACION\output_ML_models'
+path_save = r'C:\Users\elian\OneDrive - Universidad de Antioquia\Documentos\INVESTIGACION\output_ML_models'
 neuro = 'sovaHarmony' #database
 name = 'G1' #group
 space = 'ic' #space
 var = ''
 
 
-path_save = os.path.join(path_eli,'Resultados')
+path_save = os.path.join(path_save,'Resultados')
 path_plot = path_save +rf'\graphics\ML/{neuro}/{name}_{var}_{space}'
 
 
-path = path_eli
+path = path_save
 path_df = rf'{path}\Data_complete_{space}_{neuro}_{name}.feather'
 
 data = pd.read_feather(path_df)

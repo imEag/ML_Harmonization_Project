@@ -53,7 +53,7 @@ def graphics(data,type,path,name_band,id,id2,A,B,space,id_cross=None,num_columns
             path_complete='{path}\{name_band}_{type}_{id}_{id2}_{space}_{group}.png'.format(path=new_path,name_band=name_band,id=id,id2=id2,type=type,group=str(A+B),space=space)  
         else:
             path_complete='{path}\{name_band}_{id_cross}_{type}_{id}_{id2}_{space}_{group}.png'.format(path=new_path,name_band=name_band,id=id,id2=id2,type=type,id_cross=id_cross,group=str(A+B),space=space)
-        plt.savefig(path_complete)
+        #plt.savefig(path_complete)
     plt.close()
     return path_complete
 
@@ -259,8 +259,8 @@ def graph_harmonize(path,data_roi_sova,data_roi_harmo,space,A,B):
             else:
                 table=stats_pair(d_roi,metric,'Component',A,B)
             table.to_excel(writer ,sheet_name=metric)
-        writer.save()
-        writer.close()
+        #writer.save()
+        #writer.close()
 
         #filename2 = r"{path}\Graficos_armonizacion_sova_harmo\tabla_effectsize_inside_DB_{space}_{group}{label}_03_04_2022.xlsx".format(path=path,label=label,group=str(A+B),space=space)
         #writer2 = pd.ExcelWriter(filename2,mode='w')
@@ -293,9 +293,9 @@ def graph_harmonize(path,data_roi_sova,data_roi_harmo,space,A,B):
                 if metric!='Cross Frequency':  
                     print(str(band)+' '+str(metric)) 
                     if space == 'roi':
-                        graphics(d_banda_roi,metric,path_graph,band,'roi',label,A=A,B=B,space=space,num_columns=2,save=True,plot=False,palette=colors)
+                        graphics(d_banda_roi,metric,path_graph,band,'roi',label,A=A,B=B,space=space,num_columns=2,save=False,plot=True,palette=colors)
                     else:
-                        graphics(d_banda_roi,metric,path_graph,band,'ic',label,A=A,B=B,space=space,num_columns=2,save=True,plot=False,palette=colors)
+                        graphics(d_banda_roi,metric,path_graph,band,'ic',label,A=A,B=B,space=space,num_columns=2,save=False,plot=True,palette=colors)
             
                 else:
                     #pass
@@ -303,9 +303,9 @@ def graph_harmonize(path,data_roi_sova,data_roi_harmo,space,A,B):
                         print(str(band)+' '+str(metric)+' '+str(bandm)) 
                         if d_banda_roi[d_banda_roi['M_Band']==bandm]['Cross Frequency'].iloc[0]!=None:
                             if space == 'roi':
-                                graphics(d_banda_roi[d_banda_roi['M_Band']==bandm],'Cross Frequency',path_graph,band,'roi',label,A=A,B=B,space=space,id_cross=bandm,num_columns=2,save=True,plot=False,palette=colors)
+                                graphics(d_banda_roi[d_banda_roi['M_Band']==bandm],'Cross Frequency',path_graph,band,'roi',label,A=A,B=B,space=space,id_cross=bandm,num_columns=2,save=False,plot=True,palette=colors)
                             else:
-                                graphics(d_banda_roi[d_banda_roi['M_Band']==bandm],'Cross Frequency',path_graph,band,'ic',label,A=A,B=B,space=space,id_cross=bandm,num_columns=2,save=True,plot=False,palette=colors)
+                                graphics(d_banda_roi[d_banda_roi['M_Band']==bandm],'Cross Frequency',path_graph,band,'ic',label,A=A,B=B,space=space,id_cross=bandm,num_columns=2,save=False,plot=True,palette=colors)
 
 
 def main():
