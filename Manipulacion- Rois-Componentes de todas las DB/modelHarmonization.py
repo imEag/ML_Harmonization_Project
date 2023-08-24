@@ -66,7 +66,8 @@ def tree(metric_data,names_cols,n_estimators,criterion,random_state):
         metric_data.values[:,-1],
         test_size=0.2,
         random_state=1,
-        stratify=metric_data_roi.values[:,-1])
+        #stratify=metric_data_roi.values[:,-1]) # cambio la variable porque me aparece que no esta definida
+        stratify=metric_data.values[:,-1])
     forestclf = RandomForestClassifier(n_estimators=500,
         random_state=1)
     forestclf.fit(X_train, y_train)

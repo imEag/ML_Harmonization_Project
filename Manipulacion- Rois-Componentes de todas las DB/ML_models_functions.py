@@ -334,7 +334,7 @@ def train_test_accuracy_plot(estimator, X_train, y_train, model_name, save=False
     plt.xlabel('Number of training samples')
     plt.ylabel('Accuracy')
     plt.legend(loc='lower right')
-    plt.ylim([0.5, 1.0])
+    plt.ylim([0.5, 1.5])
 
     # Display the plot.
     plt.show()

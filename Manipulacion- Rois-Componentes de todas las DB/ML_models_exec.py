@@ -5,19 +5,24 @@ from sklearn.model_selection import train_test_split
 import numpy as np
 import joblib
 import os
+import tkinter as tk
+from tkinter.filedialog import askdirectory
+import os
+tk.Tk().withdraw() # part of the import if you are not using other tkinter functions
 
-path_save = r'C:\Users\elian\OneDrive - Universidad de Antioquia\Documentos\INVESTIGACION\output_ML_models'
+path_save = askdirectory()
+print("user chose", path_save, "for save")
+#path_save = r'C:\Users\veroh\OneDrive - Universidad de Antioquia\Verónica Henao Isaza\Resultados_Eli'
 neuro = 'sovaHarmony' #database
 name = 'G1' #group
 space = 'ic' #space
 var = ''
 
-
 path_save = os.path.join(path_save,'Resultados')
 path_plot = path_save +rf'\graphics\ML/{neuro}/{name}_{var}_{space}'
 
-
-path = path_save
+path = askdirectory()
+print("user chose", path_save, "for read feather")
 path_df = rf'{path}\Data_complete_{space}_{neuro}_{name}.feather'
 
 data = pd.read_feather(path_df)
@@ -122,7 +127,9 @@ pos_model = np.argsort(acc_per_feature[1:])[-1]
 best_model = list(modelos.keys())[pos_model]
 
 #Save the model
-joblib.dump(modelos[best_model], path_eli+'/'+'modelo_entrenado_DT.pkl')
+#path_job = path_eli
+path_job = path_save
+joblib.dump(modelos[best_model], path_job+'/'+'modelo_entrenado_DT.pkl')
 
 #saves best features in a .txt file
 best_features=sorted_names[1:pos_model]
