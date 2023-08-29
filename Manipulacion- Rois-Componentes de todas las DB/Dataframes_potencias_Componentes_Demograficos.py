@@ -16,11 +16,11 @@ from Funciones import  dataframe_long_components,dataframe_componentes_deseadas
 
 "Power data loading by independent components"
 
-path=r'C:\Users\valec\OneDrive - Universidad de Antioquia\Resultados_Armonizacion_BD' 
-SRM=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_resteyesc_power_columns_components_SRM.feather'.format(path=path))
-CHBMP=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_protmap_power_columns_components_CHBMP.feather'.format(path=path))
-BIO=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_CE_power_columns_components_BIOMARCADORES.feather'.format(path=path))
-DUQUE=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_resting_power_columns_components_DUQUE.feather'.format(path=path))
+path=r'C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_54x10' 
+SRM=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_columns\IC\data_SRM_resteyesc_columns_power_components.feather'.format(path=path))
+CHBMP=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_columns\IC\data_CHBMP_protmap_columns_power_components.feather'.format(path=path))
+BIO=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_columns\IC\data_BIOMARCADORES_CE_columns_power_components.feather'.format(path=path))
+DUQUE=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_columns\IC\data_DUQUE_resting_columns_power_components.feather'.format(path=path))
 
 datos=pd.concat([SRM,BIO,CHBMP,DUQUE]) #Data concatenation
 "Only the desired columns are taken from the dataframe"
@@ -98,7 +98,7 @@ for i in subjects_bio:
 D_CHBMP=pd.read_csv(r"{path}\Datosparaorganizardataframes\Demographic_data_CHBMP.csv".format(path=path),header=1, sep=",")
 col_demC=['Code', 'Gender', 'Age',  'Education Level ']
 Dem_CHBMP=D_CHBMP.loc[:,col_demC]
-MMSE_CHBMP=pd.read_csv(r"{path}\Datosparaorganizardataframes\MMSE_CHBMP.csv".format(path=path),header=1)
+MMSE_CHBMP=pd.read_csv(r"{path}\Datosparaorganizardataframes\MMSE_CHBMP.csv".format(path=path),header=2,sep=';')
 MMSE_CHBMP=MMSE_CHBMP.loc[:,['Code', 'Total Score']]
 N_CHBMP=pd.merge(left=Dem_CHBMP,right=MMSE_CHBMP, how='left', left_on='Code', right_on='Code')
 N_CHBMP = N_CHBMP.rename(columns={'Code':'participant_id','Age':'age','Gender':'sex','Education Level ':'education','Total Score':'MM_total'})
@@ -123,18 +123,24 @@ N_SRM.replace({'None':np.NaN},inplace=True)
 '''The power data is merged with the demographic data, 
 first merged for each database and then all the databases are concatenated.'''
 
-#SRM
-d_SRM=pd.merge(left=datosICC[datosICC['database']=='SRM'],right=N_SRM , how='left', left_on='participant_id', right_on='participant_id')
-#CHBMP
-d_CHBMP=pd.merge(datosICC[datosICC['database']=='CHBMP'],N_CHBMP)
-#BIOMARCADORES
-d_BIO=pd.merge(datosICC[datosICC['database']=='BIOMARCADORES'],N_BIO)
-#DUQUE
-mergeDUQUE=datosICC[datosICC['database']=='DUQUE']
-mergeDUQUE=mergeDUQUE.drop(['group'], axis=1)
-d_DUQUE=pd.merge(mergeDUQUE,N_DUQUE)
-#Data concatenation
-d_B=pd.concat([d_SRM,d_BIO,d_DUQUE,d_CHBMP])
+# SRM
+d_SRM = pd.merge(left=datosICC[datosICC['database']=='SRM'], right=N_SRM, how='left', on='participant_id')
+# CHBMP
+d_CHBMP = pd.merge(datosICC[datosICC['database']=='CHBMP'], N_CHBMP, on='participant_id')
+# BIOMARCADORES
+d_BIO = pd.merge(datosICC[datosICC['database']=='BIOMARCADORES'], N_BIO, on='participant_id')
+# DUQUE
+mergeDUQUE = datosICC[datosICC['database']=='DUQUE']
+mergeDUQUE = mergeDUQUE.drop(['group'], axis=1)
+d_DUQUE = pd.merge(mergeDUQUE, N_DUQUE, on='participant_id')
+# Data concatenation
+d_SRM = d_SRM.T[~d_SRM.T.index.duplicated(keep='first')].T.reset_index(drop=True)
+d_BIO = d_BIO.T[~d_BIO.T.index.duplicated(keep='first')].T.reset_index(drop=True)
+d_DUQUE  = d_DUQUE.T[~d_DUQUE.T.index.duplicated(keep='first')].T.reset_index(drop=True)
+d_CHBMP = d_CHBMP.T[~d_CHBMP.T.index.duplicated(keep='first')].T.reset_index(drop=True)
+
+d_B = pd.concat([d_SRM, d_BIO, d_DUQUE, d_CHBMP], ignore_index=True)
+
 
 d_B['sex'].replace({'f':'F','m':'M','Masculino':'M','Femenino':'F'}, inplace=True) 
 d_B['education'].replace({'None':np.NaN,'University School':'17','High School':'12', 'Secondary School':'11','College School':'16',}, inplace=True)

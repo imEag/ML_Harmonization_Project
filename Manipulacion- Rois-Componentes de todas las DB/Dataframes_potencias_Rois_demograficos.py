@@ -16,12 +16,12 @@ from Funciones import columns_powers_rois
 
 "Power data loading by ROIs"
 
-path=r'C:\Users\valec\OneDrive - Universidad de Antioquia\Resultados_Armonizacion_BD'
+path=r'C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_54x10'
 
-SRM=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_resteyesc_power_columns_ROI_SRM.feather'.format(path=path))
-CHBMP=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_protmap_power_columns_ROI_CHBMP.feather'.format(path=path))
-BIO=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_CE_power_columns_ROI_BIOMARCADORES.feather'.format(path=path))
-DUQUE=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_resting_power_columns_ROI_DUQUE.feather'.format(path=path))
+SRM=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_columns\IC\data_resteyesc_power_columns_ROI_SRM.feather'.format(path=path))
+CHBMP=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_columns\IC\data_protmap_power_columns_ROI_CHBMP.feather'.format(path=path))
+BIO=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_columns\IC\data_CE_power_columns_ROI_BIOMARCADORES.feather'.format(path=path))
+DUQUE=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_columns\IC\data_resting_power_columns_ROI_DUQUE.feather'.format(path=path))
 
 datos=pd.concat([SRM,BIO,CHBMP,DUQUE]) #concatenation of data
 datosICC=datos #Dataframe to work with

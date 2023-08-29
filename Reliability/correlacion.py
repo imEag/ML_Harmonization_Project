@@ -14,7 +14,8 @@ import matplotlib.pyplot as plt
 
 datosic=pd.read_feather(r"Reliability\Data_csv_Powers_Componentes-Channels\data_ic_without_age.feather") 
 datosrois=pd.read_feather(r"Reliability\Data_csv_Powers_Componentes-Channels\data_roi_without_age.feather") 
-path=r'C:\Users\valec\OneDrive - Universidad de Antioquia\Resultados_Armonizacion_BD' 
+#path=r'C:\Users\valec\OneDrive - Universidad de Antioquia\Resultados_Armonizacion_BD' 
+path=r'C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_54x10' 
 N_BIO=pd.read_excel('{path}\Datosparaorganizardataframes\Demograficosbiomarcadores.xlsx'.format(path=path))
 N_BIO = N_BIO.rename(columns={'Codigo':'Subject','Edad en la visita':'age','Sexo':'sex','Escolaridad':'education','Visita':'Session'})
 N_BIO=N_BIO.drop(['MMSE', 'F', 'A', 'S'], axis=1)

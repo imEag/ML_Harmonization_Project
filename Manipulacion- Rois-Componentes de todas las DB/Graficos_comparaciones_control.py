@@ -56,7 +56,7 @@ def graphics_bar(data,type,path,name_band,id,id_cross=None,num_columns=None,save
     plt.close()
     return 
 
-path=r'C:\Users\veroh\OneDrive - Universidad de Antioquia\Resultados_Armonizacion_BD' #Cambia dependieron de quien lo corra
+path=r'C:\Users\veroh\OneDrive - Universidad de Antioquia\Resultados_Armonizacion_54x10' #Cambia dependieron de quien lo corra
 
 #data loading
 
