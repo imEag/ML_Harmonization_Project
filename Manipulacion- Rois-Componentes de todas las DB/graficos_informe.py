@@ -42,7 +42,7 @@ if file_path:
         elif i == 2:  
             ax.bar(categories_df[col].value_counts().index, categories_df[col].value_counts().values, color=[palette[1], palette[0], palette[0], palette[0], palette[0], palette[0], palette[0], palette[0]])
         elif i == 3:  
-            ax.bar(categories_df[col].value_counts().index, categories_df[col].value_counts().values, color=[palette[0], palette[0], palette[1], palette[0], palette[1], palette[0], palette[1], palette[0],palette[0], palette[0], palette[0], palette[0], palette[0], palette[0], palette[0], palette[0]])
+            ax.bar(categories_df[col].value_counts().index, categories_df[col].value_counts().values, color=[palette[0], palette[1], palette[0], palette[0], palette[0], palette[0], palette[0], palette[0],palette[0], palette[0], palette[0], palette[0], palette[0], palette[0], palette[0], palette[0]])
         else:
             pass
         ax.set_title(col)
