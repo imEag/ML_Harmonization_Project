@@ -12,7 +12,7 @@ import io
 from itertools import combinations
 from PIL import Image
 import matplotlib.pyplot as plt
-import dataframe_image as dfi
+#import dataframe_image as dfi
 from openpyxl import load_workbook
 import warnings
 warnings.filterwarnings("ignore")
@@ -120,14 +120,14 @@ def graphics(data,type,path,name_band,id,id_cross=None,num_columns=2,save=True,p
     if plot:
         plt.show()
     if save==True:
-        verific = '{path}\Graficos_{type}\{id}'.format(path=path,name_band=name_band,id=id,type=type)
+        verific = '{path}\Graficos_{type}\{id}'.format(path=path,name_band=name_band,id=id,type=type).replace('\\','/')
         if not os.path.exists(verific):
             os.makedirs(verific)  
         if id_cross==None:
-            path_complete='{path}\Graficos_{type}\{id}\{name_band}_{type}_{id}.png'.format(path=path,name_band=name_band,id=id,type=type)
+            path_complete='{path}\Graficos_{type}\{id}\{name_band}_{type}_{id}.png'.format(path=path,name_band=name_band,id=id,type=type).replace('\\','/')
             #path_complete= fr'C:\Users\veroh\OneDrive - Universidad de Antioquia\Verónica Henao Isaza\Resultados\graphics\unmatched\{name_band}_{type}_{id}.png'
         else:
-            path_complete='{path}\Graficos_{type}\{id}\{name_band}_{id_cross}_{type}_{id}.png'.format(path=path,name_band=name_band,id=id,type=type,id_cross=id_cross) 
+            path_complete='{path}\Graficos_{type}\{id}\{name_band}_{id_cross}_{type}_{id}.png'.format(path=path,name_band=name_band,id=id,type=type,id_cross=id_cross).replace('\\','/')
             #path_complete= fr'C:\Users\veroh\OneDrive - Universidad de Antioquia\Verónica Henao Isaza\Resultados\graphics\unmatched\{name_band}_{id_cross}_{type}_{id}.png'
         plt.savefig(path_complete)
         plt.close()
@@ -165,7 +165,7 @@ def stats_pair(data,metric,space,path,name_band,id,id_cross=None):
     for DB in databases:
         data_DB=data[data['database']==DB]
         #combinaciones=[('Control', 'DTA'), ('G1', 'G2')]
-        combinaciones=[('Control', 'G1')]
+        combinaciones=[('G2', 'G1'),('CTR','G1'),('CTR','G2'),('DCL','CTR'),('DCL','G1'),('DCL','G2')]
         test_ez={}
         test_std={}
         for i in combinaciones:
@@ -195,9 +195,9 @@ def stats_pair(data,metric,space,path,name_band,id,id_cross=None):
         tablas[DB]=table
     table=pd.concat(list(tablas.values()),axis=0)
     if id_cross==None:
-        path_complete='{path}\Graficos_{type}\{id}\{name_band}_{type}_{id}_table.png'.format(path=path,name_band=name_band,id=id,type=metric)  
+        path_complete='{path}\Graficos_{type}\{id}\{name_band}_{type}_{id}_table.png'.format(path=path,name_band=name_band,id=id,type=metric).replace('\\','/')
     else:
-        path_complete='{path}\Graficos_{type}\{id}\{name_band}_{id_cross}_{type}_{id}_table.png'.format(path=path,name_band=name_band,id=id,type=metric,id_cross=id_cross)
+        path_complete='{path}\Graficos_{type}\{id}\{name_band}_{id_cross}_{type}_{id}_table.png'.format(path=path,name_band=name_band,id=id,type=metric,id_cross=id_cross).replace('\\','/')
     save_table = table.copy()
     table=table.style.applymap(text_format,value=0.7,subset=['effect size']).applymap(text_format,value=0.0,subset=['cv'])
     #dfi.export(table, path_complete)
@@ -205,15 +205,15 @@ def stats_pair(data,metric,space,path,name_band,id,id_cross=None):
 
 def create_check(table,space,name_band,metric,state,mband=None):
     if state == 'different':
-        #check = table[(np.abs(table['effect size']) > 0.7) & (np.abs(table['cv']) < 0.1)] 
-        check = table[(np.abs(table['effect size']) > 0.7)] 
+        #check = table[(np.abs(table['effect size']) > 0.5) & (np.abs(table['cv']) < 0.1)] 
+        check = table[(np.abs(table['effect size']) > 0.5)] 
     else:
-        #check = table[(np.abs(table['effect size']) <= 0.5) & (np.abs(table['cv']) < 0.1)]
-        check = table[(np.abs(table['effect size']) <= 0.5)]
+        check = table[(np.abs(table['effect size']) <= 0.5) & (np.abs(table['cv']) < 0.1)]
+        #check = table[(np.abs(table['effect size']) <= 0.5)]
     check['space'] = space
     check['state'] = state
     check['band'] = name_band
-    check['mband'] = mband
+    #check['mband'] = mband
     check['metric'] = metric
     check = check.reset_index()
     return check
@@ -290,38 +290,39 @@ def joinimages(paths):
 
 #path=r'C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_BD' #Cambia dependieron de quien lo corra
 #path=r'C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_Correcciones_Evaluador' #Cambia dependieron de quien lo corra
-path=r'C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_54x10' #Cambia dependieron de quien lo corra
+#path=r'C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_54x10' #Cambia dependieron de quien lo corra
 #path = askdirectory() 
-
+path='/media/gruneco-server/ADATA HD650/BIOMARCADORES/derivatives/data_long/IC'
 
 #data loading
 #data_p_roi=pd.read_feather(fr'{path}\Datosparaorganizardataframes\revisar\data_long_power_roi_without_oitliers.feather')
-data_p_com=pd.read_feather(fr'{path}\Datosparaorganizardataframes\data_long_power_components_without_oitliers.feather')
-data_sl_roi=pd.read_feather(fr'{path}\Datosparaorganizardataframes\data_long_sl_roi.feather')
-data_sl_com=pd.read_feather(fr'{path}\Datosparaorganizardataframes\data_long_sl_components.feather')
+#data_p_com=pd.read_feather(fr'{path}\Datosparaorganizardataframes\data_long_power_components_without_oitliers.feather')
+data_p_com=pd.read_feather(fr'{path}\data_CE_Power_long_BIOMARCADORES_openBCI_components.feather'.replace('\\','/'))
+#data_sl_roi=pd.read_feather(fr'{path}\Datosparaorganizardataframes\data_long_sl_roi.feather')
+#data_sl_com=pd.read_feather(fr'{path}\Datosparaorganizardataframes\data_long_sl_components.feather')
 #data_c_roi=pd.read_feather(fr'{path}\Datosparaorganizardataframes\revisar\data_long_coherence_roi.feather')
-data_c_com=pd.read_feather(fr'{path}\Datosparaorganizardataframes\data_long_coherence_components.feather')
+#data_c_com=pd.read_feather(fr'{path}\Datosparaorganizardataframes\data_long_coherence_components.feather')
 #data_e_roi=pd.read_feather(fr'{path}\Datosparaorganizardataframes\revisar\data_long_entropy_roi.feather')
-data_e_com=pd.read_feather(fr'{path}\Datosparaorganizardataframes\data_long_entropy_components.feather')
+#data_e_com=pd.read_feather(fr'{path}\Datosparaorganizardataframes\data_long_entropy_components.feather')
 #data_cr_roi=pd.read_feather(fr'{path}\Datosparaorganizardataframes\revisar\data_long_crossfreq_roi.feather')
-data_cr_com=pd.read_feather(fr'{path}\Datosparaorganizardataframes\data_long_crossfreq_components.feather')
+#data_cr_com=pd.read_feather(fr'{path}\Datosparaorganizardataframes\data_long_crossfreq_components.feather')+-
 
 #datos_roi={'Power':data_p_roi,'SL':data_sl_roi,'Coherence':data_c_roi,'Entropy':data_e_roi,'Cross Frequency':data_cr_roi}
 #datos_com={'Power':data_p_com,'SL':data_sl_com,'Coherence':data_c_com,'Entropy':data_e_com,'Cross Frequency':data_cr_com}
-datos_roi={'SL':data_sl_roi}
-datos_com={'SL':data_sl_com}
+#datos_roi={'SL':data_sl_roi}
+datos_com={'Power':data_p_com}
 
-bands= data_sl_com['Band'].unique()
-bandsm= data_cr_com['M_Band'].unique()
+bands= data_p_com['Band'].unique()
+#bandsm= data_p_com['M_Band'].unique()
 
 #matrix_roi=pd.DataFrame(columns=['group', 'ROI', 'A', 'B', 'cv', 'effect size', 'space', 'state','band','mband', 'metric'])
 matrix_com=pd.DataFrame(columns=['group', 'Component', 'A', 'B', 'cv', 'effect size', 'space', 'state','band','mband', 'metric'])
 
 palette = ["#8AA6A3","#127369","#10403B","#45C4B0"]
 
-for metric in datos_roi.keys():
+for metric in datos_com.keys():
     for band in bands:
-        d_roi=datos_roi[metric]
+        d_roi=datos_com[metric]
         d_banda_roi=d_roi[d_roi['Band']==band]
         d_com=datos_com[metric]
         d_banda_com=d_com[d_com['Band']==band]
@@ -335,50 +336,48 @@ for metric in datos_roi.keys():
             path_com=graphics(d_banda_com,metric,path,band,'IC',num_columns=2,save=True,plot=False,palette=palette)
             #tg_roi,save_tg_roi=table_groups_DB(d_banda_roi,metric,'ROI',path,band,'ROI',id_cross=None)
             #check_tg_roi=create_check(save_tg_roi,'ROI',band,metric,'equal',None)
-            tg_com,save_tg_com=table_groups_DB(d_banda_com,metric,'Component',path,band,'IC',id_cross=None)
-            check_tg_com=create_check(save_tg_com,'Component',band,metric,'equal',None)
+            #tg_com,save_tg_com=table_groups_DB(d_banda_com,metric,'Component',path,band,'IC',id_cross=None)
+            #check_tg_com=create_check(save_tg_com,'Component',band,metric,'equal',None)
             # joinimages([path_roi,table_roi,tg_roi])
             # joinimages([path_com,table_com,tg_com])
             # os.remove(tg_roi)
             # os.remove(tg_com)
-            matrix_roi = matrix_roi.append(check_roi, ignore_index = True)
-            matrix_com = matrix_com.append(check_com, ignore_index = True)
-            matrix_roi = matrix_roi.append(check_tg_roi, ignore_index = True)
-            matrix_com = matrix_com.append(check_tg_com, ignore_index = True)
-            
-        else:
-            for bandm in bandsm:  
-                print(str(band)+' '+str(metric)+' '+str(bandm)) 
-                if d_banda_roi[d_banda_roi['M_Band']==bandm]['Cross Frequency'].iloc[0]!=0:
-                    #table_roi,save_roi=stats_pair(d_banda_roi[d_banda_roi['M_Band']==bandm],metric,'ROI',path,band,'ROI',id_cross=bandm)
-                    #check_roi=create_check(save_roi,'ROI',band,metric,'different',bandm)
-                    #path_roi=graphics(d_banda_roi[d_banda_roi['M_Band']==bandm],'Cross Frequency',path,band,'ROI',id_cross=bandm,num_columns=2,save=True,plot=False,palette=palette)
-                    #tg_roi,save_tg_roi=table_groups_DB(d_banda_roi[d_banda_roi['M_Band']==bandm],metric,'ROI',path,band,'ROI',id_cross=bandm)
-                    #check_tg_roi=create_check(save_tg_roi,'ROI',band,metric,'equal',bandm)
-                    # joinimages([path_roi,table_roi,tg_roi])    
-                    # os.remove(tg_roi)
-                    #matrix_roi = matrix_roi.append(check_roi, ignore_index = True)
-                    #matrix_roi = matrix_roi.append(check_tg_roi, ignore_index = True)
-                    pass
+            #matrix_roi = matrix_roi.append(check_roi, ignore_index = True)
+            matrix_com = pd.concat((matrix_com,check_com), ignore_index = True)
+            #matrix_roi = matrix_roi.append(check_tg_roi, ignore_index = True)
+            #matrix_com = matrix_com.append(check_tg_com, ignore_index = True)cresta
+        #     for bandm in bandsm:  
+        #         print(str(band)+' '+str(metric)+' '+str(bandm)) 
+        #         if d_banda_roi[d_banda_roi['M_Band']==bandm]['Cross Frequency'].iloc[0]!=0:
+        #             #table_roi,save_roi=stats_pair(d_banda_roi[d_banda_roi['M_Band']==bandm],metric,'ROI',path,band,'ROI',id_cross=bandm)
+        #             #check_roi=create_check(save_roi,'ROI',band,metric,'different',bandm)
+        #             #path_roi=graphics(d_banda_roi[d_banda_roi['M_Band']==bandm],'Cross Frequency',path,band,'ROI',id_cross=bandm,num_columns=2,save=True,plot=False,palette=palette)
+        #             #tg_roi,save_tg_roi=table_groups_DB(d_banda_roi[d_banda_roi['M_Band']==bandm],metric,'ROI',path,band,'ROI',id_cross=bandm)
+        #             #check_tg_roi=create_check(save_tg_roi,'ROI',band,metric,'equal',bandm)
+        #             # joinimages([path_roi,table_roi,tg_roi])    
+        #             # os.remove(tg_roi)
+        #             #matrix_roi = matrix_roi.append(check_roi, ignore_index = True)
+        #             #matrix_roi = matrix_roi.append(check_tg_roi, ignore_index = True)
+        #             pass
                 
-                if d_banda_com[d_banda_com['M_Band']==bandm]['Cross Frequency'].iloc[0]!=0:
-                    table_com,save_com=stats_pair(d_banda_com[d_banda_com['M_Band']==bandm],metric,'Component',path,band,'IC',id_cross=bandm) 
-                    check_com=create_check(save_com,'Component',band,metric,'different',bandm)
-                    path_com=graphics(d_banda_com[d_banda_com['M_Band']==bandm],'Cross Frequency',path,band,'IC',id_cross=bandm,num_columns=2,save=True,plot=False,palette=palette)
-                    tg_com,save_tg_com=table_groups_DB(d_banda_com[d_banda_com['M_Band']==bandm],metric,'Component',path,band,'IC',id_cross=bandm)
-                    check_tg_com=create_check(save_tg_com,'Component',band,metric,'equal',bandm)
-                    # joinimages([path_com,table_com,tg_com])
-                    # os.remove(tg_com) 
-                    matrix_com = matrix_com.append(check_com, ignore_index = True)
-                    matrix_com = matrix_com.append(check_tg_com, ignore_index = True)   
+        #         if d_banda_com[d_banda_com['M_Band']==bandm]['Cross Frequency'].iloc[0]!=0:
+        #             table_com,save_com=stats_pair(d_banda_com[d_banda_com['M_Band']==bandm],metric,'Component',path,band,'IC',id_cross=bandm) 
+        #             check_com=create_check(save_com,'Component',band,metric,'different',bandm)
+        #             path_com=graphics(d_banda_com[d_banda_com['M_Band']==bandm],'Cross Frequency',path,band,'IC',id_cross=bandm,num_columns=2,save=True,plot=False,palette=palette)
+        #             tg_com,save_tg_com=table_groups_DB(d_banda_com[d_banda_com['M_Band']==bandm],metric,'Component',path,band,'IC',id_cross=bandm)
+        #             check_tg_com=create_check(save_tg_com,'Component',band,metric,'equal',bandm)
+        #             # joinimages([path_com,table_com,tg_com])
+        #             # os.remove(tg_com) 
+        #             matrix_com = matrix_com.append(check_com, ignore_index = True)
+        #             matrix_com = matrix_com.append(check_tg_com, ignore_index = True)   
 
 print('table lista')
 matrix_com['Compared groups']=matrix_com['A']+'-'+matrix_com['B']
 #matrix_roi['Compared groups']=matrix_roi['A']+'-'+matrix_roi['B']
-filename = r"{path}\check_sin_cv.xlsx".format(path=path)
-#writer = pd.ExcelWriter(filename)
-#matrix_com.to_excel(writer ,sheet_name='Component')
+filename = r"{path}\power_openBCI_different.xlsx".format(path=path).replace('\\','/')
+writer = pd.ExcelWriter(filename)
+matrix_com.to_excel(writer ,sheet_name='Component')
 #matrix_roi.to_excel(writer ,sheet_name='ROI')
-#writer.save()
-#writer.close()              
+writer._save()
+writer.close()              
 print('Graficos SL,coherencia,entropia y cross frequency guardados')
