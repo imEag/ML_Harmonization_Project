@@ -37,9 +37,10 @@ def graphics(data,type,path,name_band,id,id_cross=None,num_columns=2,save=True,p
     '''
     Modificación por correcciones del evaluador
     '''
-    # Reemplazar 'G2' por 'Control' en la columna 'group'
-    data['group'] = data['group'].replace('G2', 'Control')
-    axs=sns.catplot(x='group',y=type,data=data[data['group'] == 'Control'],hue='database',dodge=True, kind="box",col=col,col_wrap=num_columns,palette=palette,fliersize=1.5,linewidth=0.5,legend=False)
+    # Reemplazar 'G2' por control en la columna 'group'
+    control='CTR'
+    data['group'] = data['group'].replace('G2', control)
+    axs=sns.catplot(x='group',y=type,data=data[data['group'] == control],hue='database',dodge=True, kind="box",col=col,col_wrap=num_columns,palette=palette,fliersize=1.5,linewidth=0.5,legend=False)
     '''
     Modificación por correcciones del evaluador
     '''
@@ -54,8 +55,8 @@ def graphics(data,type,path,name_band,id,id_cross=None,num_columns=2,save=True,p
             for ax in axs.axes.flat:
                 ax.set_ylim(0, 2.5)
                 # Ajustar los límites del eje y en función del valor máximo del bigote
-                #outliers = data[data['group'] == 'Control'][type].quantile(0.75) + 1.5 * (data[data['group'] == 'Control'][type].quantile(0.75) - data[data['group'] == 'Control'][type].quantile(0.25))
-                #closest_outlier = data[data['group'] == 'Control'][type][abs(data[data['group'] == 'Control'][type] - outliers).idxmin()]
+                #outliers = data[data['group'] == control][type].quantile(0.75) + 1.5 * (data[data['group'] == control][type].quantile(0.75) - data[data['group'] == control][type].quantile(0.25))
+                #closest_outlier = data[data['group'] == control][type][abs(data[data['group'] == control][type] - outliers).idxmin()]
                 #ax.set(ylim=(min - 0.10 , closest_outlier + 0.20))  # Agregar un margen de 10 unidades
                 #ax.tick_params(axis='both', labelsize=20)
         elif id_cross==None:
@@ -72,8 +73,9 @@ def graphics(data,type,path,name_band,id,id_cross=None,num_columns=2,save=True,p
                 # Obtener los valores de los bigotes y los límites
                 for ax in axs.axes.flat:
                     # Ajustar los límites del eje y en función del valor máximo del bigote
-                    outliers = data[data['group'] == 'Control'][type].quantile(0.75) + 1.5 * (data[data['group'] == 'Control'][type].quantile(0.75) - data[data['group'] == 'Control'][type].quantile(0.25))
-                    closest_outlier = data[data['group'] == 'Control'][type][abs(data[data['group'] == 'Control'][type] - outliers).idxmin()]
+
+                    outliers = data[data['group'] == control][type].quantile(0.75) + 1.5 * (data[data['group'] == control][type].quantile(0.75) - data[data['group'] == control][type].quantile(0.25))
+                    closest_outlier = data[data['group'] == control][type][abs(data[data['group'] == control][type] - outliers).idxmin()]
                     ax.set(ylim=(min - 0.10, closest_outlier + 0.20))  # Agregar un margen de 10 unidades
                     ax.tick_params(axis='both', labelsize=20)
         else:
@@ -81,8 +83,8 @@ def graphics(data,type,path,name_band,id,id_cross=None,num_columns=2,save=True,p
             # Obtener los valores de los bigotes y los límites
             for ax in axs.axes.flat:
                 # Ajustar los límites del eje y en función del valor máximo del bigote
-                outliers = data[data['group'] == 'Control'][type].quantile(0.75) + 1.5 * (data[data['group'] == 'Control'][type].quantile(0.75) - data[data['group'] == 'Control'][type].quantile(0.25))
-                closest_outlier = data[data['group'] == 'Control'][type][abs(data[data['group'] == 'Control'][type] - outliers).idxmin()]
+                outliers = data[data['group'] == control][type].quantile(0.75) + 1.5 * (data[data['group'] == control][type].quantile(0.75) - data[data['group'] == control][type].quantile(0.25))
+                closest_outlier = data[data['group'] == control][type][abs(data[data['group'] == control][type] - outliers).idxmin()]
                 ax.set(ylim=(min - 0.10, closest_outlier + 0.20))  # Agregar un margen de 10 unidades
                 ax.tick_params(axis='both', labelsize=20)
         axs.add_legend(loc='upper right',bbox_to_anchor=(.8,.95),ncol=4,title="",fontsize=20)#title="Database"
@@ -97,8 +99,8 @@ def graphics(data,type,path,name_band,id,id_cross=None,num_columns=2,save=True,p
             # Obtener los valores de los bigotes y los límites
             for ax in axs.axes.flat:
                 # Ajustar los límites del eje y en función del valor máximo del bigote
-                outliers = data[data['group'] == 'Control'][type].quantile(0.75) + 1.5 * (data[data['group'] == 'Control'][type].quantile(0.75) - data[data['group'] == 'Control'][type].quantile(0.25))
-                closest_outlier = data[data['group'] == 'Control'][type][abs(data[data['group'] == 'Control'][type] - outliers).idxmin()]
+                outliers = data[data['group'] == control][type].quantile(0.75) + 1.5 * (data[data['group'] == control][type].quantile(0.75) - data[data['group'] == control][type].quantile(0.25))
+                closest_outlier = data[data['group'] == control][type][abs(data[data['group'] == control][type] - outliers).idxmin()]
                 ax.set(ylim=(min - 0.10, closest_outlier + 0.10))  # Agregar un margen de 10 unidades
                 ax.tick_params(axis='both', labelsize=20)
 
@@ -107,8 +109,8 @@ def graphics(data,type,path,name_band,id,id_cross=None,num_columns=2,save=True,p
             # Obtener los valores de los bigotes y los límites
             for ax in axs.axes.flat:
                 # Ajustar los límites del eje y en función del valor máximo del bigote
-                outliers = data[data['group'] == 'Control'][type].quantile(0.75) + 1.5 * (data[data['group'] == 'Control'][type].quantile(0.75) - data[data['group'] == 'Control'][type].quantile(0.25))
-                closest_outlier = data[data['group'] == 'Control'][type][abs(data[data['group'] == 'Control'][type] - outliers).idxmin()]
+                outliers = data[data['group'] == control][type].quantile(0.75) + 1.5 * (data[data['group'] == control][type].quantile(0.75) - data[data['group'] == control][type].quantile(0.25))
+                closest_outlier = data[data['group'] == control][type][abs(data[data['group'] == control][type] - outliers).idxmin()]
                 ax.set(ylim=(min - 0.10, closest_outlier + 0.10))  # Agregar un margen de 10 unidades
                 ax.tick_params(axis='both', labelsize=20)
         axs.add_legend(loc='upper right',bbox_to_anchor=(.8,.95),ncol=4,title="",fontsize=20)#title="Database"
@@ -164,8 +166,7 @@ def stats_pair(data,metric,space,path,name_band,id,id_cross=None):
     tablas={}
     for DB in databases:
         data_DB=data[data['database']==DB]
-        #combinaciones=[('Control', 'DTA'), ('G1', 'G2')]
-        combinaciones=[('G2', 'G1'),('CTR','G1'),('CTR','G2'),('DCL','CTR'),('DCL','G1'),('DCL','G2')]
+        combinaciones=[('G2', 'G1'),('CTR','G1'),('CTR','G2'),('DCL','CTR'),('DCL','G1'),('DCL','G2'),('CTR','DCL')]
         test_ez={}
         test_std={}
         for i in combinaciones:
@@ -292,12 +293,12 @@ def joinimages(paths):
 #path=r'C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_Correcciones_Evaluador' #Cambia dependieron de quien lo corra
 #path=r'C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_54x10' #Cambia dependieron de quien lo corra
 #path = askdirectory() 
-path='/media/gruneco-server/ADATA HD650/BIOMARCADORES/derivatives/data_long/IC'
+path='/media/gruneco-server/ADATA HD650/BIOMARCADORES/derivatives/data_columns/IC'
 
 #data loading
 #data_p_roi=pd.read_feather(fr'{path}\Datosparaorganizardataframes\revisar\data_long_power_roi_without_oitliers.feather')
 #data_p_com=pd.read_feather(fr'{path}\Datosparaorganizardataframes\data_long_power_components_without_oitliers.feather')
-data_p_com=pd.read_feather(fr'{path}\data_CE_Power_long_BIOMARCADORES_openBCI_components.feather'.replace('\\','/'))
+data_p_com=pd.read_feather(fr'{path}\data_BIOMARCADORES_CE_columns_irasa_54x10_components.feather'.replace('\\','/'))
 #data_sl_roi=pd.read_feather(fr'{path}\Datosparaorganizardataframes\data_long_sl_roi.feather')
 #data_sl_com=pd.read_feather(fr'{path}\Datosparaorganizardataframes\data_long_sl_components.feather')
 #data_c_roi=pd.read_feather(fr'{path}\Datosparaorganizardataframes\revisar\data_long_coherence_roi.feather')
@@ -310,7 +311,7 @@ data_p_com=pd.read_feather(fr'{path}\data_CE_Power_long_BIOMARCADORES_openBCI_co
 #datos_roi={'Power':data_p_roi,'SL':data_sl_roi,'Coherence':data_c_roi,'Entropy':data_e_roi,'Cross Frequency':data_cr_roi}
 #datos_com={'Power':data_p_com,'SL':data_sl_com,'Coherence':data_c_com,'Entropy':data_e_com,'Cross Frequency':data_cr_com}
 #datos_roi={'SL':data_sl_roi}
-datos_com={'Power':data_p_com}
+datos_com={'power':data_p_com}
 
 bands= data_p_com['Band'].unique()
 #bandsm= data_p_com['M_Band'].unique()
@@ -336,16 +337,16 @@ for metric in datos_com.keys():
             path_com=graphics(d_banda_com,metric,path,band,'IC',num_columns=2,save=True,plot=False,palette=palette)
             #tg_roi,save_tg_roi=table_groups_DB(d_banda_roi,metric,'ROI',path,band,'ROI',id_cross=None)
             #check_tg_roi=create_check(save_tg_roi,'ROI',band,metric,'equal',None)
-            #tg_com,save_tg_com=table_groups_DB(d_banda_com,metric,'Component',path,band,'IC',id_cross=None)
+            tg_com,save_tg_com=table_groups_DB(d_banda_com,metric,'Component',path,band,'IC',id_cross=None)
             #check_tg_com=create_check(save_tg_com,'Component',band,metric,'equal',None)
-            # joinimages([path_roi,table_roi,tg_roi])
-            # joinimages([path_com,table_com,tg_com])
+            #joinimages([path_roi,table_roi,tg_roi])
+            joinimages([path_com,table_com,tg_com])
             # os.remove(tg_roi)
             # os.remove(tg_com)
             #matrix_roi = matrix_roi.append(check_roi, ignore_index = True)
             matrix_com = pd.concat((matrix_com,check_com), ignore_index = True)
             #matrix_roi = matrix_roi.append(check_tg_roi, ignore_index = True)
-            #matrix_com = matrix_com.append(check_tg_com, ignore_index = True)cresta
+            #matrix_com = matrix_com.append(check_tg_com, ignore_index = True)
         #     for bandm in bandsm:  
         #         print(str(band)+' '+str(metric)+' '+str(bandm)) 
         #         if d_banda_roi[d_banda_roi['M_Band']==bandm]['Cross Frequency'].iloc[0]!=0:
@@ -374,7 +375,7 @@ for metric in datos_com.keys():
 print('table lista')
 matrix_com['Compared groups']=matrix_com['A']+'-'+matrix_com['B']
 #matrix_roi['Compared groups']=matrix_roi['A']+'-'+matrix_roi['B']
-filename = r"{path}\power_openBCI_different.xlsx".format(path=path).replace('\\','/')
+filename = r"{path}\power_54x10_different.xlsx".format(path=path).replace('\\','/')
 writer = pd.ExcelWriter(filename)
 matrix_com.to_excel(writer ,sheet_name='Component')
 #matrix_roi.to_excel(writer ,sheet_name='ROI')
