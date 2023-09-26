@@ -119,6 +119,7 @@ def stats_pair(data,metric,space,A,B):
 
         table_concat=pd.concat([ez,std],axis=0)
         table=pd.pivot_table(table_concat,values=['effect size','cv'],columns=['Prueba'],index=[space,'Band','M_Band','A', 'B'])
+    
     table=table.reset_index()
     table=table.style.applymap(text_format,value=0.7,subset=['effect size']).applymap(text_format,value=0.0,subset=['cv'])
     
@@ -268,6 +269,7 @@ def effect_size_inside_DB(data_i,metric,space,A,B):
         table_x.columns=['effect size','cv']
         tablas[DB]=table_x
     table=pd.concat(list(tablas.values()),axis=0)
+    print(table)
     table=table.reset_index()
     table=table.style.applymap(text_format,value=0.7,subset=['effect size']).applymap(text_format,value=0.0,subset=['cv'])
     
@@ -421,18 +423,19 @@ def main():
     #path=r'C:\Users\valec\OneDrive - Universidad de Antioquia\Resultados_Armonizacion_BD' #Cambia dependieron de quien lo corra
     #path=r'C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_BD'
     #path = askdirectory() 
-    path=r'C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_54x10\Datosparaorganizardataframes'
-
+    #path=r'C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_54x10\Datosparaorganizardataframes'
+    path='/media/gruneco-server/ADATA HD650/BIOMARCADORES/derivatives/data_long/IC'
     # IC
     ##data_ic_sova_G1G2=pd.read_feather(fr'{path}\sovaHarmony\integration\ic\G1G2\Data_complete_ic_sovaharmony_G1G2.feather')
     ##data_ic_harmo_G1G2=pd.read_feather(fr'{path}\neuroHarmonize\integration\ic\G1G2\Data_complete_ic_neuroHarmonize_G1G2.feather')
     #graph_harmonize(path,data_ic_sova_G1G2,data_ic_harmo_G1G2,'ic','G1','G2')
     #print(2)
     #print('Data_complete_ic_sovaharmony_G1\n','Data_complete_ic_neuroHarmonize_G1')
-    data_ic_sova_CTR=pd.read_feather(fr'{path}\sovaHarmony\integration\ic\G1\Data_complete_ic_sovaharmony_G1.feather')
-    data_ic_harmo_CTR=pd.read_feather(fr'{path}\neuroHarmonize\integration\ic\G1\Data_complete_ic_neuroHarmonize_G1.feather')
+    #data_ic_sova_CTR=pd.read_feather(fr'{path}\sovaHarmony\integration\ic\G1\Data_complete_ic_sovaharmony_G1.feather')
+    data_power=pd.read_feather(fr'{path}\data_CE_irasa_long_BIOMARCADORES_54x10_components.feather'.replace('\\','/'))#data_ic_harmo_CTR=pd.read_feather(fr'{path}\neuroHarmonize\integration\ic\G1\Data_complete_ic_neuroHarmonize_G1.feather')
+
     #graph_harmonize(path,data_ic_sova_CTR,data_ic_harmo_CTR,'ic','Control','Control')
-    graph_harmonize(path,data_ic_sova_CTR,data_ic_harmo_CTR,'ic','G1','Control')
+    graph_harmonize(path,data_power,data_ic_harmo_CTR,'ic','G1','Control')
     #print(4)
     #print('Data_complete_ic_sovaharmony_DTA\n','Data_complete_ic_neuroHarmonize_DTA')
     ##data_ic_sova_DTA=pd.read_feather(fr'{path}\sovaHarmony\integration\ic\DTA\Data_complete_ic_sovaharmony_DTA.feather')
