@@ -91,6 +91,7 @@ def stats_pair(data,metric,space,A,B):
     data_DB=data.copy()
     if metric!='Cross Frequency':
         ez=data_DB.groupby([space,'Band']).apply(lambda data_DB:pg.compute_effsize(data_DB[data_DB['group']==A][metric],data_DB[data_DB['group']==B][metric])).to_frame()
+        ez=abs(ez)
         ez=ez.rename(columns={0:'effect size'})
         ez['A']=A
         ez['B']=B
