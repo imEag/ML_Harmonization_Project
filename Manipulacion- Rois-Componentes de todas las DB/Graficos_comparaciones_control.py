@@ -11,7 +11,7 @@ import io
 from itertools import combinations
 from PIL import Image
 import matplotlib.pyplot as plt
-import dataframe_image as dfi
+#import dataframe_image as dfi
 from openpyxl import load_workbook
 import warnings
 warnings.filterwarnings("ignore")

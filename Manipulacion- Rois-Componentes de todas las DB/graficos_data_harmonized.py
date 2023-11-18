@@ -52,15 +52,15 @@ def graphics(data,type,path,name_band,id,id2,A,B,space,id_cross=None,num_columns
         plt.show()
     if save==True:
         #path2 = r'C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_Correcciones_Evaluador\Armonizados'+path[-18:]
-        path2 = rf'C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_54x10\Graficos\{l}'
-        verific = '{path}\{id}\Graficos_{type}'.format(path=path2,name_band=name_band,id=id,type=type)
+        path2 = '{path}\Graficos_{type}'.format(path=path,name_band=name_band,id=id,type=type)
+        verific = '{path}\Graficos_{type}'.format(path=path,name_band=name_band,id=id,type=type)
         if not os.path.exists(verific):
             os.makedirs(verific)  
         if id_cross==None:
-            path_complete='{path}\{id}\Graficos_{type}\{name_band}_{type}_{id}.png'.format(path=path2,name_band=name_band,id=id,type=type)
+            path_complete='{path}\{name_band}_{type}_{id}.png'.format(path=path2,name_band=name_band,id=id,type=type)
             #path_complete= fr'C:\Users\veroh\OneDrive - Universidad de Antioquia\Verónica Henao Isaza\Resultados\graphics\unmatched\{name_band}_{type}_{id}.png'
         else:
-            path_complete='{path}\{id}\Graficos_{type}\{name_band}_{id_cross}_{type}_{id}.png'.format(path=path2,name_band=name_band,id=id,type=type,id_cross=id_cross) 
+            path_complete='{path}\{name_band}_{id_cross}_{type}_{id}.png'.format(path=path2,name_band=name_band,id=id,type=type,id_cross=id_cross) 
             #path_complete= fr'C:\Users\veroh\OneDrive - Universidad de Antioquia\Verónica Henao Isaza\Resultados\graphics\unmatched\{name_band}_{id_cross}_{type}_{id}.png'
         plt.savefig(path_complete)
         plt.close()
@@ -349,7 +349,8 @@ def graph_harmonize(path,data_roi_sova,data_roi_harmo,space,A,B):
         bandsm= data_cr_roi['M_Band'].unique()  
 
         #path_excel = askdirectory()
-        path_excel = r'C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_54X10\Tamaño del efecto'
+        #path_excel = r'C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_54X10\Tamaño del efecto' #stats_pair
+        path_excel = path + r'\Tamaño de efecto'
         if B == 'G2':
             path_excel_ = fr'{path_excel}\{label}\{space}\{A+B}'
             file = rf'tabla_effectsize_{space}_{A+B}_{label}.xlsx'
@@ -357,19 +358,24 @@ def graph_harmonize(path,data_roi_sova,data_roi_harmo,space,A,B):
             path_excel_ = fr'{path_excel}\{label}\{space}\{A}'
             file = rf'tabla_effectsize_{space}_{A}_{label}.xlsx'
         os.makedirs(path_excel_,exist_ok=True)
-        writer = pd.ExcelWriter(path_excel_+'/'+file,mode='w')
+        writer = pd.ExcelWriter(path_excel_+'/'+file, mode='w')
+        writer_c = pd.ExcelWriter(path_excel+'/'+file, mode='w')
     
         for metric in datos_roi.keys():
-            d_roi=datos_roi[metric]
+            d_roi = datos_roi[metric]
             if space == 'roi':
-                table=stats_pair(d_roi,metric,'ROI',A,B)
-                #table=stats_pair_database(d_roi,metric,'ROI')
+                table = stats_pair(d_roi, metric, 'ROI', A, B)
+                table_c = stats_pair_database(d_roi, metric, 'ROI')
             else:
-                table=stats_pair(d_roi,metric,'Component',A,B)
-                #table=stats_pair_database(d_roi,metric,'Component')
-            table.to_excel(writer ,sheet_name=metric)
+                table = stats_pair(d_roi, metric, 'Component', A, B)
+                table_c = stats_pair_database(d_roi, metric, 'Component')
+            table.to_excel(writer, sheet_name=metric)
+            table_c.to_excel(writer_c, sheet_name=metric)  # Corregir aquí
+        
         writer.save()
+        writer_c.save()
         writer.close()
+        writer_c.close()
 
         #filename2 = r"{path}\Graficos_armonizacion_sova_harmo\tabla_effectsize_inside_DB_{space}_{group}{label}_03_04_2022.xlsx".format(path=path,label=label,group=str(A+B),space=space)
         #writer2 = pd.ExcelWriter(filename2,mode='w')
@@ -387,7 +393,7 @@ def graph_harmonize(path,data_roi_sova,data_roi_harmo,space,A,B):
         #writer2.close() 
         #print(filename2)
         #path_graph = askdirectory()
-        path_graph = r'C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_54x10\Graficos'
+        path_graph = path + r'\Graficos'
         if B == 'G2':
             path_graph = fr'{path_graph}\{label}\{space}\{A+B}'
         else:
@@ -421,17 +427,20 @@ def main():
     #path=r'C:\Users\valec\OneDrive - Universidad de Antioquia\Resultados_Armonizacion_BD' #Cambia dependieron de quien lo corra
     #path=r'C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_BD'
     #path = askdirectory() 
-    path=r'C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_54x10\Datosparaorganizardataframes'
+    path=r'C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_Paper\Datosparaorganizardataframes'
+    #path=r'C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_Correcciones_Evaluador\Datosparaorganizardataframes\11092023'
 
     # IC
-    ##data_ic_sova_G1G2=pd.read_feather(fr'{path}\sovaHarmony\integration\ic\G1G2\Data_complete_ic_sovaharmony_G1G2.feather')
-    ##data_ic_harmo_G1G2=pd.read_feather(fr'{path}\neuroHarmonize\integration\ic\G1G2\Data_complete_ic_neuroHarmonize_G1G2.feather')
+    #data_ic_sova_G1G2=pd.read_feather(fr'{path}\sovaHarmony\integration\ic\G1G2\Data_complete_ic_sovaharmony_G1G2.feather')
+    #data_ic_harmo_G1G2=pd.read_feather(fr'{path}\neuroHarmonize\integration\ic\G1G2\Data_complete_ic_neuroHarmonize_G1G2.feather')
     #graph_harmonize(path,data_ic_sova_G1G2,data_ic_harmo_G1G2,'ic','G1','G2')
     #print(2)
     #print('Data_complete_ic_sovaharmony_G1\n','Data_complete_ic_neuroHarmonize_G1')
-    data_ic_sova_CTR=pd.read_feather(fr'{path}\sovaHarmony\integration\ic\G1\Data_complete_ic_sovaharmony_G1.feather')
+    data_ic_sova_CTR=pd.read_feather(fr'{path}\sovaharmony\integration\ic\G1\Data_complete_ic_sovaharmony_G1.feather')
+    data_ic_sova_CTR['group'] = data_ic_sova_CTR['group'].replace('G2', 'Control')
     data_ic_harmo_CTR=pd.read_feather(fr'{path}\neuroHarmonize\integration\ic\G1\Data_complete_ic_neuroHarmonize_G1.feather')
-    #graph_harmonize(path,data_ic_sova_CTR,data_ic_harmo_CTR,'ic','Control','Control')
+    data_ic_harmo_CTR['group'] = data_ic_harmo_CTR['group'].replace('G2', 'Control')
+    graph_harmonize(path,data_ic_sova_CTR,data_ic_harmo_CTR,'ic','Control','Control')
     graph_harmonize(path,data_ic_sova_CTR,data_ic_harmo_CTR,'ic','G1','Control')
     #print(4)
     #print('Data_complete_ic_sovaharmony_DTA\n','Data_complete_ic_neuroHarmonize_DTA')
@@ -452,7 +461,8 @@ def main():
     ##print('Data_complete_roi_sovaharmony_G1\n','Data_complete_roi_neuroHarmonize_G1')
     #data_roi_sova_CTR=pd.read_feather(fr'{path}\sovaHarmony\integration\roi\G1\Data_complete_roi_sovaharmony_G1.feather')
     #data_roi_harmo_CTR=pd.read_feather(fr'{path}\neuroHarmonize\integration\roi\G1\Data_complete_roi_neuroHarmonize_G1.feather')
-    #graph_harmonize(path,data_roi_sova_CTR,data_roi_harmo_CTR,'roi','G1','Control')
+    ##graph_harmonize(path,data_roi_sova_CTR,data_roi_harmo_CTR,'roi','G1','Control')
+    #graph_harmonize(path,data_roi_sova_CTR,data_roi_harmo_CTR,'roi','Control','Control')
     #print(10)
     #print('Data_complete_roi_sovaharmony_DTA\n','Data_complete_roi_neuroHarmonize_DTA')
     #data_roi_sova_DTA=pd.read_feather(fr'{path}\sovaHarmony\integration\roi\DTA\Data_complete_roi_sovaharmony_DTA.feather')

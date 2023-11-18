@@ -3,7 +3,14 @@ import matplotlib.pyplot as plt
 from tkinter import Tk
 from tkinter.filedialog import askopenfilename
 from collections import defaultdict
-
+#Si no tiene Mbands
+#top=0.905,
+#bottom=0.087,
+#left=0.316,
+#right=0.8,
+#hspace=0.547,
+#wspace=0.2
+#fig, axs = plt.subplots(3, 1, figsize=(10, 8))
 
 # In[] Features
 palette = ["#8AA6A3","#127369","#10403B","#45C4B0"]
@@ -23,26 +30,26 @@ if file_path:
 
     # Extraer y contar las categorías usando listas de comprensión
     categories_df['Feature'] = [t.split('_')[0] for t in df[0]]
-    #categories_df['IC'] = [t.split('_')[1] if 'age' not in t else None for t in df[0]]
-    categories_df['ROI'] = [t.split('_')[1] if 'age' not in t and 'sex' not in t else None for t in df[0]]
+    categories_df['IC'] = [t.split('_')[1] if 'age' not in t else None for t in df[0]]
+    #categories_df['ROI'] = [t.split('_')[1] if 'age' not in t and 'sex' not in t else None for t in df[0]]
     categories_df['Mband'] = [t.split('_')[2] if len(t.split('_')) == 4 else None for t in df[0]]
     categories_df['Band'] = [t.split('_')[2] if len(t.split('_')) >= 3 and 'age' not in t and 'sex' not in t and not t.split('_')[2].startswith('M') else t.split('_')[3] if 'age' not in t and 'sex' not in t else None for t in df[0]]
 
     # Crear subplots
     fig, axs = plt.subplots(2, 2, figsize=(10, 8))
     axs = axs.flatten()
-    fig.suptitle("Discriminant analysis of the most relevant features using Decition tree without neuroHarmonize in ROIs", fontsize=15, x=0.55)  # 54x10
+    fig.suptitle("Discriminant analysis of the most relevant features using Decition tree with neuroHarmonize", fontsize=15, x=0.55)  # 54x10
     # Graficar cada columna en un subplot
     for i, col in enumerate(categories_df.columns):
         ax = axs[i]
         if i == 0:  # Cambiar el color de la segunda barra del primer gráfico en (1, 1)
-            ax.bar(categories_df[col].value_counts().index, categories_df[col].value_counts().values, color=[palette[0], palette[1], palette[1], palette[0], palette[0], palette[0]])
+            ax.bar(categories_df[col].value_counts().index, categories_df[col].value_counts().values, color=[palette[0], palette[0], palette[1], palette[0], palette[0], palette[0]])
         elif i == 1:  
-            ax.bar(categories_df[col].value_counts().index, categories_df[col].value_counts().values, color=[palette[1], palette[1], palette[0], palette[0], palette[0], palette[0], palette[0], palette[0]])
+            ax.bar(categories_df[col].value_counts().index, categories_df[col].value_counts().values, color=[palette[0], palette[1], palette[0], palette[0], palette[0], palette[0], palette[0], palette[0], palette[0]])
         elif i == 2:  
-            ax.bar(categories_df[col].value_counts().index, categories_df[col].value_counts().values, color=[palette[1], palette[0], palette[0], palette[0], palette[0], palette[0], palette[0], palette[0]])
+            ax.bar(categories_df[col].value_counts().index, categories_df[col].value_counts().values, color=[palette[0], palette[0], palette[0], palette[1], palette[1], palette[0], palette[0], palette[0]])
         elif i == 3:  
-            ax.bar(categories_df[col].value_counts().index, categories_df[col].value_counts().values, color=[palette[0], palette[1], palette[0], palette[0], palette[0], palette[0], palette[0], palette[0],palette[0], palette[0], palette[0], palette[0], palette[0], palette[0], palette[0], palette[0]])
+            ax.bar(categories_df[col].value_counts().index, categories_df[col].value_counts().values, color=[palette[1], palette[0], palette[0], palette[0], palette[0], palette[0], palette[0], palette[1],palette[0], palette[0], palette[0], palette[0], palette[0], palette[0], palette[0], palette[0]])
         else:
             pass
         ax.set_title(col)
@@ -187,3 +194,37 @@ table = pd.pivot_table(table_concat, columns=['Prueba'],
                        index=[space, 'Band', 'A', 'B','C','D'])
 
 table.to_csv(r'C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_Correcciones_Evaluador\Tamaño del efecto\output_table.csv')  # Save the table to a CSV file
+
+# In[]
+# Abre un cuadro de diálogo para seleccionar un archivo
+file_path = askopenfilename(title="Seleccionar archivo", filetypes=[("Archivos de texto", "*.txt")])
+
+# Cargar el archivo seleccionado en un DataFrame
+if file_path:
+    df = pd.read_csv(file_path, delimiter='\t', header=None)  # Ajustar el delimitador según sea necesario
+df = df.drop(index=0)
+# Crear una nueva columna 'grupo' basada en el texto que sigue a 'sub-'
+def categorize_group(sujeto):
+    parts = sujeto.split('-')
+    if len(parts) > 1:
+        code = parts[1]
+        if code.startswith('G1') or code.startswith('CTR'):
+            return 'Grupo BIOMARCADORES'
+        elif code.startswith('ALZ'):
+            return 'Grupo DUQUE'
+        elif code.startswith('0') or code.startswith('1'):
+            return 'Grupo SRM'
+        elif code.startswith('CBM'):
+            return 'Grupo CHBMP'
+        else:
+            print(sujeto)
+    return 'Otro'
+
+df['grupo'] = df[0].apply(categorize_group)
+
+# Contar los sujetos en cada grupo
+group_counts = df['grupo'].value_counts()
+
+# Imprimir los resultados
+for grupo, count in group_counts.items():
+    print(f"Cantidad de sujetos en '{grupo}': {count}")

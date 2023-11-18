@@ -10,13 +10,16 @@ from tkinter.filedialog import askdirectory
 #tk.Tk().withdraw() # part of the import if you are not using other tkinter functions
 #path = askdirectory() 
 #path = r'C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_BD\Datosparaorganizardataframes/' 
-path = r'C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_54x10\Datosparaorganizardataframes/'
+path = r'C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_Paper\Datosparaorganizardataframes/'
+#path = r'C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_Correcciones_Evaluador\Datosparaorganizardataframes/11092023'
 A = 'G1'
 B = ''
 m = ['power','sl','cohfreq','entropy']
 #s = ['roi','ic']
-s=['ic']
+s = ['ic']
+
 h = ['neuroHarmonize','sovaharmony']
+#h = ['neuroHarmonize']
 group = 0
 for space in s:
     for neuro in h:

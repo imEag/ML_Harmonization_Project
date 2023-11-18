@@ -192,7 +192,7 @@ def heat_map(data,save=False,path_plot=None):
         plt.savefig(path_plot+'/'+'correlation_all.png')
 
 #-------CLASSIFICATION REPORT------------------------
-def classif_report(X_train, y_train,X_test,y_test,estimator,print_report=True):
+def classif_report(X_train, y_train,X_test,y_test,estimator,print_report=True,best_selected=None):
 
     "This function returns the cross validation scores of a given model and shows the classification report if print_report = True"
 
@@ -201,7 +201,8 @@ def classif_report(X_train, y_train,X_test,y_test,estimator,print_report=True):
                         y=y_train,
                         cv=10,
                         n_jobs=-1)
-    
+    if best_selected != None:
+        predicted = estimator.predict(X_test[:,best_selected])
     predicted = estimator.predict(X_test)
     if print_report == True:
         print(
@@ -372,7 +373,7 @@ def boruta(data,X_train,y_train,best_selected):
     #adjust the same model used in random forest to the newnew trainning dataset with the selected features
     boruta_fitted = best_selected.fit(X_transform, y_train) 
 
-    return boruta_fitted, X_transform
+    return boruta_fitted, X_transform, best_selected
 
 
 #--------------FEATURE SELECTION WITH DECISION TREE---------------------------------------------------

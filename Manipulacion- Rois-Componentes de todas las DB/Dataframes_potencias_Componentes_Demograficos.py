@@ -16,7 +16,7 @@ from Funciones import  dataframe_long_components,dataframe_componentes_deseadas
 
 "Power data loading by independent components"
 
-path=r'C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_54x10' 
+path=r'C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_Paper' 
 SRM=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_columns\IC\data_SRM_resteyesc_columns_power_components.feather'.format(path=path))
 CHBMP=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_columns\IC\data_CHBMP_protmap_columns_power_components.feather'.format(path=path))
 BIO=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_columns\IC\data_BIOMARCADORES_CE_columns_power_components.feather'.format(path=path))
@@ -98,19 +98,19 @@ for i in subjects_bio:
 D_CHBMP=pd.read_csv(r"{path}\Datosparaorganizardataframes\Demographic_data_CHBMP.csv".format(path=path),header=1, sep=",")
 col_demC=['Code', 'Gender', 'Age',  'Education Level ']
 Dem_CHBMP=D_CHBMP.loc[:,col_demC]
-MMSE_CHBMP=pd.read_csv(r"{path}\Datosparaorganizardataframes\MMSE_CHBMP.csv".format(path=path),header=2,sep=';')
+MMSE_CHBMP=pd.read_csv(r"{path}\Datosparaorganizardataframes\MMSE_CHBMP.csv".format(path=path),header=1,sep=',') #header=2,sep=';'
 MMSE_CHBMP=MMSE_CHBMP.loc[:,['Code', 'Total Score']]
 N_CHBMP=pd.merge(left=Dem_CHBMP,right=MMSE_CHBMP, how='left', left_on='Code', right_on='Code')
 N_CHBMP = N_CHBMP.rename(columns={'Code':'participant_id','Age':'age','Gender':'sex','Education Level ':'education','Total Score':'MM_total'})
 N_CHBMP['participant_id']='sub-'+N_CHBMP['participant_id']
 
 #SRM
-N_SRM=pd.read_csv("{path}\Datosparaorganizardataframes\participantsSRM.tsv".format(path=path),sep='\t')
+N_SRM=pd.read_csv(r"{path}\Datosparaorganizardataframes\participantsSRM.tsv".format(path=path),sep='\t')
 N_SRM=N_SRM.loc[:,['participant_id', 'age', 'sex','vf_1','vf_2','vf_3']] 
 N_SRM = N_SRM.rename(columns={'vf_1':'FAS_F','vf_2':'FAS_S','vf_3':'FAS_A'}) 
 
 #DUQUE
-N_DUQUE=pd.read_csv('{path}\Datosparaorganizardataframes\demograficosDUQUE.csv'.format(path=path),sep=";")
+N_DUQUE=pd.read_csv(r'{path}\Datosparaorganizardataframes\demograficosDUQUE.csv'.format(path=path),sep=";")
 N_DUQUE=N_DUQUE.loc[:,['participant_id','age','education','MM_total','group','sex']]
 N_DUQUE['participant_id']=N_DUQUE['participant_id'].replace({'_':''}, regex=True)
 N_DUQUE['participant_id']='sub-'+N_DUQUE['participant_id']

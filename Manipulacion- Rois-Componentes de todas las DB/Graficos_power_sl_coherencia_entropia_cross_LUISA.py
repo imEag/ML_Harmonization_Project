@@ -1,4 +1,3 @@
-
 import collections
 import pandas as pd 
 import seaborn as sns
@@ -12,7 +11,6 @@ import io
 from itertools import combinations
 from PIL import Image
 import matplotlib.pyplot as plt
-#import dataframe_image as dfi
 from openpyxl import load_workbook
 import warnings
 warnings.filterwarnings("ignore")
@@ -289,39 +287,27 @@ def joinimages(paths):
     print('Done!')
 
 #path=r'C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_BD' #Cambia dependieron de quien lo corra
-path=r'C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_Correcciones_Evaluador\Datosparaorganizardataframes\11092023\sovaharmony\long G1' #Cambia dependieron de quien lo corra
-#path=r'C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_54x10' #Cambia dependieron de quien lo corra
+#path=r'C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_Correcciones_Evaluador' #Cambia dependieron de quien lo corra
+path=r'C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_54x10_LUISA' #Cambia dependieron de quien lo corra
 #path = askdirectory() 
 
 
 #data loading
-#data_p_roi=pd.read_feather(fr'{path}\data_long_power_roi_without_oitliers.feather')
-#data_p_com=pd.read_feather(fr'{path}\data_long_power_components_without_oitliers.feather')
-#data_sl_roi=pd.read_feather(fr'{path}\data_long_sl_roi.feather')
-#data_sl_com=pd.read_feather(fr'{path}\data_long_sl_components.feather')
-#data_c_roi=pd.read_feather(fr'{path}\data_long_coherence_roi.feather')
-#data_c_com=pd.read_feather(fr'{path}\data_long_coherence_components.feather')
-#data_e_roi=pd.read_feather(fr'{path}\data_long_entropy_roi.feather')
-#data_e_com=pd.read_feather(fr'{path}\data_long_entropy_components.feather')
-#data_cr_roi=pd.read_feather(fr'{path}\data_long_crossfreq_roi.feather')
-#data_cr_com=pd.read_feather(fr'{path}\data_long_crossfreq_components.feather')
-
-#data loading sovaharmony
-data_p_roi=pd.read_feather(fr'{path}\data_long_power_roi_without_oitliers.feather')
-data_p_com=pd.read_feather(fr'{path}\data_long_power_components_without_oitliers.feather')
-data_sl_roi=pd.read_feather(fr'{path}\data_long_sl_roi.feather')
-data_sl_com=pd.read_feather(fr'{path}\data_long_sl_ic.feather')
-data_c_roi=pd.read_feather(fr'{path}\data_long_coherence_roi.feather')
-data_c_com=pd.read_feather(fr'{path}\data_long_coherence_ic.feather')
-data_e_roi=pd.read_feather(fr'{path}\data_long_entropy_roi.feather')
-data_e_com=pd.read_feather(fr'{path}\data_long_entropy_ic.feather')
-data_cr_roi=pd.read_feather(fr'{path}\data_long_crossfreq_roi.feather')
-data_cr_com=pd.read_feather(fr'{path}\data_long_crossfreq_ic.feather')
+#data_p_roi=pd.read_feather(fr'{path}\Datosparaorganizardataframes\revisar\data_long_power_roi_without_oitliers.feather')
+data_p_com=pd.read_feather(fr'{path}\Datosparaorganizardataframes\data_long_power_components_without_oitliers.feather')
+data_sl_roi=pd.read_feather(fr'{path}\Datosparaorganizardataframes\data_long_sl_roi.feather')
+data_sl_com=pd.read_feather(fr'{path}\Datosparaorganizardataframes\data_long_sl_components.feather')
+#data_c_roi=pd.read_feather(fr'{path}\Datosparaorganizardataframes\revisar\data_long_coherence_roi.feather')
+data_c_com=pd.read_feather(fr'{path}\Datosparaorganizardataframes\data_long_coherence_components.feather')
+#data_e_roi=pd.read_feather(fr'{path}\Datosparaorganizardataframes\revisar\data_long_entropy_roi.feather')
+data_e_com=pd.read_feather(fr'{path}\Datosparaorganizardataframes\data_long_entropy_components.feather')
+#data_cr_roi=pd.read_feather(fr'{path}\Datosparaorganizardataframes\revisar\data_long_crossfreq_roi.feather')
+data_cr_com=pd.read_feather(fr'{path}\Datosparaorganizardataframes\data_long_crossfreq_components.feather')
 
 #datos_roi={'Power':data_p_roi,'SL':data_sl_roi,'Coherence':data_c_roi,'Entropy':data_e_roi,'Cross Frequency':data_cr_roi}
 #datos_com={'Power':data_p_com,'SL':data_sl_com,'Coherence':data_c_com,'Entropy':data_e_com,'Cross Frequency':data_cr_com}
-datos_roi={'Cross Frequency':data_cr_roi}
-datos_com={'Cross Frequency':data_cr_com}
+datos_roi={'SL':data_sl_roi}
+datos_com={'SL':data_sl_com}
 
 bands= data_sl_com['Band'].unique()
 bandsm= data_cr_com['M_Band'].unique()
@@ -353,9 +339,9 @@ for metric in datos_roi.keys():
             # joinimages([path_com,table_com,tg_com])
             # os.remove(tg_roi)
             # os.remove(tg_com)
-            #matrix_roi = matrix_roi.append(check_roi, ignore_index = True)
-            #matrix_com = matrix_com.append(check_com, ignore_index = True)
-            #matrix_roi = matrix_roi.append(check_tg_roi, ignore_index = True)
+            matrix_roi = matrix_roi.append(check_roi, ignore_index = True)
+            matrix_com = matrix_com.append(check_com, ignore_index = True)
+            matrix_roi = matrix_roi.append(check_tg_roi, ignore_index = True)
             matrix_com = matrix_com.append(check_tg_com, ignore_index = True)
             
         else:
@@ -373,19 +359,16 @@ for metric in datos_roi.keys():
                     #matrix_roi = matrix_roi.append(check_tg_roi, ignore_index = True)
                     pass
                 
-                try:
-                    if d_banda_com[d_banda_com['M_Band']==bandm]['Cross Frequency'].iloc[0]!=0:
-                        table_com,save_com=stats_pair(d_banda_com[d_banda_com['M_Band']==bandm],metric,'Component',path,band,'IC',id_cross=bandm) 
-                        check_com=create_check(save_com,'Component',band,metric,'different',bandm)
-                        path_com=graphics(d_banda_com[d_banda_com['M_Band']==bandm],'Cross Frequency',path,band,'IC',id_cross=bandm,num_columns=2,save=True,plot=False,palette=palette)
-                        tg_com,save_tg_com=table_groups_DB(d_banda_com[d_banda_com['M_Band']==bandm],metric,'Component',path,band,'IC',id_cross=bandm)
-                        check_tg_com=create_check(save_tg_com,'Component',band,metric,'equal',bandm)
-                        # joinimages([path_com,table_com,tg_com])
-                        # os.remove(tg_com) 
-                        #matrix_com = matrix_com.append(check_com, ignore_index = True)
-                        matrix_com = matrix_com.append(check_tg_com, ignore_index = True)   
-                except:
-                    pass
+                if d_banda_com[d_banda_com['M_Band']==bandm]['Cross Frequency'].iloc[0]!=0:
+                    table_com,save_com=stats_pair(d_banda_com[d_banda_com['M_Band']==bandm],metric,'Component',path,band,'IC',id_cross=bandm) 
+                    check_com=create_check(save_com,'Component',band,metric,'different',bandm)
+                    path_com=graphics(d_banda_com[d_banda_com['M_Band']==bandm],'Cross Frequency',path,band,'IC',id_cross=bandm,num_columns=2,save=True,plot=False,palette=palette)
+                    tg_com,save_tg_com=table_groups_DB(d_banda_com[d_banda_com['M_Band']==bandm],metric,'Component',path,band,'IC',id_cross=bandm)
+                    check_tg_com=create_check(save_tg_com,'Component',band,metric,'equal',bandm)
+                    # joinimages([path_com,table_com,tg_com])
+                    # os.remove(tg_com) 
+                    matrix_com = matrix_com.append(check_com, ignore_index = True)
+                    matrix_com = matrix_com.append(check_tg_com, ignore_index = True)   
 
 print('table lista')
 matrix_com['Compared groups']=matrix_com['A']+'-'+matrix_com['B']

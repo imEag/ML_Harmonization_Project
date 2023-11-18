@@ -15,7 +15,7 @@ from Funciones import columns_SL_roi,columns_coherence_roi,columns_entropy_rois,
 from Funciones import columns_SL_ic,columns_coherence_ic,columns_entropy_ic,columns_powers_ic
 from Funciones import ver_datos_vacios
 
-path=r'C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_54X10' #Cambia dependieron de quien lo corra
+path=r'C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_Paper' #Cambia dependieron de quien lo corra
 
 "Load data"
 '''
@@ -100,7 +100,8 @@ d_B_roi.to_feather('{path}\Datosparaorganizardataframes\Data_complete_roi.feathe
 #Independent component data with demographic data
 
 #Power
-data_Comp=pd.read_feather(r'{path}\Datosparaorganizardataframes\BasesdeDatosFiltradas_componenteporcolumnas_sin_atipicos.feather'.format(path=path))
+#data_Comp=pd.read_feather(r'{path}\Datosparaorganizardataframes\BasesdeDatosFiltradas_componenteporcolumnas_sin_atipicos.feather'.format(path=path))
+data_Comp=pd.read_feather(r'{path}\Datosparaorganizardataframes\BasesdeDatosFiltradas_componenteporcolumnas.feather'.format(path=path)) #Para 54x10 no se eliminan atipicos por que se perderian sujetos
 
 # SL Dataframes
 SRM_sl=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_columns\IC\data_SRM_resteyesc_columns_sl_components.feather'.format(path=path))

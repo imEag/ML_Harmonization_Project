@@ -10,9 +10,9 @@ from tkinter.filedialog import askdirectory
 import os
 tk.Tk().withdraw() # part of the import if you are not using other tkinter functions
 
-path_save = askdirectory()
+#path_save = askdirectory()
+path_save = r'C:\Users\veroh\OneDrive - Universidad de Antioquia\Verónica Henao Isaza\Resultados_Eli'
 print("user chose", path_save, "for save")
-#path_save = r'C:\Users\veroh\OneDrive - Universidad de Antioquia\Verónica Henao Isaza\Resultados_Eli'
 neuro = 'sovaHarmony' #database
 name = 'G1' #group
 space = 'ic' #space
@@ -21,7 +21,8 @@ var = ''
 path_save = os.path.join(path_save,'Resultados')
 path_plot = path_save +rf'\graphics\ML/{neuro}/{name}_{var}_{space}'
 
-path = askdirectory()
+#path = askdirectory()
+path = r'C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_BD\Datosparaorganizardataframes'
 print("user chose", path_save, "for read feather")
 path_df = rf'{path}\Data_complete_{space}_{neuro}_{name}.feather'
 
@@ -65,19 +66,19 @@ modelos['GridSerach'] = GS_fitted
 
 #Print the classification report using the function
 classif_report(X_train, y_train,X_test,y_test,GS_fitted)'''
-
+predicted = GS_fitted.predict(X_test)
+print(predicted)
 #Train vs test accuracy plot
 train_test_accuracy_plot(GS_fitted,X_train,y_train,model_name='Grid search')
 
 
 #--------------BORUTA------------------------------------
-boruta_fitted, X_transform = boruta(data,X_train,y_train,best_selected)
-
+boruta_fitted, X_transform,best_selected = boruta(data,X_train,y_train,best_selected)
 #Add to the models dictionary
 modelos['Boruta'] = boruta_fitted
 
 #Classification report
-classif_report(X_transform, y_train,X_test,y_test,boruta_fitted)
+classif_report(X_transform, y_train,X_test,y_test,boruta_fitted,best_selected=best_selected)
 
 #Train vs test accuracy plot 
 train_test_accuracy_plot(boruta_fitted,X_train,y_train,model_name='Boruta')
