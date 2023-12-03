@@ -2,12 +2,12 @@ import pandas as pd
 import itertools
 import seaborn as sns
 import numpy as np
-import pingouin as pg
+#import pingouin as pg
 import matplotlib.pyplot as plt
 import warnings
-from Funciones import dataframe_long_roi,dataframe_long_components,dataframe_long_cross_ic,dataframe_long_cross_roi
-from Funciones import columns_SL_roi,columns_coherence_roi,columns_entropy_rois,columns_powers_rois
-from Funciones import columns_SL_ic,columns_coherence_ic,columns_entropy_ic,columns_powers_ic,columns_cross_ic
+#from Funciones import dataframe_long_roi,dataframe_long_components,dataframe_long_cross_ic,dataframe_long_cross_roi
+#from Funciones import columns_SL_roi,columns_coherence_roi,columns_entropy_rois,columns_powers_rois
+#from Funciones import columns_SL_ic,columns_coherence_ic,columns_entropy_ic,columns_powers_ic,columns_cross_ic
 warnings.filterwarnings("ignore")
 import os
 import tkinter as tk
@@ -430,34 +430,30 @@ def main():
     #path=r'C:\Users\valec\OneDrive - Universidad de Antioquia\Resultados_Armonizacion_BD' #Cambia dependieron de quien lo corra
     #path=r'C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_BD'
     #path = askdirectory() 
-<<<<<<< HEAD:Manipulacion- Rois-Componentes de todas las DB/graficos_data_harmonized.py
     path=r'C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_Paper\Datosparaorganizardataframes'
     #path=r'C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_Correcciones_Evaluador\Datosparaorganizardataframes\11092023'
 
-=======
     #path=r'C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_54x10\Datosparaorganizardataframes'
     path='/media/gruneco-server/ADATA HD650/BIOMARCADORES/derivatives/data_long/IC'
->>>>>>> bb97e5b2279ecc439304766088dfd4a46e9b44c9:Manipulation/graficos_data_harmonized.py
+    #path=r'C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_54x10\Datosparaorganizardataframes'
+    path='/media/gruneco-server/ADATA HD650/BIOMARCADORES/derivatives/data_long/IC'
     # IC
     #data_ic_sova_G1G2=pd.read_feather(fr'{path}\sovaHarmony\integration\ic\G1G2\Data_complete_ic_sovaharmony_G1G2.feather')
     #data_ic_harmo_G1G2=pd.read_feather(fr'{path}\neuroHarmonize\integration\ic\G1G2\Data_complete_ic_neuroHarmonize_G1G2.feather')
     #graph_harmonize(path,data_ic_sova_G1G2,data_ic_harmo_G1G2,'ic','G1','G2')
     #print(2)
     #print('Data_complete_ic_sovaharmony_G1\n','Data_complete_ic_neuroHarmonize_G1')
-<<<<<<< HEAD:Manipulacion- Rois-Componentes de todas las DB/graficos_data_harmonized.py
     data_ic_sova_CTR=pd.read_feather(fr'{path}\sovaharmony\integration\ic\G1\Data_complete_ic_sovaharmony_G1.feather')
     data_ic_sova_CTR['group'] = data_ic_sova_CTR['group'].replace('G2', 'Control')
     data_ic_harmo_CTR=pd.read_feather(fr'{path}\neuroHarmonize\integration\ic\G1\Data_complete_ic_neuroHarmonize_G1.feather')
     data_ic_harmo_CTR['group'] = data_ic_harmo_CTR['group'].replace('G2', 'Control')
     graph_harmonize(path,data_ic_sova_CTR,data_ic_harmo_CTR,'ic','Control','Control')
     graph_harmonize(path,data_ic_sova_CTR,data_ic_harmo_CTR,'ic','G1','Control')
-=======
     #data_ic_sova_CTR=pd.read_feather(fr'{path}\sovaHarmony\integration\ic\G1\Data_complete_ic_sovaharmony_G1.feather')
     data_power=pd.read_feather(fr'{path}\data_CE_irasa_long_BIOMARCADORES_54x10_components.feather'.replace('\\','/'))#data_ic_harmo_CTR=pd.read_feather(fr'{path}\neuroHarmonize\integration\ic\G1\Data_complete_ic_neuroHarmonize_G1.feather')
 
     #graph_harmonize(path,data_ic_sova_CTR,data_ic_harmo_CTR,'ic','Control','Control')
     graph_harmonize(path,data_power,data_ic_harmo_CTR,'ic','G1','Control')
->>>>>>> bb97e5b2279ecc439304766088dfd4a46e9b44c9:Manipulation/graficos_data_harmonized.py
     #print(4)
     #print('Data_complete_ic_sovaharmony_DTA\n','Data_complete_ic_neuroHarmonize_DTA')
     ##data_ic_sova_DTA=pd.read_feather(fr'{path}\sovaHarmony\integration\ic\DTA\Data_complete_ic_sovaharmony_DTA.feather')

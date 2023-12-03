@@ -290,17 +290,13 @@ def joinimages(paths):
     print('Done!')
 
 #path=r'C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_BD' #Cambia dependieron de quien lo corra
-<<<<<<< HEAD:Manipulacion- Rois-Componentes de todas las DB/Graficos_power_sl_coherencia_entropia_cross.py
 path=r'C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_Correcciones_Evaluador\Datosparaorganizardataframes\11092023\sovaharmony\long G1' #Cambia dependieron de quien lo corra
-=======
 #path=r'C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_Correcciones_Evaluador' #Cambia dependieron de quien lo corra
->>>>>>> bb97e5b2279ecc439304766088dfd4a46e9b44c9:Manipulation/Graficos_power_sl_coherencia_entropia_cross.py
 #path=r'C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_54x10' #Cambia dependieron de quien lo corra
 #path = askdirectory() 
 path='/media/gruneco-server/ADATA HD650/BIOMARCADORES/derivatives/data_columns/IC'
 
 #data loading
-<<<<<<< HEAD:Manipulacion- Rois-Componentes de todas las DB/Graficos_power_sl_coherencia_entropia_cross.py
 #data_p_roi=pd.read_feather(fr'{path}\data_long_power_roi_without_oitliers.feather')
 #data_p_com=pd.read_feather(fr'{path}\data_long_power_components_without_oitliers.feather')
 #data_sl_roi=pd.read_feather(fr'{path}\data_long_sl_roi.feather')
@@ -328,7 +324,6 @@ data_cr_com=pd.read_feather(fr'{path}\data_long_crossfreq_ic.feather')
 #datos_com={'Power':data_p_com,'SL':data_sl_com,'Coherence':data_c_com,'Entropy':data_e_com,'Cross Frequency':data_cr_com}
 datos_roi={'Cross Frequency':data_cr_roi}
 datos_com={'Cross Frequency':data_cr_com}
-=======
 #data_p_roi=pd.read_feather(fr'{path}\Datosparaorganizardataframes\revisar\data_long_power_roi_without_oitliers.feather')
 #data_p_com=pd.read_feather(fr'{path}\Datosparaorganizardataframes\data_long_power_components_without_oitliers.feather')
 data_p_com=pd.read_feather(fr'{path}\data_BIOMARCADORES_CE_columns_irasa_54x10_components.feather'.replace('\\','/'))
@@ -345,10 +340,8 @@ data_p_com=pd.read_feather(fr'{path}\data_BIOMARCADORES_CE_columns_irasa_54x10_c
 #datos_com={'Power':data_p_com,'SL':data_sl_com,'Coherence':data_c_com,'Entropy':data_e_com,'Cross Frequency':data_cr_com}
 #datos_roi={'SL':data_sl_roi}
 datos_com={'power':data_p_com}
->>>>>>> bb97e5b2279ecc439304766088dfd4a46e9b44c9:Manipulation/Graficos_power_sl_coherencia_entropia_cross.py
-
 bands= data_p_com['Band'].unique()
-#bandsm= data_p_com['M_Band'].unique()
+bandsm= data_p_com['M_Band'].unique()
 
 #matrix_roi=pd.DataFrame(columns=['group', 'ROI', 'A', 'B', 'cv', 'effect size', 'space', 'state','band','mband', 'metric'])
 matrix_com=pd.DataFrame(columns=['group', 'Component', 'A', 'B', 'cv', 'effect size', 'space', 'state','band','mband', 'metric'])
@@ -378,7 +371,6 @@ for metric in datos_com.keys():
             # os.remove(tg_roi)
             # os.remove(tg_com)
             #matrix_roi = matrix_roi.append(check_roi, ignore_index = True)
-<<<<<<< HEAD:Manipulacion- Rois-Componentes de todas las DB/Graficos_power_sl_coherencia_entropia_cross.py
             #matrix_com = matrix_com.append(check_com, ignore_index = True)
             #matrix_roi = matrix_roi.append(check_tg_roi, ignore_index = True)
             matrix_com = matrix_com.append(check_tg_com, ignore_index = True)
@@ -411,7 +403,7 @@ for metric in datos_com.keys():
                         matrix_com = matrix_com.append(check_tg_com, ignore_index = True)   
                 except:
                     pass
-=======
+
             matrix_com = pd.concat((matrix_com,check_com), ignore_index = True)
             #matrix_roi = matrix_roi.append(check_tg_roi, ignore_index = True)
             #matrix_com = matrix_com.append(check_tg_com, ignore_index = True)
@@ -439,7 +431,6 @@ for metric in datos_com.keys():
         #             # os.remove(tg_com) 
         #             matrix_com = matrix_com.append(check_com, ignore_index = True)
         #             matrix_com = matrix_com.append(check_tg_com, ignore_index = True)   
->>>>>>> bb97e5b2279ecc439304766088dfd4a46e9b44c9:Manipulation/Graficos_power_sl_coherencia_entropia_cross.py
 
 print('table lista')
 matrix_com['Compared groups']=matrix_com['A']+'-'+matrix_com['B']

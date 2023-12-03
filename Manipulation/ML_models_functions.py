@@ -1,4 +1,3 @@
-<<<<<<< HEAD:Manipulacion- Rois-Componentes de todas las DB/ML_models_functions.py
 #Importación librerías y carga de datos
 
 """
@@ -26,8 +25,8 @@ from sklearn.ensemble import RandomForestClassifier
 import seaborn as sns
 from boruta import BorutaPy
 from tpot import TPOTClassifier
-import dataframe_image as dfi
-from keras.models import Sequential,load_model,model_from_json
+#import dataframe_image as dfi
+#from keras.models import Sequential,load_model,model_from_json
 import itertools
 import joblib  
 from sklearn.metrics import confusion_matrix, recall_score, precision_score
@@ -471,16 +470,6 @@ def tpot(X,X_train, y_train):
 
     return tpot_classifier
 
-
-
-
-
-
-
-
-
-
-=======
 #Importación librerías y carga de datos
 
 """
@@ -508,8 +497,8 @@ from sklearn.ensemble import RandomForestClassifier
 import seaborn as sns
 from boruta import BorutaPy
 from tpot import TPOTClassifier
-import dataframe_image as dfi
-from keras.models import Sequential,load_model,model_from_json
+#import dataframe_image as dfi
+#from keras.models import Sequential,load_model,model_from_json
 import itertools
 import joblib  
 from sklearn.metrics import confusion_matrix, recall_score, precision_score
@@ -951,14 +940,3 @@ def tpot(X,X_train, y_train):
     tpot_classifier = pipeline_optimizer.fit(X_train, y_train)
 
     return tpot_classifier
-
-
-
-
-
-
-
-
-
-
->>>>>>> bb97e5b2279ecc439304766088dfd4a46e9b44c9:Manipulation/ML_models_functions.py
