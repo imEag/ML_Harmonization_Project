@@ -1,0 +1,3 @@
+power_C15_Beta2
+power_C15_Beta3
+power_C25_Gamma
