@@ -1,6 +1,5 @@
-<<<<<<< HEAD:Manipulacion- Rois-Componentes de todas las DB/ML_models_exec.py
 #The functions created in the _funciones file are imported
-from ML_models_functions import computerprecision,confusion_matrix,depuration,heat_map, classif_report, random_forest,train_test_accuracy_plot, boruta, feat_selection_decision_tree, plot_learning_curve, svm_grid_search, tpot
+#from ML_models_functions import computerprecision,confusion_matrix,depuration,heat_map, classif_report, random_forest,train_test_accuracy_plot, boruta, feat_selection_decision_tree, plot_learning_curve, svm_grid_search, tpot
 import pandas as pd
 from sklearn.model_selection import train_test_split
 import numpy as np
@@ -208,16 +207,8 @@ for index, feature_name in enumerate(sorted_names,start=1):
     acc.append(np.mean(scores_best))
     std.append(np.std(scores_best))
 
-
-
-
-
-
-
-
-=======
 #The functions created in the _funciones file are imported
-from ML_models_functions import computerprecision,confusion_matrix,depuration,heat_map, classif_report, random_forest,train_test_accuracy_plot, boruta, feat_selection_decision_tree, plot_learning_curve, svm_grid_search, tpot
+#from ML_models_functions import computerprecision,confusion_matrix,depuration,heat_map, classif_report, random_forest,train_test_accuracy_plot, boruta, feat_selection_decision_tree, plot_learning_curve, svm_grid_search, tpot
 import pandas as pd
 from sklearn.model_selection import train_test_split
 import numpy as np
@@ -423,12 +414,3 @@ for index, feature_name in enumerate(sorted_names,start=1):
 
     acc.append(np.mean(scores_best))
     std.append(np.std(scores_best))
-
-
-
-
-
-
-
-
->>>>>>> bb97e5b2279ecc439304766088dfd4a46e9b44c9:Manipulation/ML_models_exec.py

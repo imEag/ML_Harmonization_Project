@@ -3,7 +3,7 @@ import collections
 import pandas as pd 
 import seaborn as sns
 import numpy as np
-import pingouin as pg
+#import pingouin as pg
 from numpy import ceil 
 import errno
 from matplotlib import pyplot as plt
@@ -343,6 +343,8 @@ datos_com={'power':data_p_com}
 bands= data_p_com['Band'].unique()
 bandsm= data_p_com['M_Band'].unique()
 
+bands= data_p_com['Band'].unique()
+#bandsm= data_p_com['M_Band'].unique()
 #matrix_roi=pd.DataFrame(columns=['group', 'ROI', 'A', 'B', 'cv', 'effect size', 'space', 'state','band','mband', 'metric'])
 matrix_com=pd.DataFrame(columns=['group', 'Component', 'A', 'B', 'cv', 'effect size', 'space', 'state','band','mband', 'metric'])
 

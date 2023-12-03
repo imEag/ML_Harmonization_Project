@@ -14,14 +14,8 @@ import joblib
 from sklearn.svm import SVC
 
 
-def exec(path_save,data,var,model=None):
+def exec(neuro,name,space,path_save,data,var,class_names,model=None):
     # Directorio de resultados
-    path = path_save + '/dataframes'
-
-    neuro = 'neuroHarmonize'
-    name = 'G1'
-    space = 'ic'
-    #path_df = f'{path}/{neuro}/integration/{space}/{name}/Data_complete_{space}_{neuro}_{name}.feather'
     path_plot = path_save + f'/graphics/ML/{neuro}/{name}_{var}_{space}'
     path_excel = path_save + f'/tables/ML/{space}/{name}'
     path_excel1 = path_excel + f'/describe_all_{var}.xlsx'
@@ -45,13 +39,13 @@ def exec(path_save,data,var,model=None):
         data.groupby(by='group').describe().T.to_excel(path_excel2)
 
         # Selección de características y entrenamiento de modelos
-        m = ['power', 'sl', 'cohfreq', 'entropy', 'crossfreq']
-        bm = ['Mdelta', 'Mtheta', 'Malpha-1', 'Malpha-2', 'Mbeta1', 'Mbeta2', 'Mbeta3', 'Mgamma']
+        #m = ['power', 'sl', 'cohfreq', 'entropy', 'crossfreq']
+        #bm = ['Mdelta', 'Mtheta', 'Malpha-1', 'Malpha-2', 'Mbeta1', 'Mbeta2', 'Mbeta3', 'Mgamma']
 
-        if space == 'roi':
-            roi = ['F', 'C', 'T', 'PO']
-        elif space == 'ic':
-            roi = ['C14', 'C15', 'C18', 'C20', 'C22', 'C23', 'C24', 'C25']
+        #if space == 'roi':
+        #    roi = ['F', 'C', 'T', 'PO']
+        #elif space == 'ic':
+        #    roi = ['C14', 'C15', 'C18', 'C20', 'C22', 'C23', 'C24', 'C25']
 
         #data = delcol(data, m, ['Gamma'], roi, bm)
         col_del = pd.DataFrame()
@@ -135,8 +129,8 @@ def exec(path_save,data,var,model=None):
         title = 'validation_GridSearch.png'
         curva_validacion(GS_fitted,X_train,y_train,path_plot,title)
 
-        ## Arbles de decision (Boruta)
-
+        ## Arbles de decision (Boruta) #MODELO #1
+        
         feat_selector = BorutaPy(
                                 verbose=2,
                                 estimator=best_selected,
@@ -195,7 +189,10 @@ def exec(path_save,data,var,model=None):
         title = 'validation_Boruta.png'
         curva_validacion(boruta_fitted,X_transform,y_train,path_plot,title)
 
-        # Selección de caracteristicas con árboles de decisión
+        cm_test = confusion_matrix(y_test,classes_x)
+        plot_confusion_matrix(path_plot,cm_test,classes=class_names,title='Confusion matrix')
+
+        # Selección de caracteristicas con árboles de decisión MODELO #2
         feat = pd.DataFrame()
         nombres_columnas = data.columns[:-1]
         best_selected.fit(X_train, y_train)
@@ -252,40 +249,46 @@ def exec(path_save,data,var,model=None):
     output_file = path_plot + '/' + new_name + '_.csv'
     computerprecision(y_test, classes_x, output_file)
 
-
-    class_names=['Control','G1']
     cm_test = confusion_matrix(y_test,classes_x)
     plot_confusion_matrix(path_plot,cm_test,classes=class_names,title='Confusion matrix')
 
     title = 'validation_1_DecisionTree.png'
     curva_validacion(fbest_model,X_train[:, input_best_index],y_train,path_plot,title)
 
-    best_best_features=best_features[:15]
-    acc, std, fbest_model, input_best_index = features_best(best_best_features,best_selected,data,X_train,y_train,path_plot)
-    print(acc[-1])
-    print(std[-1])
-    predicted = fbest_model.predict(X_test[:,input_best_index])
-    classes_x=(predicted >= 0.5).astype(int)
-    output_file = path_plot + '/' + title[:-4] + '_.csv'
-    computerprecision(y_test, classes_x, output_file)
+    #best_best_features=best_features[:15]
+    #acc, std, fbest_model, input_best_index = features_best(best_best_features,best_selected,data,X_train,y_train,path_plot)
+    #print(acc[-1])
+    #print(std[-1])
+    #predicted = fbest_model.predict(X_test[:,input_best_index])
+    #classes_x=(predicted >= 0.5).astype(int)
+    #output_file = path_plot + '/' + title[:-4] + '_.csv'
+    #computerprecision(y_test, classes_x, output_file)
+
+    #cm_test = confusion_matrix(y_test,classes_x)
+    #plot_confusion_matrix(path_plot,cm_test,classes=class_names,title='Confusion matrix')
+
+    #title = 'validation_DecisionTree.png'
+    #curva_validacion(fbest_model,X_transform,y_train,path_plot,title)
 
 
-    class_names=['Control','G1']
-    cm_test = confusion_matrix(y_test,classes_x)
-    plot_confusion_matrix(path_plot,cm_test,classes=class_names,title='Confusion matrix')
+#path_save = r'E:\Academico\Universidad\Posgrado\Tesis\Paquetes\Data_analysis_ML_Harmonization_Proyect\Manipulacion- Rois-Componentes de todas las DB\Resultados'
+#data = pd.read_feather(r'E:\Academico\Universidad\Posgrado\Tesis\Paquetes\Data_analysis_ML_Harmonization_Proyect\Manipulacion- Rois-Componentes de todas las DB\Dataframes\Data_complete_ic_neuroHarmonize_G1.feather')
+#var = ''
+#exec(path_save,data,var)
+#
+#path_save = r'E:\Academico\Universidad\Posgrado\Tesis\Paquetes\Data_analysis_ML_Harmonization_Proyect\Manipulacion- Rois-Componentes de todas las DB\Resultados'
+#data = pd.read_feather(r'E:\Academico\Universidad\Posgrado\Tesis\Paquetes\Data_analysis_ML_Harmonization_Proyect\Manipulacion- Rois-Componentes de todas las DB\Dataframes\Data_complete_ic_neuroHarmonize_G1_54x10.feather')
+#var = '54x10'
+#exec(path_save,data,var)
 
-    title = 'validation_DecisionTree.png'
-    curva_validacion(fbest_model,X_transform,y_train,path_plot,title)
 
-
+neuro = 'sovaharmony'
+name = 'G1'
+space = 'ic'
 path_save = r'E:\Academico\Universidad\Posgrado\Tesis\Paquetes\Data_analysis_ML_Harmonization_Proyect\Manipulacion- Rois-Componentes de todas las DB\Resultados'
-data = pd.read_feather(r'E:\Academico\Universidad\Posgrado\Tesis\Paquetes\Data_analysis_ML_Harmonization_Proyect\Manipulacion- Rois-Componentes de todas las DB\Dataframes\Data_complete_ic_neuroHarmonize_G1.feather')
+data = pd.read_feather(r'E:\Academico\Universidad\Posgrado\Tesis\Paquetes\Data_analysis_ML_Harmonization_Proyect\Manipulacion- Rois-Componentes de todas las DB\Dataframes\Data_complete_ic_sovaharmony_G1.feather')
 var = ''
-exec(path_save,data,var)
-
-path_save = r'E:\Academico\Universidad\Posgrado\Tesis\Paquetes\Data_analysis_ML_Harmonization_Proyect\Manipulacion- Rois-Componentes de todas las DB\Resultados'
-data = pd.read_feather(r'E:\Academico\Universidad\Posgrado\Tesis\Paquetes\Data_analysis_ML_Harmonization_Proyect\Manipulacion- Rois-Componentes de todas las DB\Dataframes\Data_complete_ic_neuroHarmonize_G1_54x10.feather')
-var = '54x10'
-exec(path_save,data,var)
+class_names=['Control','G1']
+exec(neuro,name,space,path_save,data,var,class_names)
 
 
