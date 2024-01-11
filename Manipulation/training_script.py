@@ -16,11 +16,11 @@ from sklearn.svm import SVC
 
 def exec(neuro,name,space,path_save,data,var,class_names,model=None):
     # Directorio de resultados
-    path_plot = path_save + f'/graphics/ML/{neuro}/{name}_{var}_{space}'
-    path_excel = path_save + f'/tables/ML/{space}/{name}'
-    path_excel1 = path_excel + f'/describe_all_{var}.xlsx'
-    path_excel2 = path_excel + f'/describe_{var}.xlsx'
-    path_excel3 = path_excel + f'/features_{var}.xlsx'
+    path_plot = os.path.join(path_save, f'graphics/ML/{neuro}/{name}_{var}_{space}')
+    path_excel = os.path.join(path_save, f'tables/ML/{space}/{name}')
+    path_excel1 = os.path.join(path_excel, f'describe_all_{var}.xlsx')
+    path_excel2 = os.path.join(path_excel, f'describe_{var}.xlsx')
+    path_excel3 = os.path.join(path_excel, f'features_{var}.xlsx')
 
     # Asegúrate de que la carpeta de destino exista
     os.makedirs(path_plot, exist_ok=True)
@@ -35,6 +35,11 @@ def exec(neuro,name,space,path_save,data,var,class_names,model=None):
         for group in data['group'].unique():
             print('{} : {}'.format(group, (data['group'] == group).sum()))
 
+        # Asegúrate de que la carpeta de destino exista
+        for path in [path_plot, path_excel]:
+            os.makedirs(path, exist_ok=True)
+
+        # Save Excel file
         data.describe().T.to_excel(path_excel1)
         data.groupby(by='group').describe().T.to_excel(path_excel2)
 
@@ -188,7 +193,8 @@ def exec(neuro,name,space,path_save,data,var,class_names,model=None):
 
         title = 'validation_Boruta.png'
         curva_validacion(boruta_fitted,X_transform,y_train,path_plot,title)
-
+        
+        classes_x=(predicted >= 0.5).astype(int)
         cm_test = confusion_matrix(y_test,classes_x)
         plot_confusion_matrix(path_plot,cm_test,classes=class_names,title='Confusion matrix')
 
@@ -271,15 +277,24 @@ def exec(neuro,name,space,path_save,data,var,class_names,model=None):
     #curva_validacion(fbest_model,X_transform,y_train,path_plot,title)
 
 
+#neuro = 'neuroHarmonize'
+#name = 'G1'
+#space = 'ic'
 #path_save = r'E:\Academico\Universidad\Posgrado\Tesis\Paquetes\Data_analysis_ML_Harmonization_Proyect\Manipulacion- Rois-Componentes de todas las DB\Resultados'
 #data = pd.read_feather(r'E:\Academico\Universidad\Posgrado\Tesis\Paquetes\Data_analysis_ML_Harmonization_Proyect\Manipulacion- Rois-Componentes de todas las DB\Dataframes\Data_complete_ic_neuroHarmonize_G1.feather')
 #var = ''
-#exec(path_save,data,var)
-#
-#path_save = r'E:\Academico\Universidad\Posgrado\Tesis\Paquetes\Data_analysis_ML_Harmonization_Proyect\Manipulacion- Rois-Componentes de todas las DB\Resultados'
-#data = pd.read_feather(r'E:\Academico\Universidad\Posgrado\Tesis\Paquetes\Data_analysis_ML_Harmonization_Proyect\Manipulacion- Rois-Componentes de todas las DB\Dataframes\Data_complete_ic_neuroHarmonize_G1_54x10.feather')
-#var = '54x10'
-#exec(path_save,data,var)
+#class_names=['Control','G1']
+#exec(neuro,name,space,path_save,data,var,class_names)
+
+
+neuro = 'neuroHarmonize'
+name = 'G1'
+space = 'ic'
+path_save = r'E:\Academico\Universidad\Posgrado\Tesis\Paquetes\Data_analysis_ML_Harmonization_Proyect\Manipulacion- Rois-Componentes de todas las DB\Resultados'
+data = pd.read_feather(r'E:\Academico\Universidad\Posgrado\Tesis\Paquetes\Data_analysis_ML_Harmonization_Proyect\Manipulacion- Rois-Componentes de todas las DB\Dataframes\Data_complete_ic_neuroHarmonize_G1_54x10.feather')
+var = '54x10'
+class_names=['Control','G1']
+exec(neuro,name,space,path_save,data,var,class_names)
 
 
 neuro = 'sovaharmony'

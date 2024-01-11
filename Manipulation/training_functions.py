@@ -197,6 +197,114 @@ def curva_validacion(GS_fitted,X_train,y_train,path_plot,title):
     plt.savefig(path_plot+'/'+title)
     plt.close()
 
+def curva_validacion2(GS_fitted1,GS_fitted2,X_train1,y_train1,X_train2,y_train2,path_plot,title):
+    palette = ["#8AA6A3","#127369","#10403B","#45C4B0"]
+    
+    train_sizes1, train_scores1, test_scores1 = \
+    learning_curve(
+                    estimator=GS_fitted1,
+                    X=X_train1,
+                    y=y_train1,
+                    train_sizes=np.linspace(0.1, 0.8, 8),
+                    cv=10,
+                    n_jobs=-1
+                    )
+    train_mean1 = np.mean(train_scores1, axis=1)
+    train_std1 = np.std(train_scores1, axis=1)
+    test_mean1 = np.mean(test_scores1, axis=1)
+    test_std1 = np.std(test_scores1, axis=1)
+
+    train_sizes2, train_scores2, test_scores2 = \
+    learning_curve(
+                    estimator=GS_fitted2,
+                    X=X_train2,
+                    y=y_train2,
+                    train_sizes=np.linspace(0.1, 0.8, 8),
+                    cv=10,
+                    n_jobs=-1
+                    )
+    train_mean2 = np.mean(train_scores2, axis=1)
+    train_std2 = np.std(train_scores2, axis=1)
+    test_mean2 = np.mean(test_scores2, axis=1)
+    test_std2 = np.std(test_scores2, axis=1)
+
+    plt.fill_between(
+                train_sizes1,
+                train_mean1 + train_std1,
+                train_mean1 - train_std1,
+                alpha=0.15,
+                color=palette[0]
+                )
+    plt.plot(
+            train_sizes1,
+            train_mean1,
+            color=palette[0],
+            marker='o',
+            markersize=5,
+            label='training accuracy'
+            )
+    
+    plt.fill_between(
+            train_sizes2,
+            train_mean2 + train_std2,
+            train_mean2 - train_std2,
+            alpha=0.15,
+            color=palette[1]
+            )
+    
+    plt.plot(
+            train_sizes2,
+            train_mean2,
+            color=palette[1],
+            marker='o',
+            markersize=5,
+            label='training accuracy'
+            )
+
+    plt.fill_between(
+                train_sizes1,
+                test_mean1 + test_std1,
+                test_mean1 - test_std1,
+                alpha=0.15,
+                color=palette[2]
+                )
+    plt.plot(
+            train_sizes1,
+            test_mean1,
+            color=palette[2],
+            linestyle='--',
+            marker='s',
+            markersize=5,
+            label='validation accuracy'
+            )
+    
+    plt.fill_between(
+                train_sizes2,
+                test_mean2 + test_std2,
+                test_mean2 - test_std2,
+                alpha=0.15,
+                color=palette[3]
+                )
+    plt.plot(
+            train_sizes2,
+            test_mean2,
+            color=palette[3],
+            linestyle='--',
+            marker='s',
+            markersize=5,
+            label='validation accuracy'
+            )
+
+    plt.grid()
+    plt.title('Validation curve for ' + title[11:-4])
+    plt.xlabel('Number of training samples')
+    plt.ylabel('Accuracy')
+    plt.legend(loc='lower right')
+    plt.ylim([0.5, 1.0])
+
+    plt.savefig(path_plot+'/'+title)
+    plt.close()
+
 def primeras_carateristicas(X_train, sorted_names,nombres_columnas,features_scores,feat,index,path_plot):
     for f in range(X_train.shape[1]):
         sorted_names.append(nombres_columnas[index[f]])
@@ -348,6 +456,79 @@ def features_best(best_features,best_selected,data,X_train,y_train,path_plot):
     plt.savefig(path_plot+'/'+'features_plot_best.png')
     plt.close()
     return acc, std, fbest_model, input_best_index
+
+def features_best2(best_features1,best_features2,best_selected1,best_selected2,data1,data2,X_train1,y_train1,X_train2,y_train2,path_plot):
+    acc1 = []
+    std1 = []
+    acc2 = []
+    std2 = []
+    m=[]
+    for index, feature_name1 in enumerate(best_features1,start=1):
+
+        input_features_best = best_features1[:index]
+        input_best_index1 = [data1.columns.get_loc(c) for c
+                        in input_features_best if c in data1]
+        fbest_model1 = best_selected1.fit(X_train1[:, input_best_index1], y_train1)
+        scores_best1 = cross_val_score(
+                            estimator=fbest_model1,
+                            X=X_train1[:, input_best_index1],
+                            y=y_train1,
+                            cv=10,
+                            n_jobs=-1
+                            )
+    for index, feature_name2 in enumerate(best_features2,start=1):
+
+        input_features_best = best_features2[:index]
+        input_best_index2 = [data2.columns.get_loc(c) for c
+                        in input_features_best if c in data2]
+        fbest_model2 = best_selected2.fit(X_train2[:, input_best_index2], y_train2)
+        scores_best2 = cross_val_score(
+                            estimator=fbest_model2,
+                            X=X_train2[:, input_best_index2],
+                            y=y_train2,
+                            cv=10,
+                            n_jobs=-1
+                            )
+
+        acc1.append(np.mean(scores_best1))
+        std1.append(np.std(scores_best1))
+        
+        acc2.append(np.mean(scores_best2))
+        std2.append(np.std(scores_best2))
+
+    plt.plot(
+            range(1, len(acc1)+1),
+            acc1,
+            color='#EF3300'
+            )
+    plt.plot(
+            range(1, len(acc2)+1),
+            acc2,
+            color='#F05E00'
+            )
+    plt.title('Learning Curve Decision Tree')
+    plt.xlabel('Number of features')
+    plt.ylabel('Accuracy')
+
+    plt.fill_between(
+                    range(1, len(acc1)+1),
+                    np.array(acc1) + np.array(std1),
+                    np.array(acc1) - np.array(std1),
+                    alpha=0.15,
+                    color='#EF3300'
+                    )
+    plt.fill_between(
+                    range(1, len(acc2)+1),
+                    np.array(acc2) + np.array(std2),
+                    np.array(acc2) - np.array(std2),
+                    alpha=0.15,
+                    color='#F05E00'
+                    )
+
+    plt.grid()
+    plt.savefig(path_plot+'/'+'features_plot_best.png')
+    plt.close()
+    return acc1, std1, fbest_model1, input_best_index1,acc2, std2, fbest_model2, input_best_index2
 
 # compute precision and recall
 def computerprecision(test_label, classes_x, output_file):

@@ -1,0 +1,5 @@
+power_C3_Gamma
+power_C4_Gamma
+power_C6_Gamma
+power_C1_Gamma
+power_C2_Gamma
