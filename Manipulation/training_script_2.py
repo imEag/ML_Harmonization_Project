@@ -165,7 +165,7 @@ def exec(neuro, name, space, path_save, data1, data2, var1, var2, class_names, m
         features_scores1 = best_selected1.feature_importances_
         index1 = np.argsort(features_scores1)[::-1]
         feat1 = primeras_carateristicas(X_train1, sorted_names1,nombres_columnas1,features_scores1,feat1,index1,path_plot)
-        #curva_de_aprendizaje(sorted_names1,data1,best_selected1,X_train1,y_train1,modelos1,acc_per_feature1,std_per_feature1,path_plot)
+        curva_de_aprendizaje(sorted_names1,data1,best_selected1,X_train1,y_train1,modelos1,acc_per_feature1,std_per_feature1,path_plot)
 
         GS_fitted1 = best_selected1.fit(X_train1, y_train1)
         modelos1['GridSerach'] = GS_fitted1
@@ -246,7 +246,7 @@ def exec(neuro, name, space, path_save, data1, data2, var1, var2, class_names, m
         features_scores2 = best_selected2.feature_importances_
         index2 = np.argsort(features_scores2)[::-1]
         feat2 = primeras_carateristicas(X_train2, sorted_names2,nombres_columnas2,features_scores2,feat2,index2,path_plot)
-        #curva_de_aprendizaje(sorted_names2,data2,best_selected2,X_train2,y_train2,modelos2,acc_per_feature2,std_per_feature2,path_plot)
+        curva_de_aprendizaje(sorted_names2,data2,best_selected2,X_train2,y_train2,modelos2,acc_per_feature2,std_per_feature2,path_plot)
         
         
         
