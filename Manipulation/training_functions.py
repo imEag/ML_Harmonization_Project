@@ -56,7 +56,7 @@ def plot_confusion_matrix(path_plot, cm, classes, normalize=False, title='Confus
     plt.tight_layout()
     plt.ylabel('True label')
     plt.xlabel('Predicted label')
-    plt.savefig(path_plot+'/'+'confusion_matrix.png')
+    plt.savefig(path_plot+'/'+title+'.png')
     plt.close()
 
 def delcol(data, m, b, roi, bm=None):
@@ -197,32 +197,30 @@ def curva_validacion(GS_fitted,X_train,y_train,path_plot,title):
     plt.savefig(path_plot+'/'+title)
     plt.close()
 
-def curva_validacion2(GS_fitted1,GS_fitted2,X_train1,y_train1,X_train2,y_train2,path_plot,title):
+def curva_validacion2(GS_fitted1,GS_fitted2,X_train1,y_train1,X_train2,y_train2,path_plot,title,cross):
     palette = ["#8AA6A3","#127369","#10403B","#45C4B0"]
     
-    train_sizes1, train_scores1, test_scores1 = \
-    learning_curve(
-                    estimator=GS_fitted1,
-                    X=X_train1,
-                    y=y_train1,
-                    train_sizes=np.linspace(0.1, 0.8, 8),
-                    cv=10,
-                    n_jobs=-1
-                    )
+    train_sizes1, train_scores1, test_scores1 = learning_curve(
+        estimator=GS_fitted1,
+        X=X_train1,
+        y=y_train1,
+        train_sizes=np.linspace(0.1, 0.8, 8),
+        cv=cross,
+        n_jobs=-1
+    )
     train_mean1 = np.mean(train_scores1, axis=1)
     train_std1 = np.std(train_scores1, axis=1)
     test_mean1 = np.mean(test_scores1, axis=1)
     test_std1 = np.std(test_scores1, axis=1)
 
-    train_sizes2, train_scores2, test_scores2 = \
-    learning_curve(
-                    estimator=GS_fitted2,
-                    X=X_train2,
-                    y=y_train2,
-                    train_sizes=np.linspace(0.1, 0.8, 8),
-                    cv=10,
-                    n_jobs=-1
-                    )
+    train_sizes2, train_scores2, test_scores2 = learning_curve(
+        estimator=GS_fitted2,
+        X=X_train2,
+        y=y_train2,
+        train_sizes=np.linspace(0.1, 0.8, 8),
+        cv=cross,
+        n_jobs=-1
+    )
     train_mean2 = np.mean(train_scores2, axis=1)
     train_std2 = np.std(train_scores2, axis=1)
     test_mean2 = np.mean(test_scores2, axis=1)
@@ -241,7 +239,7 @@ def curva_validacion2(GS_fitted1,GS_fitted2,X_train1,y_train1,X_train2,y_train2,
             color=palette[0],
             marker='o',
             markersize=5,
-            label='training accuracy'
+            label='training accuracy 58x25'
             )
     
     plt.fill_between(
@@ -258,7 +256,7 @@ def curva_validacion2(GS_fitted1,GS_fitted2,X_train1,y_train1,X_train2,y_train2,
             color=palette[1],
             marker='o',
             markersize=5,
-            label='training accuracy'
+            label='training accuracy 54x10'
             )
 
     plt.fill_between(
@@ -275,7 +273,7 @@ def curva_validacion2(GS_fitted1,GS_fitted2,X_train1,y_train1,X_train2,y_train2,
             linestyle='--',
             marker='s',
             markersize=5,
-            label='validation accuracy'
+            label='validation accuracy 58x25'
             )
     
     plt.fill_between(
@@ -292,18 +290,27 @@ def curva_validacion2(GS_fitted1,GS_fitted2,X_train1,y_train1,X_train2,y_train2,
             linestyle='--',
             marker='s',
             markersize=5,
-            label='validation accuracy'
+            label='validation accuracy 54x10'
             )
 
     plt.grid()
     plt.title('Validation curve for ' + title[11:-4])
     plt.xlabel('Number of training samples')
     plt.ylabel('Accuracy')
-    plt.legend(loc='lower right')
-    plt.ylim([0.5, 1.0])
 
-    plt.savefig(path_plot+'/'+title)
+    # Modificar la posición de la leyenda
+    plt.legend(loc='lower center', bbox_to_anchor=(0.5, 0.85), ncol=2)
+
+    # Ajustar el límite visualmente a 1 sin cambiar el rango real hasta 1.1
+    #plt.ylim([0.5, 1.2])
+    plt.gca().set_ylim([0.5, 1.1])
+    nuevos_valores_y = [0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
+    plt.yticks(nuevos_valores_y)
+
+    fig = plt.gcf()
+    fig.savefig(path_plot + '/' + title)
     plt.close()
+
 
 def primeras_carateristicas(X_train, sorted_names,nombres_columnas,features_scores,feat,index,path_plot):
     for f in range(X_train.shape[1]):

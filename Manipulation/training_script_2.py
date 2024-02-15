@@ -165,6 +165,7 @@ def exec(neuro, name, space, path_save, data1, data2, var1, var2, class_names, m
         features_scores1 = best_selected1.feature_importances_
         index1 = np.argsort(features_scores1)[::-1]
         feat1 = primeras_carateristicas(X_train1, sorted_names1,nombres_columnas1,features_scores1,feat1,index1,path_plot)
+
         curva_de_aprendizaje(sorted_names1,data1,best_selected1,X_train1,y_train1,modelos1,acc_per_feature1,std_per_feature1,path_plot)
 
         GS_fitted1 = best_selected1.fit(X_train1, y_train1)
@@ -229,17 +230,6 @@ def exec(neuro, name, space, path_save, data1, data2, var1, var2, class_names, m
         acc_per_feature2.append(np.mean(scores2))
         std_per_feature2.append(np.std(scores2))
 
-        # Guardar mejore carateristicas
-        pos_model2 = np.argsort(acc_per_feature2)[-1]
-        best_model2 = list(modelos2.keys())[pos_model2]
-        best_features2=sorted_names2[:pos_model2]
-        mi_path2 = path_plot+'/'+'best_params2.txt'
-        f = open(mi_path2, 'w')
-
-        for i in params2:
-            f.write(i+'\n')
-        f.close()
-        
         feat2 = pd.DataFrame()
         sorted_names2 = []
         nombres_columnas2 = data2.columns[:-1]
@@ -248,11 +238,22 @@ def exec(neuro, name, space, path_save, data1, data2, var1, var2, class_names, m
         feat2 = primeras_carateristicas(X_train2, sorted_names2,nombres_columnas2,features_scores2,feat2,index2,path_plot)
         curva_de_aprendizaje(sorted_names2,data2,best_selected2,X_train2,y_train2,modelos2,acc_per_feature2,std_per_feature2,path_plot)
         
+        # Guardar mejore carateristicas
+        pos_model2 = np.argsort(acc_per_feature2)[-1]
+        best_model2 = list(modelos2.keys())[pos_model2]
+        best_features2=sorted_names2[:pos_model2]
+        mi_path2 = path_plot+'/'+'best_params2.txt'
         
+        f = open(mi_path2, 'w')
+        for i in params2:
+            f.write(i+'\n')
+        f.close()
         
         
         title = 'validation_GridSearch.png'
-        curva_validacion2(GS_fitted1,GS_fitted2,X_train1,y_train1,X_train2,y_train2,path_plot,title)
+        curva_validacion2(GS_fitted1,GS_fitted2,X_train1,y_train1,X_train2,y_train2,path_plot,title,10)
+
+        ## REVISAR DE ESTE PUNTO PARA ABAJO 
 
         acc1, std1, fbest_model1, input_best_index1,acc2, std2, fbest_model2, input_best_index2 = features_best2(best_features1,best_features2,best_selected1,best_selected2,data1,data2,X_train1,y_train1,X_train2,y_train2,path_plot)
         print(acc1[-1])
@@ -277,7 +278,7 @@ def exec(neuro, name, space, path_save, data1, data2, var1, var2, class_names, m
         plot_confusion_matrix(path_plot, cm_test2, classes=class_names, title='Confusion matrix2')
 
         title = 'validation_DecisionTree.png'
-        curva_validacion2(fbest_model1,fbest_model2, X_train1[:, input_best_index1],X_train2[:, input_best_index2],y_train1,y_train2, path_plot, title)
+        curva_validacion2(fbest_model1,fbest_model2, X_train1[:, input_best_index1],X_train2[:, input_best_index2],y_train1,y_train2, path_plot, title,5)
 
         
 # Ejemplo de uso
