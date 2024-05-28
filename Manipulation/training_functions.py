@@ -24,6 +24,10 @@ from tkinter.filedialog import askopenfilename
 from collections import defaultdict
 import csv
 
+## Permite correr dos archivos pero esta pensado para dos flujos diferentes, como sovaharmony y neuroharmonaze
+## Si busca realizar comparaciones utilice el archivo training_script_2.py 
+## Se utiliza cuando se quieren comparar 2 archivos que tengan una variación, por ejemplo diferentes ICA, por eso contine los parametros Var1 y Var2
+
 def compute_precision_recall(test_label, classes_x):
     precision_test = precision_score(test_label, classes_x)
     recall_test = recall_score(test_label, classes_x)
@@ -91,7 +95,8 @@ def grid_search():
     n_estimators = [100, 200, 300] #Antes de ChatGPT [int(x) for x in np.linspace(start = 100, stop = 2000, num = 30)]
 
     # Número máximo de características a considerar en cada división
-    max_features = ['auto', 'sqrt', 'log2']
+    #max_features = ['auto', 'sqrt', 'log2']
+    max_features = ['sqrt', 'log2'] # Cambio 27/05/2024
 
     # Profundidad máxima del árbol
     max_depth = [5, 10, 15, None] #Antes de ChatGPT [int(x) for x in np.linspace(10, 110, num = 11)]
@@ -196,6 +201,70 @@ def curva_validacion(GS_fitted,X_train,y_train,path_plot,title):
 
     plt.savefig(path_plot+'/'+title)
     plt.close()
+
+def curva_validacion3(GS_fitted,X_train,y_train,title,palette, var):
+    train_sizes, train_scores, test_scores = \
+    learning_curve(
+                    estimator=GS_fitted,
+                    X=X_train,
+                    y=y_train,
+                    train_sizes=np.linspace(0.1, 0.8, 8),
+                    cv=10,
+                    n_jobs=-1
+                    )
+    train_mean = np.mean(train_scores, axis=1)
+    train_std = np.std(train_scores, axis=1)
+    test_mean = np.mean(test_scores, axis=1)
+    test_std = np.std(test_scores, axis=1)
+
+    plt.plot(
+            train_sizes,
+            train_mean,
+            color=palette[0],
+            marker='o',
+            markersize=5,
+            label='training accuracy '+var
+            )
+
+    plt.fill_between(
+                    train_sizes,
+                    train_mean + train_std,
+                    train_mean - train_std,
+                    alpha=0.15,
+                    color=palette[0]
+                    )
+
+    plt.plot(
+            train_sizes,
+            test_mean,
+            color=palette[1],
+            linestyle='--',
+            marker='s',
+            markersize=5,
+            label='validation accuracy '+var
+            )
+
+    plt.fill_between(
+                    train_sizes,
+                    test_mean + test_std,
+                    test_mean - test_std,
+                    alpha=0.15,
+                    color=palette[1]
+                    )
+
+    plt.grid()
+    plt.title('Validation curve for ' + title[11:-4])
+    plt.xlabel('Number of training samples')
+    plt.ylabel('Accuracy')
+
+    # Modificar la posición de la leyenda
+    plt.legend(loc='lower center', bbox_to_anchor=(0.5, 0.0), ncol=2)
+
+    # Ajustar el límite visualmente a 1 sin cambiar el rango real hasta 1.1
+    #plt.ylim([0.5, 1.2])
+    plt.gca().set_ylim([0.3, 1.1])
+    nuevos_valores_y = [0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
+    plt.yticks(nuevos_valores_y)
 
 def curva_validacion2(GS_fitted1,GS_fitted2,X_train1,y_train1,X_train2,y_train2,path_plot,title,cross):
     palette = ["#8AA6A3","#127369","#10403B","#45C4B0"]
@@ -423,6 +492,10 @@ def features_best(best_features,best_selected,data,X_train,y_train,path_plot):
     acc = []
     std = []
     m=[]
+
+    # Verificar dimensiones de X_train
+    print("Dimensiones de X_train:", X_train.shape)
+    
     for index, feature_name in enumerate(best_features,start=1):
 
         input_features_best = best_features[:index]
@@ -463,6 +536,63 @@ def features_best(best_features,best_selected,data,X_train,y_train,path_plot):
     plt.savefig(path_plot+'/'+'features_plot_best.png')
     plt.close()
     return acc, std, fbest_model, input_best_index
+
+def features_best3(best_features, best_selected, data, X_train, y_train, path_plot):
+    acc = []
+    std = []
+
+    # Verificar dimensiones de X_train
+    print("Dimensiones de X_train:", X_train.shape)
+
+    for index, feature_name in enumerate(best_features, start=1):
+        input_features_best = best_features[:index]
+        input_best_index = [data.columns.get_loc(c) for c in input_features_best if c in data]
+        
+        # Verificar si el índice está fuera de rango
+        if any(idx >= X_train.shape[1] for idx in input_best_index):
+            print(f"Índice fuera de rango detectado en la iteración {index}: {input_best_index}")
+            continue
+        
+        # Información de depuración
+        print(f"Iteración {index}:")
+        print("Características seleccionadas:", input_features_best)
+        print("Índices de características:", input_best_index)
+
+        try:
+            fbest_model = best_selected.fit(X_train[:, input_best_index], y_train)
+            scores_best = cross_val_score(
+                estimator=fbest_model,
+                X=X_train[:, input_best_index],
+                y=y_train,
+                cv=10,
+                n_jobs=-1
+            )
+
+            acc.append(np.mean(scores_best))
+            std.append(np.std(scores_best))
+        except IndexError as e:
+            print(f"Error de índice en la iteración {index}: {e}")
+            continue
+
+    if acc:  # Ensure acc is not empty to avoid errors in return statement
+        plt.plot(range(1, len(acc) + 1), acc, color='red')
+        plt.title('Learning Curve Decision Tree')
+        plt.xlabel('Number of features')
+        plt.ylabel('Accuracy')
+
+        plt.fill_between(
+            range(1, len(acc) + 1),
+            np.array(acc) + np.array(std),
+            np.array(acc) - np.array(std),
+            alpha=0.15,
+            color='red'
+        )
+
+        plt.grid()
+        plt.savefig(path_plot + '/' + 'features_plot_best.png')
+        plt.close()
+    
+    return acc, std, fbest_model if acc else None, input_best_index if acc else None
 
 def features_best2(best_features1,best_features2,best_selected1,best_selected2,data1,data2,X_train1,y_train1,X_train2,y_train2,path_plot):
     acc1 = []

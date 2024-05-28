@@ -11,7 +11,7 @@ from tkinter.filedialog import askdirectory
 #path = askdirectory() 
 #path = r'C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_BD\Datosparaorganizardataframes/' 
 #path = r'C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_Paper\Datosparaorganizardataframes/'
-path = r'C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_Paper_V2\Datosparaorganizardataframes/'
+path = r'C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_Paper_V2\dataframes/'
 #path = r'C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_Correcciones_Evaluador\Datosparaorganizardataframes/11092023'
 A = 'G1'
 B = ''
@@ -25,15 +25,15 @@ group = 0
 for space in s:
     for neuro in h:
         if group == None:
-            data_power=pd.read_feather(rf'{path}\{neuro}\complete\{space}\{B}\Data_complete_{space}_{neuro}_{B}_power.feather'.replace('\\','/'))
-            data_sl=pd.read_feather(rf'{path}\{neuro}\complete\{space}\{B}\Data_complete_{space}_{neuro}_{B}_sl.feather'.replace('\\','/'))
-            data_cohfreq=pd.read_feather(rf'{path}\{neuro}\complete\{space}\{B}\Data_complete_{space}_{neuro}_{B}_cohfreq.feather'.replace('\\','/'))
-            data_entropy=pd.read_feather(rf'{path}\{neuro}\complete\{space}\{B}\Data_complete_{space}_{neuro}_{B}_entropy.feather'.replace('\\','/'))
-            data_crossfreq=pd.read_feather(rf'{path}\{neuro}\complete\{space}\{B}\Data_complete_{space}_{neuro}_{B}_crossfreq.feather'.replace('\\','/'))
+            data_power=pd.read_feather(rf'{path}\{neuro}\complete10\{space}\{B}\Data_complete_{space}_{neuro}_{B}_power.feather'.replace('\\','/'))
+            data_sl=pd.read_feather(rf'{path}\{neuro}\complete10\{space}\{B}\Data_complete_{space}_{neuro}_{B}_sl.feather'.replace('\\','/'))
+            data_cohfreq=pd.read_feather(rf'{path}\{neuro}\complete10\{space}\{B}\Data_complete_{space}_{neuro}_{B}_cohfreq.feather'.replace('\\','/'))
+            data_entropy=pd.read_feather(rf'{path}\{neuro}\complete10\{space}\{B}\Data_complete_{space}_{neuro}_{B}_entropy.feather'.replace('\\','/'))
+            data_crossfreq=pd.read_feather(rf'{path}\{neuro}\complete10\{space}\{B}\Data_complete_{space}_{neuro}_{B}_crossfreq.feather'.replace('\\','/'))
             data=pd.concat([data_power,data_sl,data_cohfreq,data_entropy,data_crossfreq], axis=1,)
             data = data.T.drop_duplicates().T
             new_name = 'Data_complete_'+space+'_'+neuro
-            path_integration = fr'{path}\{neuro}\integration\{space}'
+            path_integration = fr'{path}\{neuro}\integration10\{space}'
             os.makedirs(path_integration,exist_ok=True)
             data.reset_index(drop=True).to_feather('{path}\{name}.feather'.format(path=path_integration,name=new_name))
             #remove(rf'{path}\Data_complete_{space}_{neuro}_power.feather')
@@ -42,15 +42,16 @@ for space in s:
             #remove(rf'{path}\Data_complete_{space}_{neuro}_entropy.feather')
             #remove(rf'{path}\Data_complete_{space}_{neuro}_crossfreq.feather')
         else:
-            data_power=pd.read_feather(rf'{path}\{neuro}\complete\{space}\{A+B}\Data_complete_{space}_{neuro}_{A+B}_power.feather'.replace('\\','/'))
-            data_sl=pd.read_feather(rf'{path}\{neuro}\complete\{space}\{A+B}\Data_complete_{space}_{neuro}_{A+B}_sl.feather'.replace('\\','/'))
-            data_cohfreq=pd.read_feather(rf'{path}\{neuro}\complete\{space}\{A+B}\Data_complete_{space}_{neuro}_{A+B}_cohfreq.feather'.replace('\\','/'))
-            data_entropy=pd.read_feather(rf'{path}\{neuro}\complete\{space}\{A+B}\Data_complete_{space}_{neuro}_{A+B}_entropy.feather'.replace('\\','/'))
-            data_crossfreq=pd.read_feather(rf'{path}\{neuro}\complete\{space}\{A+B}\Data_complete_{space}_{neuro}_{A+B}_crossfreq.feather'.replace('\\','/'))
+            data_power=pd.read_feather(rf'{path}\{neuro}\complete10\{space}\{A+B}\Data_complete_{space}_{neuro}_{A+B}_power.feather'.replace('\\','/'))
+            data_sl=pd.read_feather(rf'{path}\{neuro}\complete10\{space}\{A+B}\Data_complete_{space}_{neuro}_{A+B}_sl.feather'.replace('\\','/'))
+            data_cohfreq=pd.read_feather(rf'{path}\{neuro}\complete10\{space}\{A+B}\Data_complete_{space}_{neuro}_{A+B}_cohfreq.feather'.replace('\\','/'))
+            data_entropy=pd.read_feather(rf'{path}\{neuro}\complete10\{space}\{A+B}\Data_complete_{space}_{neuro}_{A+B}_entropy.feather'.replace('\\','/'))
+            data_crossfreq=pd.read_feather(rf'{path}\{neuro}\complete10\{space}\{A+B}\Data_complete_{space}_{neuro}_{A+B}_crossfreq.feather'.replace('\\','/'))
             data=pd.concat([data_power,data_sl,data_cohfreq,data_entropy,data_crossfreq], axis=1,)
-            data = data.T.drop_duplicates().T
+            data = data.T.drop_duplicates().T #Por que no funciono este? 20/05/2024
+            data = data.loc[:, ~data.columns.duplicated()] #Me toco agregar este 20/05/2024
             new_name = 'Data_complete_'+space+'_'+neuro+'_'+A+B
-            path_integration = fr'{path}\{neuro}\integration\{space}\{A+B}'
+            path_integration = fr'{path}\{neuro}\integration10\{space}\{A+B}'
             os.makedirs(path_integration,exist_ok=True)
             data.reset_index(drop=True).to_feather('{path}\{name}.feather'.format(path=path_integration,name=new_name))
             #remove(rf'{path}\Data_complete_{space}_{neuro}_{B+A}_power.feather')

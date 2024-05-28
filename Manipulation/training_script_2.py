@@ -13,6 +13,9 @@ from sklearn import datasets, metrics
 import joblib
 from sklearn.svm import SVC
 
+## Se utiliza cuando se quieren comparar 2 archivos que tengan una variación, por ejemplo diferentes ICA, por eso contine los parametros Var1 y Var2
+## Esta basado en el archivo training_script.py que permite correr dos archivos pero esta pensado para dos flujos diferentes, como sovaharmony y neuroharmonaze
+
 def exec(neuro, name, space, path_save, data1, data2, var1, var2, class_names, model=None):
     
     path_plot = os.path.join(path_save, f'graphics/ML/{neuro}/{name}_{space}')
@@ -251,7 +254,18 @@ def exec(neuro, name, space, path_save, data1, data2, var1, var2, class_names, m
         
         
         title = 'validation_GridSearch.png'
-        curva_validacion2(GS_fitted1,GS_fitted2,X_train1,y_train1,X_train2,y_train2,path_plot,title,10)
+        #curva_validacion2(GS_fitted1,GS_fitted2,X_train1,y_train1,X_train2,y_train2,path_plot,title,10)
+        palette1 = ["#8AA6A3","#127369"]
+        palette2 = ["#10403B","#45C4B0"]
+        #curva_validacion3(GS_fitted1, X_train1,y_train1,title,palette1,'58x25')
+        #curva_validacion3(GS_fitted2, X_train2,y_train2,title,palette2, '54x10')
+
+        curva_validacion3(GS_fitted1, X_train1,y_train1,title,palette1,'5:1')
+        curva_validacion3(GS_fitted2, X_train2,y_train2,title,palette2, '10:1')
+        plt.grid()
+        fig = plt.gcf()
+        fig.savefig(path_plot + '/' + title)
+        plt.close()
 
         ## REVISAR DE ESTE PUNTO PARA ABAJO 
 
@@ -278,18 +292,35 @@ def exec(neuro, name, space, path_save, data1, data2, var1, var2, class_names, m
         plot_confusion_matrix(path_plot, cm_test2, classes=class_names, title='Confusion matrix2')
 
         title = 'validation_DecisionTree.png'
-        curva_validacion2(fbest_model1,fbest_model2, X_train1[:, input_best_index1],X_train2[:, input_best_index2],y_train1,y_train2, path_plot, title,5)
+        palette1 = ["#8AA6A3","#127369"]
+        palette2 = ["#10403B","#45C4B0"]
+        #curva_validacion2(fbest_model1,fbest_model2, X_train1[:, input_best_index1],X_train2[:, input_best_index2],y_train1,y_train2, path_plot, title,5)
+        #curva_validacion3(fbest_model1, X_train1[:, input_best_index1],y_train1,title,palette1,'58x25')
+        #curva_validacion3(fbest_model2, X_train2[:, input_best_index2],y_train2,title,palette2, '54x10')
 
+        curva_validacion3(fbest_model1, X_train1[:, input_best_index1],y_train1,title,palette1,'5:1')
+        curva_validacion3(fbest_model2, X_train2[:, input_best_index2],y_train2,title,palette2, '10:1')
+        plt.grid()
+        fig = plt.gcf()
+        fig.savefig(path_plot + '/' + title)
+        plt.close()
         
 # Ejemplo de uso
 neuro = 'neuroHarmonize'
 name = 'G1'
 space = 'ic'
-path_save = r'C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_Paper\Resultados'
-data1 = pd.read_feather(r'E:\Academico\Universidad\Posgrado\Tesis\Paquetes\Data_analysis_ML_Harmonization_Proyect\Manipulacion- Rois-Componentes de todas las DB\Dataframes\Data_complete_ic_neuroHarmonize_G1.feather')  # 58x25
-data2 = pd.read_feather(r'E:\Academico\Universidad\Posgrado\Tesis\Paquetes\Data_analysis_ML_Harmonization_Proyect\Manipulacion- Rois-Componentes de todas las DB\Dataframes\Data_complete_ic_neuroHarmonize_G1_54x10.feather')  # 54x10
-var1 = ''
-var2 = '54x10'
+#path_save = r'C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_Paper\Resultados'
+path_save = r"C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_Paper_V2\Resultados"
+#data1 = pd.read_feather(r'E:\Academico\Universidad\Posgrado\Tesis\Paquetes\Data_analysis_ML_Harmonization_Proyect\Manipulacion- Rois-Componentes de todas las DB\Dataframes\Data_complete_ic_neuroHarmonize_G1.feather')  # 58x25
+#data1 = pd.read_feather(r"C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_Paper_V2\dataframes\neuroHarmonize\integration5\ic\G1\Data_complete_ic_neuroHarmonize_G1.feather")
+data1 = pd.read_feather(r'C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_Paper_V2\dataframes\neuroHarmonize\integration2to1\ic\G1\Data_integration_ic_neuroHarmonize_G1.feather')
+#data2 = pd.read_feather(r'E:\Academico\Universidad\Posgrado\Tesis\Paquetes\Data_analysis_ML_Harmonization_Proyect\Manipulacion- Rois-Componentes de todas las DB\Dataframes\Data_complete_ic_neuroHarmonize_G1_54x10.feather')  # 54x10
+#data2 = pd.read_feather(r"C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_Paper_V2\dataframes\neuroHarmonize\integration10\ic\G1\Data_complete_ic_neuroHarmonize_G1.feather")
+data2 = pd.read_feather(r'C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_Paper_V2\dataframes\neuroHarmonize\integration5to1\ic\G1\Data_integration_ic_neuroHarmonize_G1.feather')
+#var1 = ''
+#var2 = '54x10'
+var1 = '5:1'
+var2 = '10:1'
 class_names = ['Control', 'G1']
 exec(neuro, name, space, path_save, data1, data2, var1, var2, class_names)
 
