@@ -34,7 +34,7 @@ def compute_precision_recall(test_label, classes_x):
     f1_test = 2 * (precision_test * recall_test) / (precision_test + recall_test)
     print('Precision: ', precision_test, '\n', 'Recall: ', recall_test, '\n', 'F1-score:', f1_test)
 
-def plot_confusion_matrix(path_plot, cm, classes, normalize=False, title='Confusion matrix', cmap='coolwarm'):
+def plot_confusion_matrix(path_plot,var, cm, classes, normalize=False, title='Confusion matrix', cmap='coolwarm'):
     if normalize:
         cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
         print("Normalized confusion matrix")
@@ -60,7 +60,7 @@ def plot_confusion_matrix(path_plot, cm, classes, normalize=False, title='Confus
     plt.tight_layout()
     plt.ylabel('True label')
     plt.xlabel('Predicted label')
-    plt.savefig(path_plot+'/'+title+'.png')
+    plt.savefig(path_plot+'/'+title+'_'+var+'.png')
     plt.close()
 
 def delcol(data, m, b, roi, bm=None):
@@ -82,9 +82,9 @@ def delcol(data, m, b, roi, bm=None):
     return data
 
 
-def mapa_de_correlacion(data, path_plot):
+def mapa_de_correlacion(data, path_plot,var):
     sns.heatmap(data.corr())
-    plt.title('Correlation matrix for all features')
+    plt.title(f'Correlation matrix for all features {var}')
     plt.xlabel('Features')
     plt.ylabel('Features')
     plt.savefig(path_plot+'/'+'correlation_all.png')
@@ -223,7 +223,7 @@ def curva_validacion3(GS_fitted,X_train,y_train,title,palette, var):
             color=palette[0],
             marker='o',
             markersize=5,
-            label='training accuracy '+var
+            label='training accuracy '
             )
 
     plt.fill_between(
@@ -241,7 +241,7 @@ def curva_validacion3(GS_fitted,X_train,y_train,title,palette, var):
             linestyle='--',
             marker='s',
             markersize=5,
-            label='validation accuracy '+var
+            label='validation accuracy '
             )
 
     plt.fill_between(
@@ -253,7 +253,7 @@ def curva_validacion3(GS_fitted,X_train,y_train,title,palette, var):
                     )
 
     plt.grid()
-    plt.title('Validation curve for ' + title[11:-4])
+    plt.title('Training and Validation Curves for ' + title[11:-4]+' '+var)
     plt.xlabel('Number of training samples')
     plt.ylabel('Accuracy')
 
@@ -265,6 +265,7 @@ def curva_validacion3(GS_fitted,X_train,y_train,title,palette, var):
     plt.gca().set_ylim([0.3, 1.1])
     nuevos_valores_y = [0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
     plt.yticks(nuevos_valores_y)
+    plt.grid()
 
 def curva_validacion2(GS_fitted1,GS_fitted2,X_train1,y_train1,X_train2,y_train2,path_plot,title,cross):
     palette = ["#8AA6A3","#127369","#10403B","#45C4B0"]
@@ -381,14 +382,14 @@ def curva_validacion2(GS_fitted1,GS_fitted2,X_train1,y_train1,X_train2,y_train2,
     plt.close()
 
 
-def primeras_carateristicas(X_train, sorted_names,nombres_columnas,features_scores,feat,index,path_plot):
+def primeras_carateristicas(X_train, sorted_names,nombres_columnas,features_scores,feat,index,path_plot,var):
     for f in range(X_train.shape[1]):
         sorted_names.append(nombres_columnas[index[f]])
         print("%2d) %-*s %f" % (f + 1, 30,
                             nombres_columnas[index[f]],
                             features_scores[index[f]]))
         feat[nombres_columnas[index[f]]] = [features_scores[index[f]]]
-    plt.title('Analyzing Feature Importance')
+    plt.title(f'Analyzing Feature Importance {var}')
     plt.xlabel('Features')
     plt.ylabel('Relevance')
 
@@ -431,7 +432,7 @@ def grafico_arbol_de_decision(best_selected, nombres_columnas, output_file="deci
     img = Image.open(f"{output_file}.png")
     img.show()
 
-def curva_de_aprendizaje(sorted_names,data,best_selected,X_train,y_train,modelos,acc_per_feature,std_per_feature,path_plot):
+def curva_de_aprendizaje(sorted_names,data,best_selected,X_train,y_train,modelos,acc_per_feature,std_per_feature,path_plot,var):
     for index, feature_name in enumerate(sorted_names,start=1):
 
         input_features_names = sorted_names[:index]
@@ -481,7 +482,7 @@ def curva_de_aprendizaje(sorted_names,data,best_selected,X_train,y_train,modelos
                     )
 
     plt.grid()
-    plt.title('Learning Curve Decision Tree')
+    plt.title('Learning Curve Decision Tree'+' '+var)
     plt.xlabel('Number of features')
     plt.ylabel('Accuracy')
     plt.savefig(path_plot+'/'+'features_plot_all.png')

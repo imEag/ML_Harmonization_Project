@@ -1,21 +1,22 @@
 import os
 import pandas as pd
+import matplotlib
+matplotlib.use('Agg')  # Usar backend 'Agg' para no necesitar interfaz gráfica
 import matplotlib.pyplot as plt
 import numpy as np
-import itertools
 from sklearn.metrics import confusion_matrix, recall_score, precision_score
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, cross_val_score
 from sklearn.ensemble import RandomForestClassifier
 from boruta import BorutaPy
 from tpot import TPOTClassifier
 from training_functions import *
-from sklearn import datasets, metrics
+from sklearn import metrics
 import joblib
 from sklearn.svm import SVC
 
 def exec(neuro, name, space, path_save, data1, var1, class_names, model=None):
     
-    path_plot = os.path.join(path_save, f'graphics/ML/{neuro}/{name}_{space}')
+    path_plot = os.path.join(path_save, f'graphics/ML/{neuro}/{name}_{var1}_{space}')
 
     # Directorio de resultados para data1
     path_excel1 = os.path.join(path_save, f'tables/ML/{space}/{name}')
@@ -74,7 +75,7 @@ def exec(neuro, name, space, path_save, data1, var1, class_names, model=None):
         data1 = data1.select_dtypes(include=numerics1)
         data1.shape
 
-        X1 = data1.values[:, :-1]
+        X1 = data1.values[:, :-1] #La ultima posicion es el grupo, por eso se elimina
         y1 = data1.values[:, -1]
         print(X1.shape)
         print(y1.shape)
@@ -86,23 +87,23 @@ def exec(neuro, name, space, path_save, data1, var1, class_names, model=None):
             random_state=1,  # Semilla
             stratify=data1.values[:, -1])  # que se mantenga la proporcion en la división para data1
         
-        mapa_de_correlacion(data1, path_plot)
+        mapa_de_correlacion(data1, path_plot,var1)
 
         # Añadido para corrección
         random_grid1 = grid_search()
-        rf_random1 = randomFo(random_grid1,X_train1, y_train1)
+        rf_random1 = randomFo(random_grid1, X_train1, y_train1)
         best_selected1 = rf_random1.best_estimator_
-        params1=rf_random1.best_params_
+        params1 = rf_random1.best_params_
 
-        # Guardar mejore carateristicas
+        # Guardar mejores características
         feat1 = pd.DataFrame()
         sorted_names1 = []
         nombres_columnas1 = data1.columns[:-1]
         features_scores1 = best_selected1.feature_importances_
         index1 = np.argsort(features_scores1)[::-1]
-        feat1 = primeras_carateristicas(X_train1, sorted_names1,nombres_columnas1,features_scores1,feat1,index1,path_plot)
+        feat1 = primeras_carateristicas(X_train1, sorted_names1, nombres_columnas1, features_scores1, feat1, index1, path_plot,var1)
 
-        curva_de_aprendizaje(sorted_names1,data1,best_selected1,X_train1,y_train1,modelos1,acc_per_feature1,std_per_feature1,path_plot)
+        curva_de_aprendizaje(sorted_names1, data1, best_selected1, X_train1, y_train1, modelos1, acc_per_feature1, std_per_feature1, path_plot,var1)
 
         GS_fitted1 = best_selected1.fit(X_train1, y_train1)
         modelos1['GridSerach'] = GS_fitted1
@@ -110,20 +111,20 @@ def exec(neuro, name, space, path_save, data1, var1, class_names, model=None):
         print(
             f"Classification report for classifier {GS_fitted1}:\n"
             f"{metrics.classification_report(y_test1, predicted1)}\n"
-            )
+        )
         dataframe_metrics1 = metrics.classification_report(y_test1, predicted1, output_dict=True)
         dataframe_metrics1 = pd.DataFrame(dataframe_metrics1).T
         scores1 = cross_val_score(
-                                estimator=GS_fitted1,
-                                X=X_train1,
-                                y=y_train1,
-                                cv=10,
-                                n_jobs=-1
-                                )
+            estimator=GS_fitted1,
+            X=X_train1,
+            y=y_train1,
+            cv=10,
+            n_jobs=-1
+        )
         print('CV accuracy scores: %s' % scores1)
         print('\nCV accuracy: %.3f +/- %.3f' %
-            (np.mean(scores1), np.std(scores1)))
-        
+              (np.mean(scores1), np.std(scores1)))
+
         acc_per_feature1.append(np.mean(scores1))
         std_per_feature1.append(np.std(scores1))
 
@@ -137,7 +138,7 @@ def exec(neuro, name, space, path_save, data1, var1, class_names, model=None):
             f.write(i+'\n')
         f.close()       
         
-        title = 'validation_GridSearch.png'
+        title = f'validation_GridSearch.png'
         palette1 = ["#8AA6A3","#127369"]
 
         curva_validacion3(GS_fitted1, X_train1,y_train1,title,palette1,var1)
@@ -146,7 +147,7 @@ def exec(neuro, name, space, path_save, data1, var1, class_names, model=None):
         fig.savefig(path_plot + '/' + title)
         plt.close()
 
-        acc1, std1, fbest_model1, input_best_index1 = features_best3(best_features1,best_selected1,data,X_train1,y_train1,path_plot)
+        acc1, std1, fbest_model1, input_best_index1 = features_best3(best_features1,best_selected1,data1.iloc[:, :-1],X_train1,y_train1,path_plot)
 
         print(acc1[-1])
         print(std1[-1])
@@ -158,7 +159,7 @@ def exec(neuro, name, space, path_save, data1, var1, class_names, model=None):
 
 
         cm_test1 = confusion_matrix(y_test1, classes_x1)
-        plot_confusion_matrix(path_plot, cm_test1, classes=class_names, title='Confusion matrix1')
+        plot_confusion_matrix(path_plot, var1,cm_test1, classes=class_names, title='Confusion matrix')
 
 
         title = 'validation_DecisionTree.png'
