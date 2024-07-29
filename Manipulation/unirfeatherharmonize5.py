@@ -1,3 +1,38 @@
+"""
+Importing Libraries
+os: library for interacting with the operating system and manipulating directories.
+pandas: library for data manipulation and analysis.
+warnings: library for handling warnings.
+process_data Function
+This function takes seven parameters:
+path: base directory path.
+neuro: name of the neuroharmonization directory.
+space: name of the space directory.
+group: boolean indicating whether to use group A or B.
+A and B: names of groups A and B.
+ratio: numerical ratio used to determine the directory name.
+The function performs the following tasks:
+Determines the base directory name based on the ratio.
+Checks if the base directory exists, and if not, prints an error message.
+Reads Feather files from the base directory and combines them into a single DataFrame.
+Removes duplicate columns from the combined DataFrame.
+Creates a new directory for data integration and saves the combined DataFrame to a Feather file.
+Parameter Definition
+path: base directory path.
+A and B: names of groups A and B.
+s: list of space directory names.
+h: list of neuroharmonization directory names.
+group: boolean indicating whether to use group A or B.
+Data Processing
+The code iterates over the s and h lists and calls the process_data function for each parameter combination.
+Three different ratio values are processed: 79, 31, and 15.
+Notes
+The code uses the warnings library to ignore warnings.
+The process_data function uses the os library to interact with the operating system and manipulate directories.
+The code uses the pandas library for data manipulation and analysis.
+The code uses Feather files for data storage and retrieval.
+"""
+
 import os
 import pandas as pd
 import warnings
@@ -49,7 +84,7 @@ def process_data(path, neuro, space, group, A, B, ratio):
         print(f'No data files found for {neuro}, {space}, ratio {ratio}')
 
 # Define paths and parameters
-path = r'C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_Paper_V2\dataframes'
+path = r'C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_Paper\dataframes'
 A = 'G1'
 B = ''
 s = ['ic']

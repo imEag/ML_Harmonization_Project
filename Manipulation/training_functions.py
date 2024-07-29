@@ -34,32 +34,41 @@ def compute_precision_recall(test_label, classes_x):
     f1_test = 2 * (precision_test * recall_test) / (precision_test + recall_test)
     print('Precision: ', precision_test, '\n', 'Recall: ', recall_test, '\n', 'F1-score:', f1_test)
 
-def plot_confusion_matrix(path_plot,var, cm, classes, normalize=False, title='Confusion matrix', cmap='coolwarm'):
+def plot_confusion_matrix(path_plot,var, cm, classes, normalize=False, title='Confusion matrix', cmap=plt.cm.BuGn):
+    if var == '2to1':
+        var2 = '2:1'
+    elif var == '5to1':
+        var2 = '5:1'
+    elif var == '10to1':
+        var2 = '10:1'
     if normalize:
         cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
-        print("Normalized confusion matrix")
+        print(f"Confusion Matrix normalize {var2}")
     else:
-        print('Confusion matrix, without normalization')
+        print(f'Confusion Matrix {var2}')
 
     print(cm)
-    plt.figure()
+    plt.figure(figsize=(10, 10))
     plt.imshow(cm, interpolation='nearest', cmap=cmap)
-    plt.title(title)
+    plt.title(title,fontsize=20)
     plt.colorbar()
     tick_marks = np.arange(len(classes))
-    plt.xticks(tick_marks, classes, rotation=45)
-    plt.yticks(tick_marks, classes)
+    plt.xticks(tick_marks, classes, fontsize=20)
+    plt.yticks(tick_marks, classes, fontsize=20)
 
     fmt = '.2f' if normalize else 'd'
     thresh = cm.max() / 2.
-    for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
-        plt.text(j, i, format(cm[i, j], fmt),
-                 horizontalalignment="center",
-                 color="white" if cm[i, j] > thresh else "black")
+    for i in range(cm.shape[0]):
+        for j in range(cm.shape[1]):
+            plt.text(j, i, format(cm[i, j], fmt),
+                     ha="center", va="center",
+                     fontsize=20,  # Tamaño de fuente ajustado a 20
+                     color="white" if cm[i, j] > thresh else "black")
 
     plt.tight_layout()
-    plt.ylabel('True label')
-    plt.xlabel('Predicted label')
+    plt.ylabel('True label', fontsize=20)
+    plt.xlabel('Predicted label', fontsize=20)
+    plt.tight_layout()
     plt.savefig(path_plot+'/'+title+'_'+var+'.png')
     plt.close()
 
@@ -83,12 +92,51 @@ def delcol(data, m, b, roi, bm=None):
 
 
 def mapa_de_correlacion(data, path_plot,var):
-    sns.heatmap(data.corr())
-    plt.title(f'Correlation matrix for all features {var}')
-    plt.xlabel('Features')
-    plt.ylabel('Features')
-    plt.savefig(path_plot+'/'+'correlation_all.png')
+    # Calcular la matriz de correlación de Pearson
+    correlation_matrix = data.corr()
+    # Generar la gráfica de correlación antes de eliminar características
+    plt.figure(figsize=(15, 10))
+    sns.heatmap(correlation_matrix, annot=False, cmap='coolwarm', center=0, annot_kws={"size": 5}, cbar=True)
+    plt.title(f"Correlation Matrix for {var} Ratio",fontsize=20)
+    plt.tight_layout()
+    plt.savefig(os.path.join(path_plot, 'correlation_before.png'))
     plt.close()
+
+    # Configurar el umbral de correlación
+    threshold = 0.8
+
+    # Listas para almacenar características altamente correlacionadas y eliminadas
+    highly_correlated_features = []
+    features_to_drop = []
+
+    # Encontrar pares de características con correlación mayor al umbral
+    for i in range(len(correlation_matrix.columns)):
+        for j in range(i):
+            if abs(correlation_matrix.iloc[i, j]) > threshold:
+                colname_i = correlation_matrix.columns[i]
+                colname_j = correlation_matrix.columns[j]
+                highly_correlated_features.append((colname_i, colname_j))
+                if colname_i not in features_to_drop:
+                    features_to_drop.append(colname_i)
+
+    # Eliminar las características altamente correlacionadas
+    data_reduced = data.drop(columns=features_to_drop)
+
+    # Calcular la nueva matriz de correlación
+    new_correlation_matrix = data_reduced.corr()
+
+    # Generar la gráfica de correlación después de eliminar características
+    plt.figure(figsize=(15, 10))
+    sns.heatmap(new_correlation_matrix, annot=False, cmap='coolwarm', center=0)
+    plt.title(f"Reduced Correlation Matrix for {var} Ratio",fontsize=20)
+    plt.tight_layout()
+    plt.savefig(os.path.join(path_plot, 'correlation_after.png'))
+    plt.close()
+
+    # Guardar el DataFrame reducido como archivo Feather
+    feather_file_path = os.path.join(path_plot, f'Data_integration_corr.feather')
+    data_reduced.reset_index(drop=True).to_feather(feather_file_path)
+    return data_reduced
 
 def grid_search():
     # Número de árboles en el bosque
@@ -202,7 +250,7 @@ def curva_validacion(GS_fitted,X_train,y_train,path_plot,title):
     plt.savefig(path_plot+'/'+title)
     plt.close()
 
-def curva_validacion3(GS_fitted,X_train,y_train,title,palette, var):
+def curva_validacion3(GS_fitted, X_train, y_train, title, palette, var):
     train_sizes, train_scores, test_scores = \
     learning_curve(
                     estimator=GS_fitted,
@@ -252,19 +300,27 @@ def curva_validacion3(GS_fitted,X_train,y_train,title,palette, var):
                     color=palette[1]
                     )
 
+    
+    if var == '2to1':
+        var2 = '2:1'
+    elif var == '5to1':
+        var2 = '5:1'
+    elif var == '10to1':
+        var2 = '10:1'
     plt.grid()
-    plt.title('Training and Validation Curves for ' + title[11:-4]+' '+var)
-    plt.xlabel('Number of training samples')
-    plt.ylabel('Accuracy')
+    plt.title('Training and Validation Curves for ' + title[11:-4]+' '+var2, fontsize=20)
+    plt.xlabel('Number of training samples', fontsize=20)
+    plt.ylabel('Score', fontsize=20)
 
     # Modificar la posición de la leyenda
-    plt.legend(loc='lower center', bbox_to_anchor=(0.5, 0.0), ncol=2)
+    plt.legend(loc='lower center', bbox_to_anchor=(0.5, 0.0), ncol=2, fontsize=12)
 
     # Ajustar el límite visualmente a 1 sin cambiar el rango real hasta 1.1
     #plt.ylim([0.5, 1.2])
     plt.gca().set_ylim([0.3, 1.1])
     nuevos_valores_y = [0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
-    plt.yticks(nuevos_valores_y)
+    plt.yticks(nuevos_valores_y, fontsize=20)
+    plt.xticks(fontsize=20)
     plt.grid()
 
 def curva_validacion2(GS_fitted1,GS_fitted2,X_train1,y_train1,X_train2,y_train2,path_plot,title,cross):
