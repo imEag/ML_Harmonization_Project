@@ -1,3 +1,22 @@
+"""
+Importing Libraries
+The necessary libraries are imported, including Pandas, NumPy, Matplotlib, and MNE-Python.
+Defining the topograph Function
+This function takes in a dataset and an output path to save the topographic maps.
+It replaces group labels in the data and defines frequency bands for analysis.
+It generates standard positions in a circle for components and obtains average metric values for each component and frequency band.
+It configures the figure and axes for each metric and generates topographic maps using MNE-Python's plot_topomap function.
+It saves and displays each figure.
+Configuring Directories and File Names
+Directories and file names are defined for reading and saving data.
+Iterating Over Different Cases and Generating Topographic Maps
+The code iterates over different cases (neuro, name, ratio) and calls the topograph function to generate topographic maps for each metric.
+It reads the corresponding data file and calls the topograph function with the corresponding output path.
+Using the Code
+Group labels are replaced in the data, and unnecessary columns are dropped.
+Average values are calculated for each group, and topographic maps are generated for each feature using the single_topomap function from the utils library.
+Figures are saved to the corresponding output path.
+"""
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
