@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split, cross_val_score
 from sklearn.ensemble import RandomForestClassifier
 from sklearn import metrics
-from sklearn.metrics import confusion_matrix, recall_score, precision_score, f1_score
+from sklearn.metrics import roc_auc_score, recall_score, precision_score, f1_score, confusion_matrix
 from training_functions import *
 import joblib
 
@@ -101,6 +101,7 @@ def exec1(neuro, name, space, path_save, path_plot, data1, var1, class_names, mo
         GS_fitted1 = best_selected1.fit(X_train1, y_train1)
         modelos1['GridSerach'] = GS_fitted1
         predicted1 = GS_fitted1.predict(X_test1)
+        predicted_proba = GS_fitted1.predict_proba(X_test1)[:, 1]  # Probabilidades de la clase positiva
         print(
             f"Classification report for classifier {GS_fitted1}:\n"
             f"{metrics.classification_report(y_test1, predicted1)}\n"
@@ -182,9 +183,9 @@ def exec1(neuro, name, space, path_save, path_plot, data1, var1, class_names, mo
         input_best_index1 = None  
         var1 = str_ratio  
 
-    return acc1, std1, fbest_model1, input_best_index1, X_train1, y_train1, clases_mapeadas1, var1, X_test1, y_test1
+    return acc1, std1, fbest_model1, input_best_index1, X_train1, y_train1, clases_mapeadas1, var1, predicted_proba, X_test1, y_test1
 
-def exec2(acc1, std1, fbest_model1, input_best_index1, X_train1, y_train1, clases_mapeadas1, path_plot, var1, X_test=None, y_test=None):               
+def exec2(acc1, std1, fbest_model1, input_best_index1, X_train1, y_train1, clases_mapeadas1, path_plot, var1, predicted_proba, X_test=None, y_test=None):               
     # Ruta para guardar los datos
     #output_file = os.path.join(path_plot, 'features_best3_data.pkl')
 
@@ -226,9 +227,27 @@ def exec2(acc1, std1, fbest_model1, input_best_index1, X_train1, y_train1, clase
     precision = precision_score(y_test, classes_x1)
     recall = recall_score(y_test, classes_x1)
     f1 = f1_score(y_test, classes_x1)
+    auc2 = roc_auc_score(y_test, predicted_proba)  # AUC
     print("Precision:", precision)
     print("Recall:", recall)
     print("F1 Score:", f1)
+
+
+    print(f'Precision: {precision}\nRecall: {recall}\nF1: {f1}\nAUC: {auc2}')
+
+    # Guardar métricas en un archivo CSV
+    metrics_dict = {
+        'Precision': [precision],
+        'Recall': [recall],
+        'F1': [f1],
+        'AUC': [auc2]
+    }
+    path_metrics_csv = os.path.join(path_plot, f'metrics_ML_{var1}.csv')
+    metrics_df = pd.DataFrame(metrics_dict)
+    metrics_df.to_csv(path_metrics_csv, index=False)
+
+    dataframe_metrics2 = metrics.classification_report(y_test, predicted1, output_dict=True)
+    dataframe_metrics2 = pd.DataFrame(dataframe_metrics2).T
 
     # Verifica las predicciones y etiquetas reales
     print("Predicciones:", predicted1)
@@ -254,10 +273,13 @@ def exec2(acc1, std1, fbest_model1, input_best_index1, X_train1, y_train1, clase
 neuros = ['neuroHarmonize']
 names = ['G1']
 space = 'ic'
-path = r"C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_Paper_V2\dataframes"
-path_save = r"C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_Paper_V2\Resultados"
-#ratios = [15, 79, 31]
-ratios = [79, 15, 31]
+ica = '58x25' #'54x10'
+#path = r"C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_Paper_V2\dataframes"
+#path_save = r"C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_Paper_V2\Resultados"
+path = fr'C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_Paper\Nuevo analisis corr 2to1 PSM (54X10)(58X25)/{ica}'
+path_save = fr'C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_Paper\Nuevo analisis corr 2to1 PSM (54X10)(58X25)/{ica}/Results'
+#ratios = [79, 15, 31]
+ratios = [79]
 #class_names = ['HC', 'ACr']
 class_names = ['ACr', 'HC']
 # Inicializar fbest_model1 fuera del bucle
@@ -282,10 +304,10 @@ for neuro in neuros:
 
             if str_ratio == '2to1':
                 # Entrenamiento inicial con el dataset 2to1
-                acc1, std1, fbest_model1, input_best_index1, X_train1, y_train1, clases_mapeadas1, var1, X_test1, y_test1 = exec1(neuro, name, space, path_save, path_plot, data, str_ratio, class_names, model=None)
+                acc1, std1, fbest_model1, input_best_index1, X_train1, y_train1, clases_mapeadas1, var1,predicted_proba, X_test1, y_test1 = exec1(neuro, name, space, path_save, path_plot, data, str_ratio, class_names, model=None)
             else:
                 # Ajuste fino con los datasets 5to1 y 10to1
-                acc1, std1, fbest_model1, input_best_index1, X_train1, y_train1, clases_mapeadas1, var1, X_test1, y_test1 = exec1(neuro, name, space, path_save, path_plot, data, str_ratio, class_names, model=fbest_model1)
+                acc1, std1, fbest_model1, input_best_index1, X_train1, y_train1, clases_mapeadas1, var1,predicted_proba, X_test1, y_test1 = exec1(neuro, name, space, path_save, path_plot, data, str_ratio, class_names, model=fbest_model1)
 
             # Evaluación final del modelo
-            fbest_model1 = exec2(acc1, std1, fbest_model1, input_best_index1, X_train1, y_train1, clases_mapeadas1, path_plot, var1, X_test1, y_test1)
+            fbest_model1 = exec2(acc1, std1, fbest_model1, input_best_index1, X_train1, y_train1, clases_mapeadas1, path_plot, var1, predicted_proba, X_test1, y_test1)

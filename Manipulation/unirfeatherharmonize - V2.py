@@ -84,19 +84,22 @@ def process_data(path, neuro, space, group, A, B, ratio):
         print(f'No data files found for {neuro}, {space}, ratio {ratio}')
 
 # Define paths and parameters
-path = r'C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_Paper\dataframes'
+#path = r'C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_Paper_V2\dataframes'
+#path = r'C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_Paper\Datosparaorganizardataframes/'
+ica = '58x25'
 A = 'G1'
 B = ''
 s = ['ic']
-h = ['neuroHarmonize', 'sovaharmony']
+#h = ['neuroHarmonize', 'sovaharmony']
+h = ['neuroHarmonize']
 group = 1  # Ajustado a 1 ya que A está definido
+path = fr'C:\Users\veroh\OneDrive - Universidad de Antioquia\Articulo análisis longitudinal\Resultados_Armonizacion_Paper\Nuevo analisis corr 2to1 PSM (54X10)(58X25)/{ica}'
 
-# Process data
 for space in s:
     for neuro in h:
         process_data(path, neuro, space, group, A, B, 79)
-        process_data(path, neuro, space, group, A, B, 31)
-        process_data(path, neuro, space, group, A, B, 15)
+        #process_data(path, neuro, space, group, A, B, 31)
+        #process_data(path, neuro, space, group, A, B, 15)
 
 
 

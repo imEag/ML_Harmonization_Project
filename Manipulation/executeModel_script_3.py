@@ -40,6 +40,7 @@ from sklearn import metrics
 import joblib
 from sklearn.svm import SVC
 import pickle
+from sklearn.metrics import roc_auc_score, recall_score, precision_score, f1_score, confusion_matrix
 
 def exec1(neuro, name, space, path_save, path_plot, data1, var1, class_names, model=None):
     
@@ -258,6 +259,8 @@ def exec2(neuro, name, space, path_save, data2, var2, class_names, acc1, std1, f
     # Calculo de métricas finales y matrices de confusión
     GS_fitted2 = fbest_model1.fit(X_train2, y_train2)
     predicted2 = GS_fitted2.predict(X_test2)
+    predicted_proba2 = GS_fitted2.predict_proba(X_test2)[:, 1]  # Probabilidades de la clase positiva
+
     cm2 = confusion_matrix(y_test2, predicted2)
     fig, ax = plt.subplots(figsize=(7.5, 7.5))
     ax.matshow(cm2, cmap=plt.cm.Blues, alpha=0.3)
@@ -275,7 +278,21 @@ def exec2(neuro, name, space, path_save, data2, var2, class_names, acc1, std1, f
     precision2 = precision_score(y_test2, predicted2, average='weighted')
     recall2 = recall_score(y_test2, predicted2, average='weighted')
     f1_2 = f1_score(y_test2, predicted2, average='weighted')
-    print(f'Precision: {precision2}\nRecall: {recall2}\nF1: {f1_2}')
+    auc2 = roc_auc_score(y_test2, predicted_proba2)  # AUC
+
+    print(f'Precision: {precision2}\nRecall: {recall2}\nF1: {f1_2}\nAUC: {auc2}')
+
+    # Guardar métricas en un archivo CSV
+    metrics_dict = {
+        'Precision': [precision2],
+        'Recall': [recall2],
+        'F1': [f1_2],
+        'AUC': [auc2]
+    }
+    path_metrics_csv = os.path.join(path_save, f'metrics_ML_{var2}.csv')
+    metrics_df = pd.DataFrame(metrics_dict)
+    metrics_df.to_csv(path_metrics_csv, index=False)
+
     dataframe_metrics2 = metrics.classification_report(y_test2, predicted2, output_dict=True)
     dataframe_metrics2 = pd.DataFrame(dataframe_metrics2).T
 
