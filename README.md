@@ -19,13 +19,12 @@ NOTAS
 
 # Archivos adicionales para papers = (2 ICA - 54x10 y 58x25) y (Diversificación de dataset 2to1, 5to1 y 10to1)
 
-1. neuroharmonize - V2.py
-2. unirfeatherharmonize5.py
-3. excuteModel_script_3.py
-4. Graficos_Paper.py
+1. neuroharmonize - V2.py => Se necesita el archivo "Data_complete_ic.feather". Repositirorio eeg_harmonization
+2. unirfeatherharmonize - V2.py => Se necesita la ruta de la carpeta "complete" que contiene los complete para cada metrica. Repositorio Data_analysis_ML_Harmonization_Proyect
+3. training_script3.py => Se necesita la ruta de la carpeta "integrate" que contiene los integrate para cada metrica. Repositorio Data_analysis_ML_Harmonization_Proyect
 
 # Archivos adicionales de graficos de interes (independientes de los todos los scripts
 
 1. Topofeatures.py edificion del codigo original topo.py del repositorio eeg_harmonization
-2. Graficos_Paper.py
+2. Graficos_Paper.py => Se ejecuta drante el debbug de (3.) para graficar y analizar los resultados por medio de graficas. 
 
